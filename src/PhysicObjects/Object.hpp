@@ -29,7 +29,7 @@ private:
 
 namespace ObjectFactory
 {
-Object generateEllipse(const sdl3::Vector2f &radii, const sdl3::Vector2f &position, const sdl3::Color &color, PhysicBody physic = {})
+Object generateEllipse(const sdl3::Vector2f &radii, const sdl3::Vector2f &position, const sdl3::Color &color, PhysicBody physic = PhysicBody{})
 {
     Object res;
     res.body = std::move(physic);
@@ -39,9 +39,13 @@ Object generateEllipse(const sdl3::Vector2f &radii, const sdl3::Vector2f &positi
     el.ellipse.setPosition(position);
     el.ellipse.setFillColor(color);
     res.shape = std::make_unique<EllipseCollider>(el);
+
+    const float m = res.body.getMass();
+    const float inertia = m * 0.25f * (radii.x * radii.x + radii.y * radii.y);
+    res.body.setInertia(inertia);
     return res;
 }
-Object generateRectangle(const sdl3::Vector2f &size, const sdl3::Vector2f &position, const sdl3::Color &color, PhysicBody physic = {})
+Object generateRectangle(const sdl3::Vector2f &size, const sdl3::Vector2f &position, const sdl3::Color &color, PhysicBody physic = PhysicBody{})
 {
     Object res;
     res.body = std::move(physic);
@@ -51,6 +55,10 @@ Object generateRectangle(const sdl3::Vector2f &size, const sdl3::Vector2f &posit
     rct.rect.setPosition(position);
     rct.rect.setFillColor(color);
     res.shape = std::make_unique<RectangleCollider>(rct);
+
+    const float m = res.body.getMass();
+    const float inertia = (m / 12.f) * (size.x * size.x + size.y * size.y);
+    res.body.setInertia(inertia);
     return res;
 }
 

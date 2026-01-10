@@ -8,6 +8,8 @@
 #include <SDLWrapper/ObjectBase/Shape.hpp>
 #include <SDLWrapper/ObjectBase/Transformable.hpp>
 
+#include "../EngineConfig.hpp"
+
 
 struct IPhysicsShape
 {
@@ -37,7 +39,7 @@ public:
     }
     sdl3::Vector2f support(const sdl3::Vector2f &direction) const override
     {
-        const float eps = 1e-8f;
+        const float eps = engine::cfg::epsilon;
         if (direction.x * direction.x + direction.y * direction.y < eps)
             return getCenterPosition();
 

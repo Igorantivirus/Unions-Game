@@ -4,15 +4,15 @@
 
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_timer.h>
+#include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Math/Colors.hpp>
 #include <SDLWrapper/Math/Matrix3x3.hpp>
 #include <SDLWrapper/SDLWrapper.hpp>
-#include <SDLWrapper/Clock.hpp>
 #include <memory>
 
-#include "PhysicObjects/Object.hpp"
 #include "CollisionMeneger.hpp"
-
+#include "EngineConfig.hpp"
+#include "PhysicObjects/Object.hpp"
 
 sdl3::RenderWindow window;
 
@@ -20,15 +20,14 @@ sdl3::RenderWindow window;
 
 struct Deleter
 {
-    void operator()(Object* obj)
+    void operator()(Object *obj)
     {
-
     }
 };
 
 std::vector<Object> objects;
-Object* obj1 = nullptr;
-Object* obj2 = nullptr;
+Object *obj1 = nullptr;
+Object *obj2 = nullptr;
 
 float spd = 2.5f;
 
@@ -45,14 +44,20 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     bool res = window.create("window", mode);
     window.loadIconFromFile("ABS.png");
 
-    const sdl3::Vector2i size = {mode.width, mode.height};
+    const sdl3::Vector2f size = {(float)mode.width, (float)mode.height};
 
     objects.push_back(ObjectFactory::generateEllipse(
-        {30,45}, {50,300}, sdl3::Colors::Red, {PhysicBodyType::Static}
-    ));
+        {30, 45}, {50, 0}, sdl3::Colors::Red, PhysicBody{PhysicBodyType::Dynamic}));
     objects.push_back(ObjectFactory::generateRectangle(
-        {50,30}, {100,300}, sdl3::Colors::Blue, {PhysicBodyType::Static}
-    ));
+        {50, 30}, {100, 0}, sdl3::Colors::Blue, PhysicBody{PhysicBodyType::Dynamic}));
+
+    const float wall = engine::cfg::wallThickness;
+    objects.push_back(ObjectFactory::generateRectangle(
+        {wall, size.y}, {0, 0}, sdl3::Colors::Black, PhysicBody{PhysicBodyType::Static}));
+    objects.push_back(ObjectFactory::generateRectangle(
+        {wall, size.y}, {size.x - wall, 0}, sdl3::Colors::Black, PhysicBody{PhysicBodyType::Static}));
+    objects.push_back(ObjectFactory::generateRectangle(
+        {size.x, wall}, {0, size.y - wall}, sdl3::Colors::Black, PhysicBody{PhysicBodyType::Static}));
 
     obj1 = &objects[0];
     obj2 = &objects[1];
@@ -139,8 +144,17 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     float dt = cl.elapsedTimeS();
     cl.start();
 
-    for(auto& obj : objects)
-        obj.update(dt);
+    // 1) Интеграция (движение)
+    for (auto &o : objects)
+        o.update(dt);
+
+    // 2) Коллизии (пары)
+    for (int i = 0; i < (int)objects.size() - 1; ++i)
+        for (int j = i + 1; j < (int)objects.size(); ++j)
+            CollisionMeneger::EPA(objects[i], objects[j]);
+
+    // for (auto &obj : objects)
+    //     obj.update(dt);
 
     window.clear(sdl3::Colors::White);
 
