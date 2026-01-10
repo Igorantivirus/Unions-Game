@@ -1,0 +1,26 @@
+# .clang-format
+BasedOnStyle: LLVM
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 0
+
+BreakBeforeBraces: Allman
+
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortLambdasOnASingleLine: None
+
+BraceWrapping:
+  AfterFunction:         true
+  AfterClass:            true
+  AfterStruct:           true
+  AfterEnum:             true
+  AfterNamespace:        true
+  AfterControlStatement: true
+  BeforeElse:            true
+  BeforeCatch:           true
+  BeforeLambdaBody:      true
+
+AccessModifierOffset: -4

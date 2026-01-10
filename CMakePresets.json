@@ -1,0 +1,56 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "win-clangd",
+      "generator": "Ninja",
+      "binaryDir": "build/clangd",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "CMAKE_CXX_EXTENSIONS": "OFF",
+        "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang-cl.exe"
+      }
+    },
+    {
+      "name": "win-base",
+      "displayName": "MSVC Ninja",
+      "generator": "Ninja",
+      "binaryDir": "build/win-base",
+      "environment": {
+        "PATH": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64;C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64;$penv{PATH}",
+        "INCLUDE": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/include;C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/ucrt;C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um;C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/shared;C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/winrt;C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/cppwinrt;$penv{INCLUDE}",
+        "LIB": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/lib/x64;C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/ucrt/x64;C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64;$penv{LIB}"
+      },
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "CMAKE_CXX_EXTENSIONS": "OFF",
+        "EXTERNAL_DIR": "D:/dev/libraries/_install",
+        "CMAKE_ABI": "msvc-x64-win"
+      }
+    },
+    {
+      "name": "win-debug",
+      "inherits": "win-base",
+      "displayName": "Windows Debug",
+      "binaryDir": "build",
+      "cacheVariables": {
+        "USE_CONSOLE": "TRUE",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "win-release",
+      "inherits": "win-base",
+      "displayName": "Windows Release",
+      "binaryDir": "build",
+      "cacheVariables": {
+        "USE_CONSOLE": "TRUE",
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ]
+}

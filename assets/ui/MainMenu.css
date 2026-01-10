@@ -1,0 +1,101 @@
+:root {
+    font-size: 16px;
+}
+
+body {
+    background-color: rgb(173, 216, 230);
+    font-family: Arial;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+
+#head {
+    margin-top: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15vh;
+}
+
+h1 {
+    margin: 0;
+    color: black;
+    font-size: 700%;
+    /* ~60px */
+}
+
+#main {
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .menu-button {
+    padding: 2.2rem 1rem;
+    line-height: 1.2;
+    color: black;
+
+    width: 75%;
+    font-size: 1.6rem;
+    border-radius: 10px;
+
+    background-color: #007bff;
+    border-color: black;
+
+    margin-top: 3vh;
+} */
+
+.menu-button {
+    line-height: 20vh;
+    color: black;
+    margin-top: 5vh;
+
+    width: 75%;
+    height: 20vh;
+    font-size: 400%;
+
+    border-radius: 10px;
+    background-color: #007bff;
+    border-color: black;
+}
+
+.menu-button:hover {
+    background-color: #007ba0;
+}
+
+#foot {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 15px;
+
+    height: auto;
+    padding-bottom: 10px;
+    align-items: flex-end;
+
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.footMenu {
+    width: 50%;
+    color: black;
+    font-size: 20px;
+}
+
+.footMenu:first-child {
+    text-align: left;
+}
+
+.footMenu:last-child {
+    text-align: right;
+}

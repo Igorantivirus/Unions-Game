@@ -1,0 +1,58 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    compileSdk 35
+    namespace 'com.igorantivirus.new_sdl'
+
+    buildFeatures { prefab true }
+
+    defaultConfig {
+        applicationId "com.igorantivirus.new_sdl"
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName "1.0"
+
+        externalNativeBuild {
+            cmake {
+                arguments '-DEXTERNAL_DIR="D:/dev/libraries/_install"'
+                cppFlags '-std=c++23'
+//                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+//                abiFilters 'arm64-v8a', 'x86_64'
+                abiFilters 'arm64-v8a'
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    externalNativeBuild {
+        cmake {
+            version '3.22.1'
+            path file('../CMakeLists.txt')
+        }
+    }
+    sourceSets {
+        main {
+            assets {
+                srcDirs '../assets'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation files('libs/SDL3-3.4.0.aar')
+    implementation files('libs/SDL3_image-3.2.6.aar')
+}
