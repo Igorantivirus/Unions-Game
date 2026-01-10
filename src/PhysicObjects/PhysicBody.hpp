@@ -66,19 +66,53 @@ public:
         forceAccum_ = {0.0f, 0.0f};
         torqueAccum_ = 0.0f;
     }
+    void applyImpulse(const sdl3::Vector2f &impulse)
+    {
+        if (type_ != PhysicBodyType::Dynamic)
+            return;
+        velocity_ += impulse * getInvMass();
+    }
+
+    const PhysicBodyType getType() const
+    {
+        return type_;
+    }
+    float getMass() const
+    {
+        return mass_;
+    }
+    float getInvMass() const
+    {
+
+        return invMass_;
+    }
+    sdl3::Vector2f getVelocity() const
+    {
+        return velocity_;
+    }
+
     void setType(const PhysicBodyType type)
     {
         type_ = type;
     }
-    const PhysicBodyType getType() const
+    void setMass(const float mass)
     {
-        return type_;
+        mass_ = mass;
+        if (type_ != PhysicBodyType::Dynamic || mass_ <= 1e-12f)
+            invMass_ = 0.f;
+        else
+            invMass_ = 1.f / mass_;
+    }
+    void setVelocity(const sdl3::Vector2f &v)
+    {
+        velocity_ = v;
     }
 
 private:
     PhysicBodyType type_ = PhysicBodyType::Static;
 
     float mass_ = 1;
+    float invMass_ = 1;
 
     sdl3::Vector2f velocity_{100, -600};
     sdl3::Vector2f forceAccum_{};
