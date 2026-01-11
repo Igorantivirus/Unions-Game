@@ -10,6 +10,7 @@ project("Ellipse-fall" LANGUAGES CXX C)
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+set(THIRD_PARTY_BUILD_DIR "${PROJECT_SOURCE_DIR}/_3rdparty")
 
 if(ANDROID)
   set(CMAKE_ABI ${CMAKE_ANDROID_ARCH_ABI})
@@ -36,8 +37,8 @@ set(SOURCE_CPP
   ${SRC_DIR}/main.cpp
 )
 set(SOURCE_HPP
-  ${SRC_DIR}/Objects.hpp
-  ${SRC_DIR}/CollisionMeneger.hpp
+  # ${SRC_DIR}/Objects.hpp
+  # ${SRC_DIR}/CollisionMeneger.hpp
 )
 set(INCLUDE_PATHS
   ${SRC_DIR}
@@ -50,6 +51,10 @@ find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3-static)
 find_package(Freetype CONFIG REQUIRED)
 find_package(RmlUi CONFIG REQUIRED)
 find_package(SDLWrapper CONFIG REQUIRED)
+
+
+#ВРЕМЕННОЕ ПОДКЛЮЧЕНИЕ
+add_subdirectory("D:/dev/libraries/box2d-2.4.2" "${THIRD_PARTY_BUILD_DIR}/box2d")
 
 if (ANDROID)
   find_package(ZLIB REQUIRED)
@@ -88,6 +93,7 @@ else()
     Freetype::Freetype
     RmlUi::RmlUi
     SDLWrapper::SDLWrapper
+    box2d
   )
 
 endif()
