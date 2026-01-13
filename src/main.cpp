@@ -1,11 +1,14 @@
 #include <SDL3/SDL_main.h>
 
 #include <Engine/Engine.hpp>
+#include <App/GameSceneFactory.hpp>
 
 static engine::Engine app;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    app.registrateSceneFabrick(std::make_unique<GameSceneFactory>(GameSceneFactory{}));
+    app.pushScene(MainMenuScene::sceneID);
     return app.start("Falling ellipses");
 }
 
