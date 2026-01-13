@@ -55,7 +55,9 @@ public:
         SDL_AppResult res = processSceneAction(act);
         if (res != SDL_APP_CONTINUE)
             return res;
+        window_.clear();
         scenes_.back()->draw(window_);
+        window_.display();
         cl_.start();
         return res;
     }
