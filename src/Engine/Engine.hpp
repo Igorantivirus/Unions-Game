@@ -1,17 +1,16 @@
 #pragma once
 
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_init.h>
-#include <SDLWrapper/Clock.hpp>
-#include <SDLWrapper/Renders/VideoMode.hpp>
 #include <vector>
 
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_init.h>
+
 #include <SDLWrapper/SDLWrapper.hpp>
+#include <SDLWrapper/Clock.hpp>
 
 #include "Scene.hpp"
 #include "SceneAction.hpp"
 #include "SceneFabrick.hpp"
-
 
 namespace engine
 {
