@@ -1,12 +1,14 @@
 #pragma once
 
+#include <SDL3/SDL_timer.h>
+#include <SDLWrapper/Renders/VideoMode.hpp>
 #include <vector>
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 
-#include <SDLWrapper/SDLWrapper.hpp>
 #include <SDLWrapper/Clock.hpp>
+#include <SDLWrapper/SDLWrapper.hpp>
 
 #include "Scene.hpp"
 #include "SceneAction.hpp"
@@ -18,9 +20,13 @@ namespace engine
 class Engine
 {
 public:
-    SDL_AppResult start(const std::string_view wName)
+    SDL_AppResult start(const std::string_view wName, const sdl3::Vector2i size)
     {
-        window_.create(wName, sdl3::VideoMode::getDefaultVideoMode());
+        sdl3::VideoMode mode = sdl3::VideoMode::getDefaultVideoMode();
+        mode.width = size.x;
+        mode.height = size.y;
+        window_.create(wName, mode);
+        window_.setPhysicalWindowSize(size);
         cl_.start();
         return SDL_APP_CONTINUE;
     }
@@ -59,9 +65,7 @@ public:
         SDL_AppResult res = processSceneAction(act);
         if (res != SDL_APP_CONTINUE)
             return res;
-        window_.clear();
-        scenes_.back()->draw(window_);
-        window_.display();
+        safeDrawScene();
         cl_.start();
         return res;
     }
@@ -71,9 +75,20 @@ public:
         return window_;
     }
 
+    void setFps(const unsigned fps)
+    {
+        fps_ = fps;
+        if (fps_ > 0)
+            desiredFrameMS_ = 1000.f / static_cast<float>(fps_);
+    }
+
 private:
     std::vector<ScenePtr> scenes_;
     SceneFabrickPtr sceneFabrick_;
+
+    unsigned int fps_{};
+    // желаемое время кадра (мс)
+    float desiredFrameMS_{};
 
 private:
     sdl3::RenderWindow window_;
@@ -96,6 +111,25 @@ private:
         else if (act.type == SceneActionType::Exit)
             return SDL_APP_SUCCESS;
         return SDL_APP_CONTINUE;
+    }
+
+    void safeDrawScene()
+    {
+        window_.clear();
+        scenes_.back()->draw(window_);
+        window_.display();
+    }
+
+    void fpsDelay()
+    {
+        if (fps_ == 0)
+            return;
+        
+        // фактическое время, затраченное на кадр (мс)
+        float frameMS = cl_.elapsedTimeMS();
+        
+        if (frameMS < desiredFrameMS_)
+            SDL_Delay(static_cast<Uint32>(desiredFrameMS_ - frameMS));
     }
 };
 
