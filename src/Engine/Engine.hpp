@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Renders/VideoMode.hpp>
@@ -8,8 +9,9 @@
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include "Scene.hpp"
-#include "SceneFabrick.hpp"
 #include "SceneAction.hpp"
+#include "SceneFabrick.hpp"
+
 
 namespace engine
 {
@@ -41,8 +43,11 @@ public:
 
     SDL_AppResult updateEvents(const SDL_Event &event)
     {
-        if (!scenes_.empty())
-            scenes_.back()->updateEvent(event);
+        if (event.type == SDL_EVENT_QUIT)
+            return SDL_APP_SUCCESS;
+        if (scenes_.empty())
+            return SDL_APP_FAILURE;
+        scenes_.back()->updateEvent(event);
         return SDL_APP_CONTINUE;
     }
 
