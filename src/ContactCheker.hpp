@@ -29,7 +29,8 @@ public:
         // дальше получаете user data из тел или фикстур
         Entity *objA = reinterpret_cast<Entity *>(bodyA->GetUserData().pointer);
         Entity *objB = reinterpret_cast<Entity *>(bodyB->GetUserData().pointer);
-        if (!objA || !objB || objA->getBody()->GetType() == b2_staticBody || objB->getBody()->GetType() == b2_staticBody)
+        if (!objA || !objB || !objA->isAlive() || !objB->isAlive() ||
+            objA->getBody()->GetType() == b2_staticBody || objB->getBody()->GetType() == b2_staticBody)
             return;
         if (objA->getShape().getFillColor() == objB->getShape().getFillColor())
         {

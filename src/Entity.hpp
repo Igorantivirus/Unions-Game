@@ -14,7 +14,8 @@ public:
     Entity(b2Body *body, std::unique_ptr<sdl3::Shape> shape)
         : m_body(body), m_shape(std::move(shape))
     {
-        m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+        if (m_body)
+            m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
         ID_ = maxID_++;
     }
     Entity(const Entity &) = delete;
@@ -22,14 +23,17 @@ public:
         : m_body(other.m_body), m_shape(std::move(other.m_shape)), ID_{other.ID_}
     {
         other.m_body = nullptr;
-        m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-        other.ID_ = 0;
+        if (m_body)
+            m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     }
 
     ~Entity()
     {
         if (m_body)
+        {
+            m_body->GetUserData().pointer = 0;
             m_body->GetWorld()->DestroyBody(m_body);
+        }
         m_body = nullptr;
     }
 
@@ -38,14 +42,19 @@ public:
     {
         if (this != &other)
         {
-            // if (m_body)
-            //     m_body->GetWorld()->DestroyBody(m_body);
+            if (m_body)
+            {
+                m_body->GetUserData().pointer = 0;
+                m_body->GetWorld()->DestroyBody(m_body);
+            }
+
             m_body = other.m_body;
             m_shape = std::move(other.m_shape);
-            m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
             ID_ = other.ID_;
             other.m_body = nullptr;
-            other.ID_ = 0;
+
+            if (m_body)
+                m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
         }
         return *this;
     }
@@ -82,12 +91,16 @@ public:
     {
         return ID_;
     }
+    bool isAlive() const
+    {
+        return m_body != nullptr;
+    }
 
 private:
     b2Body *m_body = nullptr;
     mutable std::unique_ptr<sdl3::Shape> m_shape;
 
-    unsigned short ID_;
+    unsigned short ID_ = 0;
 
     inline static unsigned short maxID_ = 1;
 

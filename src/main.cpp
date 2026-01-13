@@ -10,6 +10,9 @@
 
 #include <box2d/b2_body.h>
 
+#include <algorithm>
+#include <unordered_set>
+
 #include "ContactCheker.hpp"
 #include "Entity.hpp"
 #include "EntityFactory.hpp"
@@ -175,18 +178,20 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
     if (!deleteQueue.empty())
     {
+        std::unordered_set<unsigned short> ids;
+        ids.reserve(deleteQueue.size());
         while(!deleteQueue.empty())
         {
-            unsigned short id = deleteQueue.front();
-            for(auto it = objects.begin(); it != objects.end(); ++it)
-            {
-                if(it->getID() == id)
-                {
-                    objects.erase(it, it + 1);
-                    break;
-                }
-            }
+            ids.insert(deleteQueue.front());
             deleteQueue.pop();
+        }
+
+        if (!ids.empty())
+        {
+            objects.erase(
+                std::remove_if(objects.begin(), objects.end(),
+                               [&](const Entity &e) { return ids.contains(e.getID()); }),
+                objects.end());
         }
     }
 
