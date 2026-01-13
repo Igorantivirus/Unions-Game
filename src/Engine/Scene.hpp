@@ -6,7 +6,7 @@
 #include <SDL3/SDL_events.h>
 #include <SDLWrapper/SDLWrapper.hpp>
 
-#include "Types.hpp"
+#include "SceneAction.hpp"
 
 namespace engine
 {

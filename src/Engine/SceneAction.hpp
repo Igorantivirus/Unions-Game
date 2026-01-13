@@ -1,9 +1,11 @@
 #pragma once
 
 #include <variant>
+
+#include <Core/Types.hpp>
+
 namespace engine
 {
-    using IDType = unsigned short;
 
     enum class SceneActionType
     {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Scene.hpp"
-#include "Types.hpp"
 #include <memory>
+
+#include "Scene.hpp"
 
 namespace engine
 {
