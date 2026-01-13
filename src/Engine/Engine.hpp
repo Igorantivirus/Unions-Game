@@ -75,11 +75,15 @@ public:
         return window_;
     }
 
-    void setFps(const unsigned fps)
+    void setFps(const unsigned int fps)
     {
         fps_ = fps;
         if (fps_ > 0)
             desiredFrameMS_ = 1000.f / static_cast<float>(fps_);
+    }
+    const unsigned int getFps() const
+    {
+        return fps_;
     }
 
 private:
