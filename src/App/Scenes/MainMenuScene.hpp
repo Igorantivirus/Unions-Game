@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Types.hpp"
+#include <Core/Types.hpp>
 #include <Engine/Scene.hpp>
 
 class MainMenuScene : public engine::Scene
