@@ -1,5 +1,6 @@
 #pragma once
 
+#include <RmlUi/Debugger/Debugger.h>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -45,7 +46,7 @@ public:
         Rml::SetSystemInterface(systemInterface_.get());
         Rml::SetFileInterface(fileInterface_.get());
 
-        if (!Rml::Initialise())
+        if (initialized_ = Rml::Initialise(); !initialized_)
         {
             SDL_Log("Rml::Initialise failed");
             return false;
@@ -63,7 +64,11 @@ public:
         context_->SetDensityIndependentPixelRatio(window.getDisplayScale());
 
 #ifndef NDEBUG
-        Rml::Debugger::Initialise(context_);
+        if (debugInit_ = Rml::Debugger::Initialise(context_); !debugInit_)
+        {
+            SDL_Log("Rml::Debugger::Initialise failed");
+            return false;
+        }
 #endif
         return loadFonts(fontsPath);
     }
@@ -81,7 +86,18 @@ public:
             Rml::RemoveContext(name);
             context_ = nullptr;
         }
-        Rml::Shutdown();
+        if (initialized_)
+        {
+            Rml::Shutdown();
+            initialized_ = false;
+        }
+#ifndef NDEBUG
+        if (debugInit_)
+        {
+            Rml::Debugger::Shutdown();
+            debugInit_ = false;
+        }
+#endif
     }
 
     void updateEvents(const SDL_Event &event)
@@ -151,6 +167,11 @@ private:
 
     Rml::Context *context_ = nullptr;
     std::unordered_map<std::string, Rml::ElementDocument *> documents_;
+
+    bool initialized_ = false;
+#ifndef NDEBUG
+    bool debugInit_ = false;
+#endif
 
 private:
     bool loadFonts(const std::string_view fontsPath)
