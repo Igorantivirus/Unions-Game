@@ -112,70 +112,7 @@ public:
 
     void updateEvents(const SDL_Event &constEv)
     {
-        SDL_Event &ev = const_cast<SDL_Event &>(constEv);
-        switch (ev.type)
-        {
-        case SDL_EVENT_MOUSE_MOTION:
-        {
-            const float pixel_density = SDL_GetWindowPixelDensity(window_.get());
-            context_->ProcessMouseMove(int(ev.motion.x * pixel_density), int(ev.motion.y * pixel_density), RmlSDL::GetKeyModifierState());
-        }
-        break;
-        case SDL_EVENT_MOUSE_BUTTON_DOWN:
-        {
-            context_->ProcessMouseButtonDown(RmlSDL::ConvertMouseButton(ev.button.button), RmlSDL::GetKeyModifierState());
-            SDL_CaptureMouse(true);
-        }
-        break;
-        case SDL_EVENT_MOUSE_BUTTON_UP:
-        {
-            SDL_CaptureMouse(false);
-            context_->ProcessMouseButtonUp(RmlSDL::ConvertMouseButton(ev.button.button), RmlSDL::GetKeyModifierState());
-        }
-        break;
-        case SDL_EVENT_MOUSE_WHEEL:
-        {
-            context_->ProcessMouseWheel(float(-ev.wheel.y), RmlSDL::GetKeyModifierState());
-        }
-        break;
-        case SDL_EVENT_KEY_DOWN:
-        {
-            context_->ProcessKeyDown(RmlSDL::ConvertKey(ev.key.key), RmlSDL::GetKeyModifierState());
-            if (ev.key.key == SDLK_RETURN || ev.key.key == SDLK_KP_ENTER)
-                context_->ProcessTextInput('\n');
-        }
-        break;
-        case SDL_EVENT_KEY_UP:
-        {
-            context_->ProcessKeyUp(RmlSDL::ConvertKey(ev.key.key), RmlSDL::GetKeyModifierState());
-        }
-        break;
-        case SDL_EVENT_TEXT_INPUT:
-        {
-            context_->ProcessTextInput(Rml::String(&ev.text.text[0]));
-        }
-        break;
-        case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-        {
-            // Rml::Vector2i dimensions(ev.window.data1, ev.window.data2);
-            // context_->SetDimensions(dimensions);
-            context_->SetDimensions(getWindowSize());
-        }
-        break;
-        case SDL_EVENT_WINDOW_MOUSE_LEAVE:
-        {
-            context_->ProcessMouseLeave();
-        }
-        break;
-        case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
-        {
-            const float display_scale = SDL_GetWindowDisplayScale(window_.get());
-            context_->SetDensityIndependentPixelRatio(display_scale);
-        }
-        break;
-        default:
-            break;
-        }
+        RmlSDL::InputEventHandler(context_, window_.get(), renderer_.get(), const_cast<SDL_Event &>(constEv));
     }
 
     Rml::ElementDocument *loadDocument(const std::string &path, const std::string &ID)
@@ -207,7 +144,6 @@ public:
         auto it = documents_.find(ID);
         if (it == documents_.end())
             return;
-        // Если документ найден
         if (it->second)
             it->second->Close();
         documents_.erase(it);
@@ -276,25 +212,6 @@ private:
                 SDL_Log("Failed to load font: %s", pr.c_str());
         }
         return true;
-    }
-
-    Rml::Vector2i getWindowSize()
-    {
-        Rml::Vector2i wSize{};
-        SDL_RendererLogicalPresentation mode{};
-        if (!SDL_GetRenderLogicalPresentation(renderer_.get(), &wSize.x, &wSize.y, &mode))
-        {
-            SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-            return Rml::Vector2i{};
-        }
-        if (wSize.x != 0 && wSize.y != 0)
-            return wSize;
-        if (!SDL_GetWindowSize(window_.get(), &wSize.x, &wSize.y))
-        {
-            SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-            return Rml::Vector2i{};
-        }
-        return wSize;
     }
 };
 
