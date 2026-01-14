@@ -9,7 +9,6 @@
 
 #include <RmlUi/Core.h>
 #include <RmlUi/FileInterface_SDL.hpp>
-#include <RmlUi/RmlUi_Backend.h>
 #include <RmlUi/RmlUi_Platform_SDL.h>
 #include <RmlUi/RmlUi_Renderer_SDL.h>
 #ifndef NDEBUG
@@ -45,6 +44,7 @@ public:
         Rml::SetRenderInterface(rendrInterface_.get());
         Rml::SetSystemInterface(systemInterface_.get());
         Rml::SetFileInterface(fileInterface_.get());
+        systemInterface_->SetWindow(window_.get());
 
         if (initialized_ = Rml::Initialise(); !initialized_)
         {
@@ -112,6 +112,7 @@ public:
         if (!doc)
             return nullptr;
         documents_[ID] = doc;
+        doc->SetId(ID);
         return doc;
     }
 
@@ -144,7 +145,7 @@ public:
     {
         rendrInterface_->BeginFrame();
         context_->Render();
-        // EndFrame для SDL не нужен, он ничего не делает
+        rendrInterface_->EndFrame();
     }
     void update()
     {
@@ -185,11 +186,19 @@ private:
         }
         strFile += '\n';
 
-        for (std::size_t cur = strFile.find('\n'), last = 0; cur != std::string::npos; last = cur, cur = strFile.find('\n', last + 1))
+        std::size_t last = 0;
+        for (std::size_t cur = strFile.find('\n', last); cur != std::string::npos; cur = strFile.find('\n', last))
         {
             std::string pr = strFile.substr(last, cur - last);
+            if (!pr.empty() && pr.back() == '\r')
+                pr.pop_back();
+            last = cur + 1;
+
+            if (pr.empty())
+                continue;
+
             SDL_Log("Next: \"%s\"", pr.c_str());
-            bool fallback = (pr.find("Emoji") != std::string::npos);
+            const bool fallback = (pr.find("Emoji") != std::string::npos);
             if (!Rml::LoadFontFace(pr, fallback))
                 SDL_Log("Failed to load font: %s", pr.c_str());
         }
