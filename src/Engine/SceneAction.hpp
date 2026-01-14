@@ -30,6 +30,16 @@ public:
     {
         return SceneAction{SceneActionType::Exit};
     }
+    static SceneAction nextAction(const IDType nextID)
+    {
+        SceneAction res{SceneActionType::PushScene};
+        res.value = nextID;
+        return res;
+    }
+    static SceneAction popAction()
+    {
+        return SceneAction{SceneActionType::PopScene};
+    }
 
 private:
     SceneAction(const SceneActionType actType = SceneActionType::None) : type{actType}
