@@ -99,10 +99,38 @@ public:
         }
 #endif
     }
-
-    void updateEvents(const SDL_Event &event)
+    // bool updateDimensions()
+    // {
+    //     SDL_Window *window = window_.get();
+    //     if (!window)
+    //         return false;
+    //     sdl3::Vector3i wSize_;
+    //     if (!SDL_GetWindowSize(window, &wSize_.x, &wSize_.y))
+    //     {
+    //         SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
+    //         return false;
+    //     }
+    //     SDL_Log("Window size: %d %d\n", wSize_.x, wSize_.y);
+    //     context_->SetDimensions(Rml::Vector2i(wSize_.x, wSize_.y));
+    //     context_->SetDensityIndependentPixelRatio(SDL_GetWindowDisplayScale(window));
+    //     return true;
+    // }
+    void updateEvents(const SDL_Event &constEv)
     {
-        SDL_Event &ev = const_cast<SDL_Event &>(event);
+        SDL_Event &ev = const_cast<SDL_Event &>(constEv);
+        // SDL_Event *event = &ev;
+        // if (event->type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || event->type == SDL_EVENT_WINDOW_RESIZED || event->type == SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED || event->type == SDL_EVENT_DISPLAY_ORIENTATION)
+        //     updateDimensions();
+        // else if (event->type == SDL_EVENT_MOUSE_MOTION)
+        //     context_->ProcessMouseMove(event->motion.x, event->motion.y, 0);
+        // else if (event->type == SDL_EVENT_TEXT_INPUT)
+        //     context_->ProcessTextInput(event->text.text);
+        // else if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+        //     context_->ProcessMouseButtonDown(0, 0);
+        // else if (event->type == SDL_EVENT_MOUSE_BUTTON_UP)
+        //     context_->ProcessMouseButtonUp(0, 0);
+        // else if (event->type == SDL_EVENT_KEY_DOWN)
+        //     context_->ProcessKeyDown(RmlSDL::ConvertKey(event->key.key), 0);
         RmlSDL::InputEventHandler(context_, window_.get(), ev);
     }
 
