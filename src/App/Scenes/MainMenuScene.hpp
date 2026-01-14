@@ -2,6 +2,7 @@
 
 #include "Engine/AdvancedContext.hpp"
 #include "Engine/SceneAction.hpp"
+#include "GameScene.hpp"
 #include <Core/Types.hpp>
 #include <Engine/Scene.hpp>
 #include <RmlUi/Core/ElementDocument.h>
@@ -29,8 +30,10 @@ private:
             Rml::Element *el = ev.GetTargetElement();
             const Rml::String &id = el->GetId();
 
-            if(id == "exit-b")
+            if (id == "exit-b")
                 scene_.actionRes_ = engine::SceneAction::exitAction();
+            else if (id == "start-b")
+                scene_.actionRes_ = engine::SceneAction::nextAction(GameScene::sceneID);
         }
 
     private:
@@ -43,25 +46,30 @@ public:
         doc_ = context_.loadIfNoDocument("ui/MainMenu.html", menuID);
         if (!doc_)
             throw std::logic_error("The document cannot be empty.");
-        doc_->Show();
         doc_->AddEventListener(Rml::EventId::Click, &listener_, true);
     }
     ~MainMenuScene()
     {
         doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
         doc_->Hide();
+        context_.closeDocument(menuID);
     }
 
-    void updateEvent(const SDL_Event &event)
+    void updateEvent(const SDL_Event &event) override
     {
-    }
-    engine::SceneAction update(const float dt)
-    {
-        return actionRes_;
     }
 
-    void draw(sdl3::RenderWindow &window) const
+    void draw(sdl3::RenderWindow &window) const override
     {
+    }
+
+    void hide() override
+    {
+        doc_->Hide();
+    }
+    void show() override
+    {
+        doc_->Show();
     }
 
 private:
