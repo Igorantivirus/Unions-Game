@@ -45,6 +45,7 @@ set(SOURCE_HPP
 )
 set(INCLUDE_PATHS
   ${SRC_DIR}
+  ${SRC_DIR}/App
   ${EXTERN_DIR}
   D:/dev/libraries/box2d-2.4.2/include
 )
