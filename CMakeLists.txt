@@ -9,6 +9,7 @@ project("Android-SDL3-Example" LANGUAGES CXX C)
 #УСТАНОВКА ПЕРЕМЕННЫХ
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+set(EXTERN_DIR "${PROJECT_SOURCE_DIR}/extern")
 set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 set(THIRD_PARTY_BUILD_DIR "${PROJECT_SOURCE_DIR}/_3rdparty")
 
@@ -34,7 +35,10 @@ if(NOT DEFINED EXTERNAL_DIR)
 endif()
 
 set(SOURCE_CPP
-  ${SRC_DIR}/main.cpp
+  ${SRC_DIR}/main.cpp 
+  ${EXTERN_DIR}/RmlUi/RmlUi_Backend_SDL_SDLrenderer.cpp
+  ${EXTERN_DIR}/RmlUi/RmlUi_Platform_SDL.cpp
+  ${EXTERN_DIR}/RmlUi/RmlUi_Renderer_SDL.cpp
 )
 set(SOURCE_HPP
   # ${SRC_DIR}/Objects.hpp
@@ -42,6 +46,7 @@ set(SOURCE_HPP
 )
 set(INCLUDE_PATHS
   ${SRC_DIR}
+  ${EXTERN_DIR}
   D:/dev/libraries/box2d-2.4.2/include
 )
 
