@@ -42,14 +42,14 @@ public:
     {
         doc_ = context_.loadIfNoDocument("ui/MainMenu.html", menuID);
         if (!doc_)
-            throw std::logic_error("");
+            throw std::logic_error("The document cannot be empty.");
         doc_->Show();
         doc_->AddEventListener(Rml::EventId::Click, &listener_, true);
     }
     ~MainMenuScene()
     {
         if (!doc_)
-            throw std::logic_error("");
+            throw std::logic_error("The document cannot be empty.");
         doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
         doc_->Hide();
     }
