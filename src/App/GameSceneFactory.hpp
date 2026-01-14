@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Scenes/MainMenuScene.hpp"
+#include "Scenes/GameScene.hpp"
 
 class GameSceneFactory : public engine::SceneFabrick
 {
@@ -13,6 +14,8 @@ public:
     {
         if(MainMenuScene::sceneID == id)
             return std::move(std::make_unique<MainMenuScene>(*context_));
+        if(GameScene::sceneID == id)
+            return std::move(std::make_unique<GameScene>(*context_));
         return nullptr;
     }
 
