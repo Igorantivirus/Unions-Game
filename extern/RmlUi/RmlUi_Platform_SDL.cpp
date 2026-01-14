@@ -155,46 +155,86 @@ void SystemInterface_SDL::DeactivateKeyboard()
     }
 }
 
-static Rml::Vector2i getWindowSize(SDL_Window *window, SDL_Renderer *renderer)
+struct MouseCoordMapperCache
 {
-    Rml::Vector2i wSize{};
-    SDL_RendererLogicalPresentation mode{};
-    if (!SDL_GetRenderLogicalPresentation(renderer, &wSize.x, &wSize.y, &mode))
-    {
-        SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-        return Rml::Vector2i{};
-    }
-    if (wSize.x != 0 && wSize.y != 0)
-        return wSize;
-    if (!SDL_GetWindowSize(window, &wSize.x, &wSize.y))
-    {
-        SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-        return Rml::Vector2i{};
-    }
-    return wSize;
-}
+    SDL_Window *window = nullptr;
+    SDL_Renderer *renderer = nullptr;
 
-static Rml::Vector2f addPosition(SDL_Window *window, SDL_Renderer *renderer)
-{
-    Rml::Vector2i wSizeLogical{};
-    Rml::Vector2i wSizeWindow{};
-    SDL_RendererLogicalPresentation mode{};
-    if (!SDL_GetRenderLogicalPresentation(renderer, &wSizeLogical.x, &wSizeLogical.y, &mode))
+    float pixel_density = 1.f;
+    int logical_w = 0;
+    int logical_h = 0;
+    bool logical_enabled = false;
+    bool dirty = true;
+
+    void markDirty()
     {
-        SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-        return Rml::Vector2f{};
+        dirty = true;
     }
-    if (wSizeLogical.x == 0 && wSizeLogical.y == 0)
+
+    void update(SDL_Window *in_window, SDL_Renderer *in_renderer)
+    {
+        if (!dirty && window == in_window && renderer == in_renderer)
+            return;
+
+        window = in_window;
+        renderer = in_renderer;
+
+#if SDL_MAJOR_VERSION >= 3
+        pixel_density = SDL_GetWindowPixelDensity(window);
+#else
+        pixel_density = 1.f;
+#endif
+
+        SDL_RendererLogicalPresentation mode{};
+        if (!SDL_GetRenderLogicalPresentation(renderer, &logical_w, &logical_h, &mode))
+        {
+            logical_w = 0;
+            logical_h = 0;
+        }
+
+        logical_enabled = (logical_w > 0 && logical_h > 0);
+        dirty = false;
+    }
+
+    Rml::Vector2i getRmlDimensions(SDL_Window *in_window, SDL_Renderer *in_renderer, int pixel_w_hint, int pixel_h_hint)
+    {
+        update(in_window, in_renderer);
+
+        if (logical_enabled)
+            return {logical_w, logical_h};
+
+        if (pixel_w_hint > 0 && pixel_h_hint > 0)
+            return {pixel_w_hint, pixel_h_hint};
+
+        int w_points = 0, h_points = 0;
+        if (SDL_GetWindowSize(in_window, &w_points, &h_points))
+            return {int(w_points * pixel_density), int(h_points * pixel_density)};
+
         return {};
-    if (!SDL_GetWindowSize(window, &wSizeWindow.x, &wSizeWindow.y))
-    {
-        SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-        return Rml::Vector2f{};
     }
-    float x = (wSizeLogical.x - wSizeWindow.x) / 2.f;
-    float y = (wSizeLogical.y - wSizeWindow.y) / 2.f;
-    return {x,y};
-}
+
+    bool windowToRml(SDL_Window *in_window, SDL_Renderer *in_renderer, float window_x, float window_y, float &out_x, float &out_y)
+    {
+        update(in_window, in_renderer);
+
+#if SDL_MAJOR_VERSION >= 3
+        if (logical_enabled)
+        {
+            float rx = 0.f, ry = 0.f;
+            SDL_RenderCoordinatesFromWindow(renderer, window_x, window_y, &rx, &ry);
+            out_x = rx;
+            out_y = ry;
+            return true;
+        }
+#endif
+
+        out_x = window_x * pixel_density;
+        out_y = window_y * pixel_density;
+        return true;
+    }
+};
+
+static MouseCoordMapperCache g_mouse_mapper;
 
 bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Renderer *renderer, SDL_Event &ev)
 {
@@ -250,17 +290,17 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
     {
     case event_mouse_motion:
     {
-#if SDL_MAJOR_VERSION >= 3
-        const float pixel_density = SDL_GetWindowPixelDensity(window);
-#else
-        constexpr float pixel_density = 1.f;
-#endif
-        Rml::Vector2f add = addPosition(window, renderer);
-        result = context->ProcessMouseMove(int((ev.motion.x + add.x) * pixel_density), int((ev.motion.y + add.y) * pixel_density), GetKeyModifierState());
+        float x = 0.f, y = 0.f;
+        g_mouse_mapper.windowToRml(window, renderer, ev.motion.x, ev.motion.y, x, y);
+        result = context->ProcessMouseMove(int(x), int(y), GetKeyModifierState());
     }
     break;
     case event_mouse_down:
     {
+        float x = 0.f, y = 0.f;
+        g_mouse_mapper.windowToRml(window, renderer, ev.button.x, ev.button.y, x, y);
+        context->ProcessMouseMove(int(x), int(y), GetKeyModifierState());
+
         result = context->ProcessMouseButtonDown(ConvertMouseButton(ev.button.button), GetKeyModifierState());
         SDL_CaptureMouse(rmlsdl_true);
     }
@@ -268,6 +308,10 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
     case event_mouse_up:
     {
         SDL_CaptureMouse(rmlsdl_false);
+        float x = 0.f, y = 0.f;
+        g_mouse_mapper.windowToRml(window, renderer, ev.button.x, ev.button.y, x, y);
+        context->ProcessMouseMove(int(x), int(y), GetKeyModifierState());
+
         result = context->ProcessMouseButtonUp(ConvertMouseButton(ev.button.button), GetKeyModifierState());
     }
     break;
@@ -300,7 +344,12 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
     {
         // Rml::Vector2i dimensions(ev.window.data1, ev.window.data2);
         // context->SetDimensions(dimensions);
-        context->SetDimensions(getWindowSize(window, renderer));
+        g_mouse_mapper.markDirty();
+#if SDL_MAJOR_VERSION >= 3
+        context->SetDimensions(g_mouse_mapper.getRmlDimensions(window, renderer, ev.window.data1, ev.window.data2));
+#else
+        context->SetDimensions(g_mouse_mapper.getRmlDimensions(window, renderer, 0, 0));
+#endif
     }
     break;
     case event_window_leave:
@@ -314,6 +363,7 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
     {
         const float display_scale = SDL_GetWindowDisplayScale(window);
         context->SetDensityIndependentPixelRatio(display_scale);
+        g_mouse_mapper.markDirty();
     }
     break;
 #endif
