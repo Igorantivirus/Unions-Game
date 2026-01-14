@@ -65,7 +65,7 @@ h1 {
     border-color: black;
 }
 
-.menu-button:hover {
+.menu-button:active {
     background-color: #35a000;
     /* background-color: #007ba0; */
 }
