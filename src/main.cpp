@@ -10,7 +10,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     app.setFps(60);
     app.registrateSceneFabrick(std::make_unique<GameSceneFactory>(GameSceneFactory{}));
     app.pushScene(MainMenuScene::sceneID);
-    return app.start("Falling ellipses", {800,600});
+    return app.start("Falling ellipses", "fonts/fonts.txt", {800,600});
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
