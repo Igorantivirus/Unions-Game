@@ -29,6 +29,7 @@
 #include "RmlUi_Platform_SDL.h"
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/Input.h>
+#include <RmlUi/Core/Math.h>
 #include <RmlUi/Core/StringUtilities.h>
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Vector2.h>
@@ -154,7 +155,7 @@ void SystemInterface_SDL::DeactivateKeyboard()
     }
 }
 
-static Rml::Vector2i getWindowSize(SDL_Window *window, SDL_Renderer* renderer)
+static Rml::Vector2i getWindowSize(SDL_Window *window, SDL_Renderer *renderer)
 {
     Rml::Vector2i wSize{};
     SDL_RendererLogicalPresentation mode{};
@@ -173,7 +174,29 @@ static Rml::Vector2i getWindowSize(SDL_Window *window, SDL_Renderer* renderer)
     return wSize;
 }
 
-bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Renderer* renderer, SDL_Event &ev)
+static Rml::Vector2f addPosition(SDL_Window *window, SDL_Renderer *renderer)
+{
+    Rml::Vector2i wSizeLogical{};
+    Rml::Vector2i wSizeWindow{};
+    SDL_RendererLogicalPresentation mode{};
+    if (!SDL_GetRenderLogicalPresentation(renderer, &wSizeLogical.x, &wSizeLogical.y, &mode))
+    {
+        SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
+        return Rml::Vector2f{};
+    }
+    if (wSizeLogical.x == 0 && wSizeLogical.y == 0)
+        return {};
+    if (!SDL_GetWindowSize(window, &wSizeWindow.x, &wSizeWindow.y))
+    {
+        SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
+        return Rml::Vector2f{};
+    }
+    float x = (wSizeLogical.x - wSizeWindow.x) / 2.f;
+    float y = (wSizeLogical.y - wSizeWindow.y) / 2.f;
+    return {x,y};
+}
+
+bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Renderer *renderer, SDL_Event &ev)
 {
 #if SDL_MAJOR_VERSION >= 3
 #define RMLSDL_WINDOW_EVENTS_BEGIN
@@ -232,7 +255,8 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
 #else
         constexpr float pixel_density = 1.f;
 #endif
-        result = context->ProcessMouseMove(int(ev.motion.x * pixel_density), int(ev.motion.y * pixel_density), GetKeyModifierState());
+        Rml::Vector2f add = addPosition(window, renderer);
+        result = context->ProcessMouseMove(int((ev.motion.x + add.x) * pixel_density), int((ev.motion.y + add.y) * pixel_density), GetKeyModifierState());
     }
     break;
     case event_mouse_down:
