@@ -26,9 +26,15 @@ public:
     {
         return SceneAction{};
     }
+    static SceneAction exitAction()
+    {
+        return SceneAction{SceneActionType::Exit};
+    }
 
 private:
-    SceneAction() = default;
+    SceneAction(const SceneActionType actType = SceneActionType::None) : type{actType}
+    {}
+
 };
 
 } // namespace engine
