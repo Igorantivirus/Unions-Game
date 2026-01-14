@@ -36,7 +36,6 @@ endif()
 
 set(SOURCE_CPP
   ${SRC_DIR}/main.cpp 
-  ${EXTERN_DIR}/RmlUi/RmlUi_Backend_SDL_SDLrenderer.cpp
   ${EXTERN_DIR}/RmlUi/RmlUi_Platform_SDL.cpp
   ${EXTERN_DIR}/RmlUi/RmlUi_Renderer_SDL.cpp
 )
