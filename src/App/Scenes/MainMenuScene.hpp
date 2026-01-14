@@ -48,8 +48,6 @@ public:
     }
     ~MainMenuScene()
     {
-        if (!doc_)
-            throw std::logic_error("The document cannot be empty.");
         doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
         doc_->Hide();
     }
