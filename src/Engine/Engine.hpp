@@ -29,7 +29,7 @@ public:
         mode.height = size.y;
         if (!window_.create(wName, mode))
             return SDL_APP_FAILURE;
-        window_.setLogicalPresentation(size);
+        // window_.setLogicalPresentation(size);
 
         if (!context_.init(window_, fontPath))
             return SDL_APP_FAILURE;
