@@ -26,7 +26,7 @@ public:
         mode.width = size.x;
         mode.height = size.y;
         window_.create(wName, mode);
-        window_.setPhysicalWindowSize(size);
+        window_.setLogicalPresentation(size);
         cl_.start();
         return SDL_APP_CONTINUE;
     }
