@@ -7,7 +7,7 @@ static engine::Engine app;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    auto res = app.start("Falling ellipses", "fonts/fonts.txt", {800,600});
+    auto res = app.start("Falling ellipses", "fonts/fonts.txt", {800,800});
     app.setFps(60);
     app.registrateSceneFabrick(std::make_unique<GameSceneFactory>(GameSceneFactory{}));
     app.pushScene(MainMenuScene::sceneID);
