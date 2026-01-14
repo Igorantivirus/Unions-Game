@@ -7,14 +7,6 @@
 #include "Entity.hpp"
 #include "deleteQueue.hpp"
 
-inline bool operator==(const sdl3::Color &left, const sdl3::Color &right)
-{
-    return left.r == right.r &&
-           left.g == right.g &&
-           left.b == right.b &&
-           left.a == right.a;
-}
-
 class ContactCheker : public b2ContactListener
 {
 public:

@@ -1,11 +1,9 @@
 #pragma once
 
-#include <SDLWrapper/ObjectBase/Drawable.hpp>
-#include <SDLWrapper/Renders/RenderTarget.hpp>
 #include <SDLWrapper/SDLWrapper.hpp>
-
 #include <box2d/box2d.h>
 
+#include <Core/Types.hpp>
 #include "Config.hpp"
 
 class Entity : public sdl3::Drawable
@@ -100,7 +98,7 @@ private:
     b2Body *m_body = nullptr;
     mutable std::unique_ptr<sdl3::Shape> m_shape;
 
-    unsigned short ID_ = 0;
+    IDType ID_ = 0;
 
     inline static unsigned short maxID_ = 1;
 
