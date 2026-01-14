@@ -1,6 +1,9 @@
 #pragma once
 
 #include <RmlUi/Debugger/Debugger.h>
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_video.h>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -33,18 +36,20 @@ public:
         quit();
     }
 
-    bool init(sdl3::RenderWindow &window, const std::string_view &fontsPath)
+    bool init(std::shared_ptr<SDL_Window> window, std::shared_ptr<SDL_Renderer> renderer, const std::string_view &fontsPath)
     {
-        window_ = window.getNativeSDLWindow();
+        window_ = window;
+        renderer_ = renderer;
 
-        rendrInterface_ = std::make_unique<RenderInterface_SDL>(window.getNativeSDLRenderer().get());
+        rendrInterface_ = std::make_unique<RenderInterface_SDL>(renderer_.get());
         systemInterface_ = std::make_unique<SystemInterface_SDL>();
         fileInterface_ = std::make_unique<FileInterface_SDL>();
+
+        systemInterface_->SetWindow(window_.get());
 
         Rml::SetRenderInterface(rendrInterface_.get());
         Rml::SetSystemInterface(systemInterface_.get());
         Rml::SetFileInterface(fileInterface_.get());
-        systemInterface_->SetWindow(window_.get());
 
         if (initialized_ = Rml::Initialise(); !initialized_)
         {
@@ -54,14 +59,19 @@ public:
 
         // Rml::Factory::RegisterEventListenerInstancer(&eventFabrick_);
 
-        const auto wSize = window.getSize();
-        context_ = Rml::CreateContext("main", Rml::Vector2i(wSize.x, wSize.y));
+        Rml::Vector2i wSize{};
+        if (!SDL_GetWindowSize(window_.get(), &wSize.x, &wSize.y))
+        {
+            SDL_Log("%s", SDL_GetError());
+            return false;
+        }
+        context_ = Rml::CreateContext("main", wSize);
         if (!context_)
         {
             SDL_Log("Rml::CreateContext failed");
             return false;
         }
-        context_->SetDensityIndependentPixelRatio(window.getDisplayScale());
+        context_->SetDensityIndependentPixelRatio(SDL_GetWindowDisplayScale(window_.get()));
 
 #ifndef NDEBUG
         if (debugInit_ = Rml::Debugger::Initialise(context_); !debugInit_)
@@ -99,39 +109,73 @@ public:
         }
 #endif
     }
-    // bool updateDimensions()
-    // {
-    //     SDL_Window *window = window_.get();
-    //     if (!window)
-    //         return false;
-    //     sdl3::Vector3i wSize_;
-    //     if (!SDL_GetWindowSize(window, &wSize_.x, &wSize_.y))
-    //     {
-    //         SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
-    //         return false;
-    //     }
-    //     SDL_Log("Window size: %d %d\n", wSize_.x, wSize_.y);
-    //     context_->SetDimensions(Rml::Vector2i(wSize_.x, wSize_.y));
-    //     context_->SetDensityIndependentPixelRatio(SDL_GetWindowDisplayScale(window));
-    //     return true;
-    // }
+
     void updateEvents(const SDL_Event &constEv)
     {
         SDL_Event &ev = const_cast<SDL_Event &>(constEv);
-        // SDL_Event *event = &ev;
-        // if (event->type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || event->type == SDL_EVENT_WINDOW_RESIZED || event->type == SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED || event->type == SDL_EVENT_DISPLAY_ORIENTATION)
-        //     updateDimensions();
-        // else if (event->type == SDL_EVENT_MOUSE_MOTION)
-        //     context_->ProcessMouseMove(event->motion.x, event->motion.y, 0);
-        // else if (event->type == SDL_EVENT_TEXT_INPUT)
-        //     context_->ProcessTextInput(event->text.text);
-        // else if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
-        //     context_->ProcessMouseButtonDown(0, 0);
-        // else if (event->type == SDL_EVENT_MOUSE_BUTTON_UP)
-        //     context_->ProcessMouseButtonUp(0, 0);
-        // else if (event->type == SDL_EVENT_KEY_DOWN)
-        //     context_->ProcessKeyDown(RmlSDL::ConvertKey(event->key.key), 0);
-        RmlSDL::InputEventHandler(context_, window_.get(), ev);
+        switch (ev.type)
+        {
+        case SDL_EVENT_MOUSE_MOTION:
+        {
+            const float pixel_density = SDL_GetWindowPixelDensity(window_.get());
+            context_->ProcessMouseMove(int(ev.motion.x * pixel_density), int(ev.motion.y * pixel_density), RmlSDL::GetKeyModifierState());
+        }
+        break;
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        {
+            context_->ProcessMouseButtonDown(RmlSDL::ConvertMouseButton(ev.button.button), RmlSDL::GetKeyModifierState());
+            SDL_CaptureMouse(true);
+        }
+        break;
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+        {
+            SDL_CaptureMouse(false);
+            context_->ProcessMouseButtonUp(RmlSDL::ConvertMouseButton(ev.button.button), RmlSDL::GetKeyModifierState());
+        }
+        break;
+        case SDL_EVENT_MOUSE_WHEEL:
+        {
+            context_->ProcessMouseWheel(float(-ev.wheel.y), RmlSDL::GetKeyModifierState());
+        }
+        break;
+        case SDL_EVENT_KEY_DOWN:
+        {
+            context_->ProcessKeyDown(RmlSDL::ConvertKey(ev.key.key), RmlSDL::GetKeyModifierState());
+            if (ev.key.key == SDLK_RETURN || ev.key.key == SDLK_KP_ENTER)
+                context_->ProcessTextInput('\n');
+        }
+        break;
+        case SDL_EVENT_KEY_UP:
+        {
+            context_->ProcessKeyUp(RmlSDL::ConvertKey(ev.key.key), RmlSDL::GetKeyModifierState());
+        }
+        break;
+        case SDL_EVENT_TEXT_INPUT:
+        {
+            context_->ProcessTextInput(Rml::String(&ev.text.text[0]));
+        }
+        break;
+        case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+        {
+            // Rml::Vector2i dimensions(ev.window.data1, ev.window.data2);
+            // context_->SetDimensions(dimensions);
+            context_->SetDimensions(getWindowSize());
+        }
+        break;
+        case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+        {
+            context_->ProcessMouseLeave();
+        }
+        break;
+        case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+        {
+            const float display_scale = SDL_GetWindowDisplayScale(window_.get());
+            context_->SetDensityIndependentPixelRatio(display_scale);
+        }
+        break;
+        default:
+            break;
+        }
     }
 
     Rml::ElementDocument *loadDocument(const std::string &path, const std::string &ID)
@@ -193,6 +237,7 @@ private:
     std::unique_ptr<FileInterface_SDL> fileInterface_;
 
     std::shared_ptr<SDL_Window> window_;
+    std::shared_ptr<SDL_Renderer> renderer_;
 
     Rml::Context *context_ = nullptr;
     std::unordered_map<std::string, Rml::ElementDocument *> documents_;
@@ -231,6 +276,25 @@ private:
                 SDL_Log("Failed to load font: %s", pr.c_str());
         }
         return true;
+    }
+
+    Rml::Vector2i getWindowSize()
+    {
+        Rml::Vector2i wSize{};
+        SDL_RendererLogicalPresentation mode{};
+        if (!SDL_GetRenderLogicalPresentation(renderer_.get(), &wSize.x, &wSize.y, &mode))
+        {
+            SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
+            return Rml::Vector2i{};
+        }
+        if (wSize.x != 0 && wSize.y != 0)
+            return wSize;
+        if (!SDL_GetWindowSize(window_.get(), &wSize.x, &wSize.y))
+        {
+            SDL_Log("SDL_GetWindowSize failed! Error: %s", SDL_GetError());
+            return Rml::Vector2i{};
+        }
+        return wSize;
     }
 };
 
