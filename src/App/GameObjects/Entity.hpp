@@ -3,8 +3,9 @@
 #include <SDLWrapper/SDLWrapper.hpp>
 #include <box2d/box2d.h>
 
-#include <Core/Types.hpp>
 #include "Config.hpp"
+#include <Core/Types.hpp>
+
 
 class Entity : public sdl3::Drawable
 {
@@ -92,6 +93,22 @@ public:
     bool isAlive() const
     {
         return m_body != nullptr;
+    }
+
+    void setEnabled(bool enabled)
+    {
+        if (!m_body)
+            return;
+        m_body->SetEnabled(enabled);
+
+        // Опционально: если включили — можно разбудить
+        if (enabled)
+            m_body->SetAwake(true);
+    }
+
+    bool isEnabled() const
+    {
+        return m_body && m_body->IsEnabled();
     }
 
 private:
