@@ -32,7 +32,7 @@ public:
     }
     engine::SceneAction update(const float dt)
     {
-        return engine::SceneAction::noneAction();
+        return actionRes_;
     }
 
     void draw(sdl3::RenderWindow &window) const

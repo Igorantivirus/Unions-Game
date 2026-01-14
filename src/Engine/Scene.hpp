@@ -21,6 +21,10 @@ public:
 
     virtual void draw(sdl3::RenderWindow &window) const = 0;
 
+protected:
+
+    SceneAction actionRes_ = SceneAction::noneAction(); 
+
 };
 
 using ScenePtr = std::unique_ptr<Scene>;
