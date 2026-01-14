@@ -1,9 +1,8 @@
 #pragma once
 
-#include <SDLWrapper/Renders/RenderWindow.hpp>
 #include <memory>
 
-#include <SDL3/SDL_events.h>
+#include <RmlUi/Core/ElementDocument.h>
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include "SceneAction.hpp"
@@ -17,14 +16,22 @@ public:
     virtual ~Scene() = default;
 
     virtual void updateEvent(const SDL_Event &event) = 0;
-    virtual SceneAction update(const float dt) = 0;
+    virtual SceneAction &update(const float dt)
+    {
+        return actionRes_;
+    }
 
     virtual void draw(sdl3::RenderWindow &window) const = 0;
 
+    virtual void hide()
+    {
+    }
+    virtual void show()
+    {
+    }
+
 protected:
-
-    SceneAction actionRes_ = SceneAction::noneAction(); 
-
+    SceneAction actionRes_ = SceneAction::noneAction();
 };
 
 using ScenePtr = std::unique_ptr<Scene>;

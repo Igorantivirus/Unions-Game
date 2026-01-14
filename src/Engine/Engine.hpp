@@ -12,6 +12,7 @@
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include "AdvancedContext.hpp"
+#include "Core/Types.hpp"
 #include "Scene.hpp"
 #include "SceneAction.hpp"
 #include "SceneFabrick.hpp"
@@ -52,7 +53,29 @@ public:
 
     void pushScene(const IDType sceneId)
     {
+        if(!scenes_.empty())
+            scenes_.back()->hide();
         scenes_.push_back(std::move(sceneFabrick_->genSceneByID(sceneId)));
+        scenes_.back()->show();
+    }
+
+    void popScene()
+    {
+        if(scenes_.empty())
+            return;
+        scenes_.back()->hide();
+        scenes_.pop_back();
+        if(!scenes_.empty())
+            scenes_.back()->show();
+    }
+
+    void switchScene(const IDType sceneId)
+    {
+        if(scenes_.empty())
+            return;
+        scenes_.back()->hide();
+        scenes_.pop_back();
+        pushScene(sceneId);
     }
 
     SDL_AppResult updateEvents(const SDL_Event &event)
@@ -71,7 +94,7 @@ public:
         if (scenes_.empty())
             return SDL_APP_FAILURE;
         const float dt = cl_.elapsedTimeS();
-        SceneAction act = scenes_.back()->update(dt);
+        SceneAction& act = scenes_.back()->update(dt);
         SDL_AppResult res = processSceneAction(act);
         if (res != SDL_APP_CONTINUE)
             return res;
@@ -110,22 +133,21 @@ private:
     sdl3::ClockNS cl_;
 
 private:
-    SDL_AppResult processSceneAction(const SceneAction &act)
+    SDL_AppResult processSceneAction(SceneAction& act)
     {
+        SDL_AppResult res = SDL_APP_CONTINUE;
         if (act.type == SceneActionType::None)
             return SDL_APP_CONTINUE;
         else if (act.type == SceneActionType::PushScene)
-            scenes_.push_back(std::move(sceneFabrick_->genSceneByID(std::get<IDType>(act.value))));
+            pushScene(std::get<IDType>(act.value));
         else if (act.type == SceneActionType::PopScene)
-            scenes_.pop_back();
+            popScene();
         else if (act.type == SceneActionType::SwitchScene)
-        {
-            scenes_.pop_back();
-            scenes_.push_back(std::move(sceneFabrick_->genSceneByID(std::get<IDType>(act.value))));
-        }
+            switchScene(std::get<IDType>(act.value));
         else if (act.type == SceneActionType::Exit)
-            return SDL_APP_SUCCESS;
-        return SDL_APP_CONTINUE;
+            res = SDL_APP_SUCCESS;
+        act = SceneAction::noneAction();
+        return res;
     }
 
     void safeDrawScene()
