@@ -2,7 +2,9 @@
 
 #include <memory>
 
+#include "Engine/AdvancedContext.hpp"
 #include "Scene.hpp"
+#include "AdvancedContext.hpp"
 
 namespace engine
 {
@@ -13,6 +15,20 @@ public:
     virtual ~SceneFabrick() = default;
 
     virtual ScenePtr genSceneByID(const IDType id) const = 0;
+
+    void setContext(Context& context)
+    {
+        context_ = &context;
+    }
+
+    Context& getContext() const
+    {
+        return *context_;
+    }
+
+protected:
+
+    Context* context_;
 
 };
 

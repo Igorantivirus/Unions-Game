@@ -16,7 +16,6 @@
 #include "SceneAction.hpp"
 #include "SceneFabrick.hpp"
 
-
 namespace engine
 {
 
@@ -48,6 +47,7 @@ public:
     void registrateSceneFabrick(SceneFabrickPtr ptr)
     {
         sceneFabrick_ = std::move(ptr);
+        sceneFabrick_->setContext(context_);
     }
 
     void pushScene(const IDType sceneId)
@@ -61,6 +61,7 @@ public:
             return SDL_APP_SUCCESS;
         if (scenes_.empty())
             return SDL_APP_FAILURE;
+        context_.updateEvents(event);
         scenes_.back()->updateEvent(event);
         return SDL_APP_CONTINUE;
     }
@@ -130,6 +131,8 @@ private:
     void safeDrawScene()
     {
         window_.clear();
+        context_.update();
+        context_.render();
         scenes_.back()->draw(window_);
         window_.display();
     }

@@ -12,7 +12,7 @@ public:
     engine::ScenePtr genSceneByID(const IDType id) const override
     {
         if(MainMenuScene::sceneID == id)
-            return std::make_unique<MainMenuScene>(MainMenuScene{});
+            return std::move(std::make_unique<MainMenuScene>(*context_));
         return nullptr;
     }
 
