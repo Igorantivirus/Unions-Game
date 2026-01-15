@@ -78,12 +78,13 @@ public:
         pushScene(sceneId);
     }
 
-    SDL_AppResult updateEvents(const SDL_Event &event)
+    SDL_AppResult updateEvents(SDL_Event &event)
     {
         if (event.type == SDL_EVENT_QUIT)
             return SDL_APP_SUCCESS;
         if (scenes_.empty())
             return SDL_APP_FAILURE;
+        window_.convertEventToRenderCoordinates(&event);
         context_.updateEvents(event);
         scenes_.back()->updateEvent(event);
         return SDL_APP_CONTINUE;
