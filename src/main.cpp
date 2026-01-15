@@ -7,6 +7,7 @@ static engine::Engine app;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    SDL_SetHint(SDL_HINT_ANDROID_TRAP_BACK_BUTTON, "1");
     auto res = app.start("Falling ellipses", "fonts/fonts.txt", {800,800});
     app.setFps(60);
     app.registrateSceneFabrick(std::make_unique<GameSceneFactory>(GameSceneFactory{}));
