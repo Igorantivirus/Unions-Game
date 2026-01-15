@@ -26,7 +26,7 @@ public:
             m_body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     }
 
-    ~Entity()
+    virtual ~Entity()
     {
         if (m_body)
         {
