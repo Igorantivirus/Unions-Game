@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL3/SDL_timer.h>
+#include <SDLWrapper/Math/Colors.hpp>
 #include <SDLWrapper/Renders/VideoMode.hpp>
 #include <string_view>
 #include <vector>
@@ -53,7 +54,7 @@ public:
 
     void pushScene(const IDType sceneId)
     {
-        if(!scenes_.empty())
+        if (!scenes_.empty())
             scenes_.back()->hide();
         scenes_.push_back(std::move(sceneFabrick_->genSceneByID(sceneId)));
         scenes_.back()->show();
@@ -61,17 +62,17 @@ public:
 
     void popScene()
     {
-        if(scenes_.empty())
+        if (scenes_.empty())
             return;
         scenes_.back()->hide();
         scenes_.pop_back();
-        if(!scenes_.empty())
+        if (!scenes_.empty())
             scenes_.back()->show();
     }
 
     void switchScene(const IDType sceneId)
     {
-        if(scenes_.empty())
+        if (scenes_.empty())
             return;
         scenes_.back()->hide();
         scenes_.pop_back();
@@ -94,13 +95,16 @@ public:
     {
         if (scenes_.empty())
             return SDL_APP_FAILURE;
+        // dt должен учитывать реальное время кадра (включая fpsDelay),
+        // поэтому таймер перезапускается в начале кадра, а не в конце.
         const float dt = cl_.elapsedTimeS();
-        SceneAction& act = scenes_.back()->update(dt);
+        cl_.start();
+        SceneAction &act = scenes_.back()->update(dt);
         SDL_AppResult res = processSceneAction(act);
         if (res != SDL_APP_CONTINUE)
             return res;
         safeDrawScene();
-        cl_.start();
+        fpsDelay();
         return res;
     }
 
@@ -134,7 +138,7 @@ private:
     sdl3::ClockNS cl_;
 
 private:
-    SDL_AppResult processSceneAction(SceneAction& act)
+    SDL_AppResult processSceneAction(SceneAction &act)
     {
         SDL_AppResult res = SDL_APP_CONTINUE;
         if (act.type == SceneActionType::None)
@@ -153,7 +157,7 @@ private:
 
     void safeDrawScene()
     {
-        window_.clear();
+        window_.clear(sdl3::Colors::White);
         context_.update();
         context_.render();
         scenes_.back()->draw(window_);
