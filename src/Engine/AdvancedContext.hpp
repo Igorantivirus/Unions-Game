@@ -151,9 +151,9 @@ public:
 
     void render()
     {
-        rendrInterface_->BeginFrame();
+        // rendrInterface_->BeginFrame();
         context_->Render();
-        rendrInterface_->EndFrame();
+        // rendrInterface_->EndFrame();
     }
     void update()
     {
