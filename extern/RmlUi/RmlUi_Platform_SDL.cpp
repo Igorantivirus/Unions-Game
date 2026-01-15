@@ -217,16 +217,16 @@ struct MouseCoordMapperCache
     {
         update(in_window, in_renderer);
 
-#if SDL_MAJOR_VERSION >= 3
-        if (logical_enabled)
-        {
-            float rx = 0.f, ry = 0.f;
-            SDL_RenderCoordinatesFromWindow(renderer, window_x, window_y, &rx, &ry);
-            out_x = rx;
-            out_y = ry;
-            return true;
-        }
-#endif
+// #if SDL_MAJOR_VERSION >= 3
+//         if (logical_enabled)
+//         {
+//             float rx = 0.f, ry = 0.f;
+//             SDL_RenderCoordinatesFromWindow(renderer, window_x, window_y, &rx, &ry);
+//             out_x = rx;
+//             out_y = ry;
+//             return true;
+//         }
+// #endif
 
         out_x = window_x * pixel_density;
         out_y = window_y * pixel_density;
@@ -342,8 +342,6 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
 
     case event_window_size_changed:
     {
-        // Rml::Vector2i dimensions(ev.window.data1, ev.window.data2);
-        // context->SetDimensions(dimensions);
         g_mouse_mapper.markDirty();
 #if SDL_MAJOR_VERSION >= 3
         context->SetDimensions(g_mouse_mapper.getRmlDimensions(window, renderer, ev.window.data1, ev.window.data2));
