@@ -19,7 +19,7 @@
 
 #include <App/GameObjects/EntityFactory.hpp>
 #include <App/GameObjects/GameContactCheker.hpp>
-#include <App/GameObjects/GameObjectFactory.hpp>
+#include <App/GameObjects/ObjectFactory.hpp>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
 #include <memory>
@@ -65,7 +65,8 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
         
-        loadObjectPack("coins");
+        if (!objectFactory_.loadPack("conis") && !objectFactory_.loadPack("coins"))
+            SDL_Log("Failed to load object pack: conis/coins");
         
         timer_.start();
     }
@@ -96,8 +97,12 @@ public:
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 pressed_ = true;
-                prEntity_ = std::make_unique<GameObject>(std::move(
-                    GameEntityFactory::createById(world_, 1, {event.button.x, startY_})));
+
+                auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
+                if (!created)
+                    return;
+
+                prEntity_ = std::make_unique<GameObject>(std::move(*created));
                 prEntity_->setEnabled(false);
             }
         }
@@ -155,6 +160,7 @@ private:
     std::vector<Entity> glass_;
     std::vector<GameObject> objects_;
     resources::ObjectLibrary objectLibrary_;
+    resources::ObjectFactory objectFactory_{objectLibrary_};
 
     std::unique_ptr<GameObject> prEntity_ = nullptr;
     bool pressed_ = false;
@@ -197,12 +203,13 @@ private:
 
     bool loadObjectPack(const std::string_view folder)
     {
-        return objectLibrary_.loadFolder(folder);
+        return objectFactory_.loadPack(folder);
     }
 
     void unloadObjectPack(const std::string_view folder)
     {
-        objectLibrary_.unloadFolder(folder);
+        (void)folder;
+        objectFactory_.unloadPack();
     }
 
     std::size_t getByID(const IDType id)
@@ -246,12 +253,22 @@ private:
         GameObject &obj1 = objects_[obj1Ind];
         GameObject &obj2 = objects_[obj2Ind];
 
+        const IDType level1 = obj1.getLevel();
+        const IDType level2 = obj2.getLevel();
+        const auto mergedIdOpt = objectFactory_.getMergeResultId(level1, level2);
+        if (!mergedIdOpt)
+            return;
+
         sdl3::Vector2f pos = (obj1.getShape().getPosition() + obj2.getShape().getPosition()) / 2.f;
 
         objects_.erase(objects_.begin() + std::max(obj1Ind, obj2Ind));
         objects_.erase(objects_.begin() + std::min(obj1Ind, obj2Ind));
 
-        objects_.push_back(GameEntityFactory::createById(world_, event.user.code + 1, pos));
+        auto created = objectFactory_.tryCreateById(world_, *mergedIdOpt, pos);
+        if (!created)
+            return;
+
+        objects_.push_back(std::move(*created));
         addPoints(objects_.back().getPoints());
     }
 };
