@@ -99,7 +99,10 @@ public:
         if (event.type == SDL_EVENT_QUIT)
             return SDL_APP_SUCCESS;
         if (event.type == SDL_EVENT_WINDOW_RESIZED)
-            handleWindowResize(event.window.data1, event.window.data2);
+        {
+            if (autoOrientationEnabled_)
+                handleWindowResize(event.window.data1, event.window.data2);
+        }
         if (scenes_.empty())
             return SDL_APP_FAILURE;
         window_.convertEventToRenderCoordinates(&event);
@@ -140,6 +143,17 @@ public:
         return fps_;
     }
 
+    // Если true — при ресайзе окна автоматически меняем "ориентацию" (своп logical size).
+    // Если false — SDL_EVENT_WINDOW_RESIZED не трогает logical presentation (LETTERBOX сам масштабирует).
+    void setAutoOrientationEnabled(const bool enabled)
+    {
+        autoOrientationEnabled_ = enabled;
+    }
+    bool isAutoOrientationEnabled() const
+    {
+        return autoOrientationEnabled_;
+    }
+
 private:
     std::vector<ScenePtr> scenes_;
     SceneFabrickPtr sceneFabrick_;
@@ -157,6 +171,7 @@ private:
     sdl3::Vector2i basePortraitLogicalSize_;
     sdl3::Vector2i windowLogicslSize_;
     sdl3::Vector2f centerPos_;
+    bool autoOrientationEnabled_ = true;
 
 private:
     void handleWindowResize(const int windowW, const int windowH)
