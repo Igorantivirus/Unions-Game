@@ -1,17 +1,15 @@
 #pragma once
 
-#include "Engine/AdvancedContext.hpp"
 #include "Engine/SceneAction.hpp"
 #include "GameScene.hpp"
 #include <Core/Types.hpp>
-#include <Engine/Scene.hpp>
+#include <Engine/OneRmlDocScene.hpp>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
 #include <RmlUi/Core/ID.h>
-#include <stdexcept>
 
-class MainMenuScene : public engine::Scene
+class MainMenuScene : public engine::OneRmlDocScene
 {
 public:
     inline static constexpr const IDType sceneID = 0;
@@ -41,18 +39,11 @@ private:
     };
 
 public:
-    MainMenuScene(engine::Context &context) : context_(context), listener_(*this)
+    MainMenuScene(engine::Context &context)
+        : engine::OneRmlDocScene(context, "ui/MainMenu.html", menuID), listener_(*this)
     {
-        doc_ = context_.loadIfNoDocument("ui/MainMenu.html", menuID);
-        if (!doc_)
-            throw std::logic_error("The document cannot be empty.");
-        doc_->AddEventListener(Rml::EventId::Click, &listener_, true);
-    }
-    ~MainMenuScene()
-    {
-        doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
-        doc_->Hide();
-        context_.closeDocument(menuID);
+        loadDocumentOrThrow();
+        addEventListener(Rml::EventId::Click, &listener_, true);
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -63,17 +54,6 @@ public:
     {
     }
 
-    void hide() override
-    {
-        doc_->Hide();
-    }
-    void show() override
-    {
-        doc_->Show();
-    }
-
 private:
-    engine::Context &context_;
-    Rml::ElementDocument *doc_ = nullptr;
     MainMenuListener listener_;
 };

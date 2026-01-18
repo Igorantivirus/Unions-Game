@@ -13,6 +13,12 @@ namespace engine
 class Scene
 {
 public:
+    Scene() = default;
+    Scene(const Scene &) = delete;
+    Scene &operator=(const Scene &) = delete;
+    Scene(Scene &&) = delete;
+    Scene &operator=(Scene &&) = delete;
+
     virtual ~Scene() = default;
 
     virtual void updateEvent(const SDL_Event &event) = 0;

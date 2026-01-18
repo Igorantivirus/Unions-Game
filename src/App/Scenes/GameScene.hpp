@@ -24,7 +24,7 @@
 
 #include <Engine/OneRmlDocScene.hpp>
 
-class GameScene : public engine::Scene
+class GameScene : public engine::OneRmlDocScene
 {
 public:
     inline static constexpr const IDType sceneID = 1;
@@ -52,23 +52,15 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context) : context_(context), listener_(*this)
+    GameScene(engine::Context &context)
+        : engine::OneRmlDocScene(context, "ui/GameMenu.html", menuID), listener_(*this)
     {
         bindData();
-
-        doc_ = context_.loadIfNoDocument("ui/GameMenu.html", menuID);
-        if (!doc_)
-            throw std::logic_error("The document cannot be empty.");
-        doc_->AddEventListener(Rml::EventId::Click, &listener_, true);
+        loadDocumentOrThrow();
+        addEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(400, 400, 10);
-    }
-    ~GameScene()
-    {
-        doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
-        doc_->Hide();
-        context_.closeDocument(menuID);
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -129,19 +121,8 @@ public:
         return actionRes_;
     }
 
-    void hide() override
-    {
-        doc_->Hide();
-    }
-    void show() override
-    {
-        doc_->Show();
-    }
-
 private:
-    engine::Context &context_;
     GameSceneListener listener_;
-    Rml::ElementDocument *doc_;
 
 private:
     b2World world_{b2Vec2(0.0f, 9.81f)};
