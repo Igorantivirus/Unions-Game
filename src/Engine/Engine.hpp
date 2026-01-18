@@ -1,8 +1,11 @@
 #pragma once
 
+#include <SDL3/SDL_render.h>
 #include <SDL3/SDL_timer.h>
 #include <SDLWrapper/Math/Colors.hpp>
+#include <SDLWrapper/Names.hpp>
 #include <SDLWrapper/Renders/VideoMode.hpp>
+#include <SDLWrapper/Renders/View.hpp>
 #include <string_view>
 #include <vector>
 
@@ -26,18 +29,40 @@ class Engine
 public:
     SDL_AppResult start(const std::string_view wName, const std::string_view fontPath, const sdl3::Vector2i size)
     {
-        windowLogicslSize_ = size;
+        // "Дизайн" логического размера задаём один раз (landscape),
+        // а портретный получаем свопом сторон. Дальше при ресайзе
+        // меняем только ориентацию, не подбирая размеры каждый раз.
+        baseLandscapeLogicalSize_ = {std::max(size.x, size.y), std::min(size.x, size.y)};
+        basePortraitLogicalSize_ = {baseLandscapeLogicalSize_.y, baseLandscapeLogicalSize_.x};
+        windowLogicslSize_ = (size.x >= size.y) ? baseLandscapeLogicalSize_ : basePortraitLogicalSize_;
         sdl3::VideoMode mode = sdl3::VideoMode::getDefaultVideoMode();
         mode.width = size.x;
         mode.height = size.y;
         if (!window_.create(wName, mode))
             return SDL_APP_FAILURE;
-        window_.setLogicalPresentation(size);
+        window_.setLogicalPresentation(windowLogicslSize_, this->mode);
+        sdl3::View view = window_.getView();
+        centerPos_.x = windowLogicslSize_.x / 2.f;
+        centerPos_.y = windowLogicslSize_.y / 2.f;
+        view.setCenterPosition(centerPos_);
+
+        view.setCenterPosition(centerPos_);
+        // view.setCenterPosition(sdl3::Vector2f{(float)windowLogicslSize_.x, (float)windowLogicslSize_.y} / 2.f);
+        window_.setView(view);
+
 
         if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), fontPath))
             return SDL_APP_FAILURE;
 
         cl_.start();
+
+        // auto view = window_.getView();
+        // SDL_Log("%f %f\n", view.getCenterPosition().x, view.getCenterPosition().y);
+        // view.setCenterPosition(view.getCenterPosition() + sdl3::Vector2f{100,10});
+        // view.setAngle(90);
+        // view.setZoom({0.5,0.5});
+        // window_.setView(view);
+
         return SDL_APP_CONTINUE;
     }
     void close()
@@ -85,18 +110,18 @@ public:
         if (event.type == SDL_EVENT_QUIT)
             return SDL_APP_SUCCESS;
         if (event.type == SDL_EVENT_WINDOW_RESIZED)
-        {
-            // width > height == Desktop
-            if (event.window.data1 > event.window.data2)
-                windowLogicslSize_ = {std::max(windowLogicslSize_.x, windowLogicslSize_.y), std::min(windowLogicslSize_.x, windowLogicslSize_.y)};
-            else
-                windowLogicslSize_ = {std::min(windowLogicslSize_.x, windowLogicslSize_.y), std::max(windowLogicslSize_.x, windowLogicslSize_.y)};
-            window_.setLogicalPresentation(windowLogicslSize_);    
-        }
+            handleWindowResize(event.window.data1, event.window.data2);
         if (scenes_.empty())
             return SDL_APP_FAILURE;
         window_.convertEventToRenderCoordinates(&event);
+
+        if(event.type == SDL_EVENT_MOUSE_BUTTON_UP)
+        {
+            SDL_Log("%f %f\n", event.button.x, event.button.y);
+        }
+
         context_.updateEvents(event);
+        window_.convertEventToViewCoordinates(&event);
         scenes_.back()->updateEvent(event);
         return SDL_APP_CONTINUE;
     }
@@ -147,9 +172,56 @@ private:
     Context context_;
     sdl3::ClockNS cl_;
 
+    sdl3::Vector2i baseLandscapeLogicalSize_;
+    sdl3::Vector2i basePortraitLogicalSize_;
     sdl3::Vector2i windowLogicslSize_;
+    sdl3::Vector2f centerPos_;
+
+    // SDL_RendererLogicalPresentation mode = SDL_LOGICAL_PRESENTATION_STRETCH;
+    // SDL_RendererLogicalPresentation mode = SDL_LOGICAL_PRESENTATION_OVERSCAN;
+    SDL_RendererLogicalPresentation mode = SDL_LOGICAL_PRESENTATION_LETTERBOX;
 
 private:
+    void handleWindowResize(const int windowW, const int windowH)
+    {
+        const bool isLandscape = windowW >= windowH;
+        const sdl3::Vector2i desired = isLandscape ? baseLandscapeLogicalSize_ : basePortraitLogicalSize_;
+
+        if (desired.x == windowLogicslSize_.x && desired.y == windowLogicslSize_.y)
+            return;
+
+        auto view = window_.getView();
+        // view.setCenterPosition(sdl3::Vector2f{(float)windowLogicslSize_.x, (float)windowLogicslSize_.y} / 2.f);
+        view.setCenterPosition(centerPos_);
+        SDL_Log("%f %f\n", view.getCenterPosition().x, view.getCenterPosition().y);
+        
+        windowLogicslSize_ = desired;
+        window_.setLogicalPresentation(desired, mode);
+        window_.setView(view);
+
+
+        // const sdl3::Vector2f newLogicalCenter{desired.x / 2.0f, desired.y / 2.0f};
+
+
+
+
+
+
+        // Компенсация "съезда" объектов при смене ориентации:
+        // сохраняем текущий сдвиг камеры относительно центра логического экрана
+        // и переносим его на новый логический центр после смены logical size.
+        // const sdl3::Vector2f oldLogicalCenter{windowLogicslSize_.x / 2.0f, windowLogicslSize_.y / 2.0f};
+        // const sdl3::Vector2f newLogicalCenter{desired.x / 2.0f, desired.y / 2.0f};
+        // auto view = window_.getView();
+        // const sdl3::Vector2f cameraOffset = view.getCenterPosition() - oldLogicalCenter;
+
+        // windowLogicslSize_ = desired;
+        // window_.setLogicalPresentation(windowLogicslSize_, mode);
+
+        // view.setCenterPosition(newLogicalCenter + cameraOffset);
+        // window_.setView(view);
+    }
+
     SDL_AppResult processSceneAction(SceneAction &act)
     {
         SDL_AppResult res = SDL_APP_CONTINUE;
