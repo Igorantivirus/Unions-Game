@@ -38,6 +38,7 @@ set(SOURCE_CPP
   ${SRC_DIR}/main.cpp 
   ${EXTERN_DIR}/RmlUi/RmlUi_Platform_SDL.cpp
   ${EXTERN_DIR}/RmlUi/RmlUi_Renderer_SDL.cpp
+  ${EXTERN_DIR}/pugixml/pugixml.cpp
 )
 set(SOURCE_HPP
   # ${SRC_DIR}/Objects.hpp
