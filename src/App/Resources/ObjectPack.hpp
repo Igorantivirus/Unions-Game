@@ -69,6 +69,7 @@ public:
                     return false;
                 }
             }
+            textureKeys_.insert(def.texturePath);
 
             objects_[def.id] = std::move(def);
         }
@@ -83,7 +84,9 @@ public:
 
     void unload(TextureManager &textures)
     {
-        textures.clear();
+        for (const auto &key : textureKeys_)
+            textures.unload(key);
+        textureKeys_.clear();
         objects_.clear();
         packName_.clear();
         folderAbs_.clear();
@@ -117,7 +120,7 @@ private:
             return false;
 
         const std::string type = formNode.attribute("type").as_string();
-        if (type == "circle")
+        if (type == "circle" || type == "circel")
         {
             out.type = ObjectFormType::Circle;
             float r = formNode.attribute("radius").as_float(0.f);
@@ -171,11 +174,13 @@ private:
         {
             return false;
         }
+        return true;
     }
 
 private:
     std::string packName_;
     std::filesystem::path folderAbs_;
     std::unordered_map<IDType, ObjectDef> objects_;
+    std::unordered_set<std::string> textureKeys_;
 };
 } // namespace resources

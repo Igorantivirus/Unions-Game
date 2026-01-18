@@ -2,6 +2,11 @@
 
 #include "ObjectPack.hpp"
 
+#include <filesystem>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+
 namespace resources
 {
 
@@ -88,4 +93,4 @@ private:
     std::unordered_map<std::string, ObjectPack> packs_;
 };
 
-} // namespace app
+} // namespace resources
