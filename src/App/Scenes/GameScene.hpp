@@ -25,6 +25,7 @@
 #include <memory>
 
 #include <Engine/OneRmlDocScene.hpp>
+#include <Resources/ObjectLibrary.hpp>
 
 class GameScene : public engine::OneRmlDocScene
 {
@@ -63,6 +64,9 @@ public:
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
+        
+        loadObjectPack("coins");
+        
         timer_.start();
     }
     ~GameScene()
@@ -132,10 +136,10 @@ public:
         world_.Step(dt, 8, 3);
         updateTime();
 
-        for(auto it = objects_.begin(); it != objects_.end(); ++it)
-            if(it->getPosition().y > 2000.f)
+        for (auto it = objects_.begin(); it != objects_.end(); ++it)
+            if (it->getPosition().y > 2000.f)
             {
-                addPoints(-it->getPoints());   
+                addPoints(-it->getPoints());
                 it = objects_.erase(it);
             }
 
@@ -150,6 +154,7 @@ private:
     GameContactCheker contactCheker_;
     std::vector<Entity> glass_;
     std::vector<GameObject> objects_;
+    resources::ObjectLibrary objectLibrary_;
 
     std::unique_ptr<GameObject> prEntity_ = nullptr;
     bool pressed_ = false;
@@ -188,6 +193,16 @@ private:
         glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f + glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
 
         startY_ = (yPos - (glassSize.y)) / 2.f;
+    }
+
+    bool loadObjectPack(const std::string_view folder)
+    {
+        return objectLibrary_.loadFolder(folder);
+    }
+
+    void unloadObjectPack(const std::string_view folder)
+    {
+        objectLibrary_.unloadFolder(folder);
     }
 
     std::size_t getByID(const IDType id)
