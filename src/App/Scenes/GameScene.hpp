@@ -22,9 +22,7 @@
 #include <App/GameObjects/GameObjectFactory.hpp>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
-#include <chrono>
 #include <memory>
-
 
 #include <Engine/OneRmlDocScene.hpp>
 
@@ -64,7 +62,7 @@ public:
         addEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
-        generateGlass(logicSize, {400, 500}, 10);
+        generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
         timer_.start();
     }
     ~GameScene()
@@ -134,6 +132,13 @@ public:
         world_.Step(dt, 8, 3);
         updateTime();
 
+        for(auto it = objects_.begin(); it != objects_.end(); ++it)
+            if(it->getPosition().y > 2000.f)
+            {
+                addPoints(-it->getPoints());   
+                it = objects_.erase(it);
+            }
+
         return actionRes_;
     }
 
@@ -150,11 +155,12 @@ private:
     bool pressed_ = false;
     float startY_;
 
+private:
     Rml::DataModelHandle dataHandle_;
-
     Rml::String time_ = "00:00";
     int points_ = 0;
     int record_ = 100;
+
     sdl3::Clock timer_;
 
 private:
@@ -174,7 +180,8 @@ private:
     {
         glass_.clear();
 
-        float yPos = logicSize.y / 2.f + std::min(logicSize.x, logicSize.y) / 2.f;
+        float yPos = logicSize.y;
+        // float yPos = logicSize.y / 2.f + std::min(logicSize.x, logicSize.y) / 2.f;
 
         glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f, yPos}, {glassSize.x, thikness}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
         glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f - glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, b2BodyType::b2_staticBody));

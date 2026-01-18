@@ -74,7 +74,7 @@ public:
     sdl3::Vector2f getPosition() const
     {
         auto p = m_body->GetTransform().p;
-        return sdl3::Vector2f{p.x, p.y};
+        return sdl3::Vector2f{p.x * Config::PPM, p.y * Config::PPM};
     }
 
     void setRotation(float degrees)
