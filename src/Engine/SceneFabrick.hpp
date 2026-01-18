@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDLWrapper/Renders/RenderWindow.hpp>
 #include <memory>
 
 #include "Engine/AdvancedContext.hpp"
@@ -26,9 +27,20 @@ public:
         return *context_;
     }
 
+    void setRenderWindow(sdl3::RenderWindow& window)
+    {
+        window_ = &window;
+    }
+
+    sdl3::RenderWindow& getRenderWindow() const
+    {
+        return *window_;
+    }
+
 protected:
 
     Context* context_;
+    sdl3::RenderWindow* window_;
 
 };
 
