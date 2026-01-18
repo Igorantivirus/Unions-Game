@@ -1,18 +1,20 @@
-<html lang="en">
+<rml lang="en">
 
 <head>
     <title>Document</title>
-    <!-- <link type="text/rcss" href="GameMenu.css" /> -->
-    <link rel="stylesheet" href="GameMenu.css">
+    <link type="text/rcss" href="GameMenu.css" />
+    <!-- <link rel="stylesheet" href="GameMenu.css"> -->
 </head>
 
-<body>
+<body data-model="game_stats">
 
     <header>
-        <p>Время в игре: 1{{ game_time }}</p>
-        <p>Очков: 1{{ points }}</p>
-        <p>Рекорд: 1{{ record }}</p>
+        <p>Время в игре: {{ game_time }}</p>
+        <p>Очков: {{ points }}</p>
+        <p>Рекорд: {{ record }}</p>
     </header>
 
 
 </body>
+
+</rml>

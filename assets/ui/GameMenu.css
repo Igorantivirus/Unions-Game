@@ -1,3 +1,15 @@
+:root {
+    font-size: 16px;
+}
+
+body {
+    background-color: rgb(173, 216, 230);
+    font-family: Arial;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+}
+
 header {
     display: flex;
     flex-direction: row;
@@ -6,4 +18,8 @@ header {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
+}
+
+header p{
+    font-size: 200%;
 }
