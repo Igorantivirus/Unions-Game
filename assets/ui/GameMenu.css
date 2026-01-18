@@ -20,6 +20,49 @@ header {
     box-sizing: border-box;
 }
 
-header p{
-    font-size: 200%;
+header p {
+    font-size: 250%;
+    color: black;
+}
+
+.footMenu:first-child {
+    text-align: left;
+}
+
+.footMenu {
+    width: 50%;
+    color: black;
+    font-size: 20px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 15px;
+
+    height: auto;
+    padding-bottom: 10px;
+    align-items: flex-end;
+
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+#back-b {
+    border-radius: 10px;
+    background-color: #007bff;
+    border-color: black;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#back-b:active {
+    background-color: green;
 }

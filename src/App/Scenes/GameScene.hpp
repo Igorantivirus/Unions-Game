@@ -22,8 +22,9 @@
 #include <App/GameObjects/GameObjectFactory.hpp>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
-#include <memory>
 #include <chrono>
+#include <memory>
+
 
 #include <Engine/OneRmlDocScene.hpp>
 
@@ -46,8 +47,8 @@ private:
             Rml::Element *el = ev.GetTargetElement();
             const Rml::String &id = el->GetId();
 
-            // if(id == "exit-b")
-            //     scene_.actionRes_ = engine::SceneAction::exitAction();
+            if (id == "back-b")
+                scene_.actionRes_ = engine::SceneAction::popAction();
         }
 
     private:
@@ -65,6 +66,17 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {400, 500}, 10);
         timer_.start();
+    }
+    ~GameScene()
+    {
+        if (dataHandle_)
+        {
+            // Освобождаем модель данных
+            dataHandle_ = Rml::DataModelHandle();
+
+            // Удаляем модель из контекста
+            context_.getContext()->RemoveDataModel("game_stats");
+        }
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -121,7 +133,6 @@ public:
     {
         world_.Step(dt, 8, 3);
         updateTime();
-
 
         return actionRes_;
     }
@@ -184,7 +195,7 @@ private:
     {
         points_ += points;
         dataHandle_.DirtyVariable("points");
-        if(points_ > record_)
+        if (points_ > record_)
         {
             record_ = points_;
             dataHandle_.DirtyVariable("record");

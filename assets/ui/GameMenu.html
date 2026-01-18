@@ -1,20 +1,26 @@
 <rml lang="en">
 
-<head>
-    <title>Document</title>
-    <link type="text/rcss" href="GameMenu.css" />
-    <!-- <link rel="stylesheet" href="GameMenu.css"> -->
-</head>
+    <head>
+        <title>Document</title>
+        <link type="text/rcss" href="GameMenu.css" />
+        <!-- <link rel="stylesheet" href="GameMenu.css"> -->
+    </head>
 
-<body data-model="game_stats">
+    <body data-model="game_stats">
 
-    <header>
-        <p>Время в игре: {{ game_time }}</p>
-        <p>Очков: {{ points }}</p>
-        <p>Рекорд: {{ record }}</p>
-    </header>
+        <header>
+            <p>Время в игре: {{ game_time }}</p>
+            <p>Очков: {{ points }}</p>
+            <p>Рекорд: {{ record }}</p>
+        </header>
+
+        <footer>
+            <div class="footMenu">
+                <button id="back-b">Назад</button>
+            </div>
+        </footer>
 
 
-</body>
+    </body>
 
 </rml>
