@@ -52,7 +52,7 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context)
+    GameScene(engine::Context &context, const sdl3::Vector2i logicSize)
         : engine::OneRmlDocScene(context, "ui/GameMenu.html", menuID), listener_(*this)
     {
         bindData();
@@ -60,7 +60,7 @@ public:
         addEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
-        generateGlass(400, 400, 10);
+        generateGlass(logicSize, {400, 650}, 10);
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -150,15 +150,17 @@ private:
         }
     }
 
-    void generateGlass(const float width, const float height, const float thikness)
+    void generateGlass(const sdl3::Vector2i logicSize, const sdl3::Vector2f glassSize, const float thikness)
     {
-        sdl3::Vector2i size = {800, 800};
         glass_.clear();
-        glass_.push_back(EntityFactory::createRectangle(world_, {size.x / 2.f, size.y * 1.f}, {width, thikness}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
-        glass_.push_back(EntityFactory::createRectangle(world_, {size.x / 2.f - width / 2.f, size.y - height / 2.f}, {thikness, height}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
-        glass_.push_back(EntityFactory::createRectangle(world_, {size.x / 2.f + width / 2.f, size.y - height / 2.f}, {thikness, height}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
 
-        startY_ = size.y - height * (1.f + 1 / 3.f);
+        float yPos = logicSize.y / 2.f + std::min(logicSize.x, logicSize.y) / 2.f;
+
+        glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f, yPos}, {glassSize.x, thikness}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
+        glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f - glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
+        glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f + glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, b2BodyType::b2_staticBody));
+
+        startY_ = (yPos - (glassSize.y)) / 2.f;
     }
 
     std::size_t getByID(const IDType id)
