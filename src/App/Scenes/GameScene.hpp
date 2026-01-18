@@ -60,7 +60,7 @@ public:
         addEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
-        generateGlass(logicSize, {400, 650}, 10);
+        generateGlass(logicSize, {400, 500}, 10);
     }
 
     void updateEvent(const SDL_Event &event) override
