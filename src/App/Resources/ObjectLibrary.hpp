@@ -8,7 +8,7 @@ namespace resources
 class ObjectLibrary
 {
 public:
-    explicit ObjectLibrary(std::filesystem::path objectsRoot = "assets/objects")
+    explicit ObjectLibrary(std::filesystem::path objectsRoot = "objects")
         : objectsRoot_(std::move(objectsRoot))
     {
         
