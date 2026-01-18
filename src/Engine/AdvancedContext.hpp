@@ -167,6 +167,11 @@ public:
                 doc->Hide();
     }
 
+    Rml::Context* getContext()
+    {
+        return context_;
+    }
+
 private:
     std::unique_ptr<RenderInterface_SDL> rendrInterface_;
     std::unique_ptr<SystemInterface_SDL> systemInterface_;

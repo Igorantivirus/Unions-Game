@@ -5,6 +5,7 @@
 #include "Engine/SceneAction.hpp"
 #include <Core/Types.hpp>
 #include <Engine/Scene.hpp>
+#include <RmlUi/Config/Config.h>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
@@ -20,6 +21,8 @@
 #include <App/GameObjects/GameObjectFactory.hpp>
 #include <SDLWrapper/Names.hpp>
 #include <memory>
+
+#include <Engine/OneRmlDocScene.hpp>
 
 class GameScene : public engine::Scene
 {
@@ -51,20 +54,21 @@ private:
 public:
     GameScene(engine::Context &context) : context_(context), listener_(*this)
     {
-        // doc_ = context_.loadIfNoDocument("ui/GameScene.html", menuID);
-        // if (!doc_)
-        //     throw std::logic_error("The document cannot be empty.");
-        // doc_->Show();
-        // doc_->AddEventListener(Rml::EventId::Click, &listener_, true);
+        bindData();
+
+        doc_ = context_.loadIfNoDocument("ui/GameMenu.html", menuID);
+        if (!doc_)
+            throw std::logic_error("The document cannot be empty.");
+        doc_->AddEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
-
         generateGlass(400, 400, 10);
     }
     ~GameScene()
     {
-        // doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
-        // doc_->Hide();
+        doc_->RemoveEventListener(Rml::EventId::Click, &listener_, true);
+        doc_->Hide();
+        context_.closeDocument(menuID);
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -96,6 +100,7 @@ public:
                 prEntity_->setEnabled(true);
                 objects_.push_back(std::move(*prEntity_.get()));
                 prEntity_.reset();
+                points += 1;
             }
         }
         else if (event.type == SDL_EVENT_MOUSE_MOTION)
@@ -124,19 +129,19 @@ public:
         return actionRes_;
     }
 
-    // void hide() override
-    // {
-    //     // doc_->Hide();
-    // }
-    // void show()  override
-    // {
-    //     // doc_->Show();
-    // }
+    void hide() override
+    {
+        doc_->Hide();
+    }
+    void show() override
+    {
+        doc_->Show();
+    }
 
 private:
     engine::Context &context_;
-    // Rml::ElementDocument *doc_ = nullptr;
     GameSceneListener listener_;
+    Rml::ElementDocument *doc_;
 
 private:
     b2World world_{b2Vec2(0.0f, 9.81f)};
@@ -148,7 +153,22 @@ private:
     bool pressed_ = false;
     float startY_;
 
+    Rml::String time = "ABOBA";
+    int points = 0;
+    int record = 200;
+
 private:
+    void bindData()
+    {
+        Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel("game_stats");
+        if (constructor)
+        {
+            constructor.Bind("game_time", &time);
+            constructor.Bind("points", &points);
+            constructor.Bind("record", &record);
+        }
+    }
+
     void generateGlass(const float width, const float height, const float thikness)
     {
         sdl3::Vector2i size = {800, 800};
@@ -162,29 +182,28 @@ private:
 
     std::size_t getByID(const IDType id)
     {
-        for(std::size_t i = 0; i < objects_.size(); ++i)
+        for (std::size_t i = 0; i < objects_.size(); ++i)
             if (objects_[i].getID() == id)
                 return i;
         return objects_.size();
     }
 
-    void updateCollision(const SDL_Event& event)
+    void updateCollision(const SDL_Event &event)
     {
-        
+
         std::size_t obj1Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data1)));
         std::size_t obj2Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data2)));
-        if(obj1Ind == objects_.size() || obj2Ind == objects_.size())
+        if (obj1Ind == objects_.size() || obj2Ind == objects_.size())
             return;
 
-        GameObject& obj1 = objects_[obj1Ind];
-        GameObject& obj2 = objects_[obj2Ind];
+        GameObject &obj1 = objects_[obj1Ind];
+        GameObject &obj2 = objects_[obj2Ind];
 
         sdl3::Vector2f pos = (obj1.getShape().getPosition() + obj2.getShape().getPosition()) / 2.f;
 
         objects_.erase(objects_.begin() + std::max(obj1Ind, obj2Ind));
         objects_.erase(objects_.begin() + std::min(obj1Ind, obj2Ind));
-        
-        objects_.push_back(GameEntityFactory::createById(world_, event.user.code + 1, pos));
 
+        objects_.push_back(GameEntityFactory::createById(world_, event.user.code + 1, pos));
     }
 };
