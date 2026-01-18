@@ -76,6 +76,7 @@ public:
     {
         sceneFabrick_ = std::move(ptr);
         sceneFabrick_->setContext(context_);
+        sceneFabrick_->setRenderWindow(window_);
     }
 
     void pushScene(const IDType sceneId)

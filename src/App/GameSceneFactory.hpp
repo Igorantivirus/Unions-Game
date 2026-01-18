@@ -15,7 +15,7 @@ public:
         if(MainMenuScene::sceneID == id)
             return std::move(std::make_unique<MainMenuScene>(*context_));
         if(GameScene::sceneID == id)
-            return std::move(std::make_unique<GameScene>(*context_));
+            return std::move(std::make_unique<GameScene>(*context_, window_->getLogicSize()));
         return nullptr;
     }
 
