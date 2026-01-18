@@ -6,6 +6,7 @@
 #include <Core/Types.hpp>
 #include <Engine/Scene.hpp>
 #include <RmlUi/Config/Config.h>
+#include <RmlUi/Core/DataModelHandle.h>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
@@ -19,8 +20,10 @@
 #include <App/GameObjects/EntityFactory.hpp>
 #include <App/GameObjects/GameContactCheker.hpp>
 #include <App/GameObjects/GameObjectFactory.hpp>
+#include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
 #include <memory>
+#include <chrono>
 
 #include <Engine/OneRmlDocScene.hpp>
 
@@ -61,13 +64,13 @@ public:
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {400, 500}, 10);
+        timer_.start();
     }
 
     void updateEvent(const SDL_Event &event) override
     {
         if (event.type == AppEventsType::COLLISION)
         {
-            SDL_Log("GOYDA\n");
             updateCollision(event);
         }
         if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_AC_BACK)
@@ -90,9 +93,9 @@ public:
             {
                 pressed_ = false;
                 prEntity_->setEnabled(true);
+                addPoints(prEntity_->getPoints());
                 objects_.push_back(std::move(*prEntity_.get()));
                 prEntity_.reset();
-                points += 1;
             }
         }
         else if (event.type == SDL_EVENT_MOUSE_MOTION)
@@ -117,6 +120,8 @@ public:
     engine::SceneAction &update(const float dt) override
     {
         world_.Step(dt, 8, 3);
+        updateTime();
+
 
         return actionRes_;
     }
@@ -134,9 +139,12 @@ private:
     bool pressed_ = false;
     float startY_;
 
-    Rml::String time = "ABOBA";
-    int points = 0;
-    int record = 200;
+    Rml::DataModelHandle dataHandle_;
+
+    Rml::String time_ = "00:00";
+    int points_ = 0;
+    int record_ = 100;
+    sdl3::Clock timer_;
 
 private:
     void bindData()
@@ -144,10 +152,11 @@ private:
         Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel("game_stats");
         if (constructor)
         {
-            constructor.Bind("game_time", &time);
-            constructor.Bind("points", &points);
-            constructor.Bind("record", &record);
+            constructor.Bind("game_time", &time_);
+            constructor.Bind("points", &points_);
+            constructor.Bind("record", &record_);
         }
+        dataHandle_ = constructor.GetModelHandle();
     }
 
     void generateGlass(const sdl3::Vector2i logicSize, const sdl3::Vector2f glassSize, const float thikness)
@@ -171,6 +180,28 @@ private:
         return objects_.size();
     }
 
+    void addPoints(const int points)
+    {
+        points_ += points;
+        dataHandle_.DirtyVariable("points");
+        if(points_ > record_)
+        {
+            record_ = points_;
+            dataHandle_.DirtyVariable("record");
+        }
+    }
+
+    void updateTime()
+    {
+        int s = static_cast<int>(timer_.elapsedTimeS());
+        time_[0] = s / 60 / 10 + '0';
+        time_[1] = s / 60 % 10 + '0';
+        time_[2] = ':';
+        time_[3] = s % 60 / 10 + '0';
+        time_[4] = s % 60 % 10 + '0';
+        dataHandle_.DirtyVariable("game_time");
+    }
+
     void updateCollision(const SDL_Event &event)
     {
 
@@ -188,5 +219,6 @@ private:
         objects_.erase(objects_.begin() + std::min(obj1Ind, obj2Ind));
 
         objects_.push_back(GameEntityFactory::createById(world_, event.user.code + 1, pos));
+        addPoints(objects_.back().getPoints());
     }
 };
