@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDLWrapper/Names.hpp>
 #include <SDLWrapper/SDLWrapper.hpp>
 #include <box2d/box2d.h>
 
@@ -70,6 +71,11 @@ public:
         m_body->SetTransform({pos_px.x * Config::MPP, pos_px.y * Config::MPP}, m_body->GetAngle());
         update();
     }
+    sdl3::Vector2f getPosition() const
+    {
+        auto p = m_body->GetTransform().p;
+        return sdl3::Vector2f{p.x, p.y};
+    }
 
     void setRotation(float degrees)
     {
@@ -89,10 +95,6 @@ public:
     const unsigned short getID() const
     {
         return ID_;
-    }
-    bool isAlive() const
-    {
-        return m_body != nullptr;
     }
 
     void setEnabled(bool enabled)

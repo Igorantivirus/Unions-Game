@@ -26,6 +26,7 @@ class Engine
 public:
     SDL_AppResult start(const std::string_view wName, const std::string_view fontPath, const sdl3::Vector2i size)
     {
+        windowLogicslSize_ = size;
         sdl3::VideoMode mode = sdl3::VideoMode::getDefaultVideoMode();
         mode.width = size.x;
         mode.height = size.y;
@@ -83,6 +84,15 @@ public:
     {
         if (event.type == SDL_EVENT_QUIT)
             return SDL_APP_SUCCESS;
+        if (event.type == SDL_EVENT_WINDOW_RESIZED)
+        {
+            // width > height == Desktop
+            if (event.window.data1 > event.window.data2)
+                windowLogicslSize_ = {std::max(windowLogicslSize_.x, windowLogicslSize_.y), std::min(windowLogicslSize_.x, windowLogicslSize_.y)};
+            else
+                windowLogicslSize_ = {std::min(windowLogicslSize_.x, windowLogicslSize_.y), std::max(windowLogicslSize_.x, windowLogicslSize_.y)};
+            window_.setLogicalPresentation(windowLogicslSize_);    
+        }
         if (scenes_.empty())
             return SDL_APP_FAILURE;
         window_.convertEventToRenderCoordinates(&event);
@@ -136,6 +146,8 @@ private:
     sdl3::RenderWindow window_;
     Context context_;
     sdl3::ClockNS cl_;
+
+    sdl3::Vector2i windowLogicslSize_;
 
 private:
     SDL_AppResult processSceneAction(SceneAction &act)
