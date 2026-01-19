@@ -25,7 +25,7 @@
 
 #include <Engine/OneRmlDocScene.hpp>
 // #include <Resources/ObjectLibrary.hpp>
-#include <Resources/GameObjectFactory.hpp>
+#include <Resources/ObjectFactory.hpp>
 
 class GameScene : public engine::OneRmlDocScene
 {
@@ -162,7 +162,7 @@ private:
 
     // resources::ObjectLibrary objectLibrary_;
     // resources::ObjectFactory objectFactory_{objectLibrary_};
-    resources::GameObjectFactory objectFactory_;
+    resources::ObjectFactory objectFactory_;
 
     std::unique_ptr<GameObject> prEntity_ = nullptr;
     bool pressed_ = false;

@@ -25,10 +25,10 @@
 namespace resources
 {
 
-class GameObjectFactory
+class ObjectFactory
 {
 public:
-    GameObjectFactory() = default;
+    ObjectFactory() = default;
 
     bool loadPack(const std::string &packName)
     {
