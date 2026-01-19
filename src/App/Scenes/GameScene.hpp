@@ -26,6 +26,7 @@
 #include <Engine/OneRmlDocScene.hpp>
 // #include <Resources/ObjectLibrary.hpp>
 #include <Resources/ObjectFactory.hpp>
+#include <stdexcept>
 
 class GameScene : public engine::OneRmlDocScene
 {
@@ -65,7 +66,7 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
         
-        if (!objectFactory_.loadPack("friuts"))
+        if (!objectFactory_.loadPack("fruits"))
             SDL_Log("Failed to load object pack: conis/coins");
         
         timer_.start();
@@ -97,8 +98,10 @@ public:
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 pressed_ = true;
-
-                auto created = objectFactory_.tryCreateById(world_, 1, {event.button.x, startY_});
+                auto idpt = objectFactory_.getIdByLevel(3);
+                if(!idpt.has_value())
+                    throw std::logic_error("Error");
+                auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
                 // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
                 if (!created)
                     return;

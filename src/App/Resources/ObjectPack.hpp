@@ -180,7 +180,6 @@ private:
         {
             out.type = ObjectFormType::Polygon;
             std::vector<sdl3::Vector2f> vertices;
-            vertices.reserve(8);
 
             for (const pugi::xml_node v : form.children())
             {
