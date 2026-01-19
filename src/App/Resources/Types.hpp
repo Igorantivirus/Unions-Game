@@ -61,7 +61,7 @@ public:
 
     // std::string - Texture
     // sdl3::Color - Color
-    std::variant<std::string, sdl3::Color> filler = sdl3::Colors::Black;
+    std::variant<std::string, sdl3::Color> filler = sdl3::Colors::White;
 
 public:
     std::string getTextureName() const
@@ -74,7 +74,7 @@ public:
     {
         if (std::holds_alternative<sdl3::Color>(filler))
             return std::get<sdl3::Color>(filler);
-        return sdl3::Colors::Black;
+        return sdl3::Colors::White;
     }
 };
 

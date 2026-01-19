@@ -1,9 +1,11 @@
 #pragma once
 
+#include <SDLWrapper/DrawTransformObjects/CircleShape.hpp>
 #include <SDLWrapper/Names.hpp>
 
 #include "Config.hpp"
 #include "Entity.hpp"
+#include "box2d/b2_circle_shape.h"
 
 namespace EntityFactory
 {
@@ -55,14 +57,29 @@ inline Entity createFromShape(b2World &world, const sdl3::EllipseShape &ellipse,
     return Entity(body, std::move(shapeCopy));
 }
 
+// 3. Перегрузка для ОКРУЖНОСТИ
+inline Entity createFromShape(b2World &world, const sdl3::CircleShape &circle, b2BodyDef bd, b2FixtureDef fd)
+{
+    auto shapeCopy = std::make_unique<sdl3::CircleShape>(circle);
+
+    b2Body *body = createBaseBody(world, *shapeCopy, std::move(bd));
+    b2CircleShape shape;
+    shape.m_radius = circle.getRadius() * Config::MPP;
+    fd.shape = &shape;
+    body->CreateFixture(&fd);
+    return Entity(body, std::move(shapeCopy));
+}
+
 // --- Методы для создания по параметрам ---
 
-inline Entity createRectangle(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f size, sdl3::Color color, b2BodyType type = b2_dynamicBody)
+inline Entity createRectangle(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f size, sdl3::Color color, const sdl3::Texture* texture = nullptr, b2BodyType type = b2_dynamicBody)
 {
     sdl3::RectangleShape rect(size);
     rect.setOrigin(size / 2.f);
     rect.setPosition(pos);
     rect.setFillColor(color);
+    if(texture)
+        rect.setTexture(*texture);
 
     b2BodyDef bd;
     bd.type = type;
@@ -73,11 +90,13 @@ inline Entity createRectangle(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f
     return createFromShape(world, rect, bd, fd);
 }
 
-inline Entity createEllipse(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f radii, sdl3::Color color, b2BodyType type = b2_dynamicBody)
+inline Entity createEllipse(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f radii, sdl3::Color color, const sdl3::Texture* texture = nullptr, b2BodyType type = b2_dynamicBody)
 {
     sdl3::EllipseShape ell(radii);
     ell.setPosition(pos);
     ell.setFillColor(color);
+    if(texture)
+        ell.setTexture(*texture);
 
     b2BodyDef bd;
     bd.type = type;
@@ -86,5 +105,22 @@ inline Entity createEllipse(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f r
     fd.friction = Config::defaultFrictionEllipse;
 
     return createFromShape(world, ell, bd, fd);
+}
+
+inline Entity createCircle(b2World &world, sdl3::Vector2f pos, const float radius, sdl3::Color color, const sdl3::Texture* texture = nullptr, b2BodyType type = b2_dynamicBody)
+{
+    sdl3::CircleShape circ(radius);
+    circ.setPosition(pos);
+    circ.setFillColor(color);
+    if(texture)
+        circ.setTexture(*texture);
+
+    b2BodyDef bd;
+    bd.type = type;
+    b2FixtureDef fd;
+    fd.density = (type == b2_staticBody) ? 0.0f : Config::defaultDensity;
+    fd.friction = Config::defaultFrictionCircle;
+
+    return createFromShape(world, circ, bd, fd);
 }
 } // namespace EntityFactory
