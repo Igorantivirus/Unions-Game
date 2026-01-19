@@ -11,7 +11,6 @@
 
 #include <array>
 #include <box2d/b2_polygon_shape.h>
-#include <exception>
 
 namespace
 {

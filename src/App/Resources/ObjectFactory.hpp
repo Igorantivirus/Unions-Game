@@ -15,8 +15,6 @@
 
 #include <SDL3/SDL_log.h>
 
-#include <algorithm>
-#include <cstddef>
 #include <optional>
 #include <stdexcept>
 #include <string>
