@@ -98,7 +98,7 @@ public:
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 pressed_ = true;
-                auto idpt = objectFactory_.getIdByLevel(3);
+                auto idpt = objectFactory_.getIdByLevel(0);
                 if(!idpt.has_value())
                     throw std::logic_error("Error");
                 auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
