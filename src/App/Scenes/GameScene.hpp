@@ -23,13 +23,11 @@
 #include <SDLWrapper/Names.hpp>
 #include <memory>
 
-
 #include <Engine/OneRmlDocScene.hpp>
 // #include <Resources/ObjectLibrary.hpp>
 #include <App/AppState.hpp>
 #include <Resources/ObjectFactory.hpp>
 #include <stdexcept>
-
 
 class GameScene : public engine::OneRmlDocScene
 {
@@ -111,10 +109,46 @@ public:
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 pressed_ = true;
+                // auto idpt = objectFactory_.getIdByLevel(1);
+                // if (!idpt.has_value())
+                //     throw std::logic_error("Error");
+                // auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
+                // // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
+                // if (!created)
+                //     return;
+
+                // prEntity_ = std::make_unique<GameObject>(std::move(*created));
+                // prEntity_->setEnabled(false);
+            }
+        }
+        if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
+        {
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
+                if(!pressed_ || !prEntity_)
+                    return;
+                prEntity_->setEnabled(true);
+                addPoints(prEntity_->getPoints());
+                objects_.push_back(std::move(*prEntity_.get()));
+                prEntity_.reset();
+                pressed_ = false;
+                startTimer_.start();
+            }
+        }
+        else if (event.type == SDL_EVENT_MOUSE_MOTION)
+        {
+            if (!pressed_)
+                return;
+            if(startTimer_.elapsedTimeS() < secondsForStart)
+                return;
+
+            if (!prEntity_)
+            {
+
                 auto idpt = objectFactory_.getIdByLevel(1);
                 if (!idpt.has_value())
                     throw std::logic_error("Error");
-                auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
+                auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.motion.x, startY_});
                 // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
                 if (!created)
                     return;
@@ -122,22 +156,6 @@ public:
                 prEntity_ = std::make_unique<GameObject>(std::move(*created));
                 prEntity_->setEnabled(false);
             }
-        }
-        if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
-        {
-            if (event.button.button == SDL_BUTTON_LEFT)
-            {
-                pressed_ = false;
-                prEntity_->setEnabled(true);
-                addPoints(prEntity_->getPoints());
-                objects_.push_back(std::move(*prEntity_.get()));
-                prEntity_.reset();
-            }
-        }
-        else if (event.type == SDL_EVENT_MOUSE_MOTION)
-        {
-            if (!pressed_ || !prEntity_)
-                return;
 
             prEntity_->setPosition({event.motion.x, startY_});
         }
@@ -188,6 +206,9 @@ private:
     std::unique_ptr<GameObject> prEntity_ = nullptr;
     bool pressed_ = false;
     float startY_;
+
+    sdl3::Clock startTimer_;
+    float secondsForStart = 0.333f;
 
 private:
     Rml::DataModelHandle dataHandle_;
