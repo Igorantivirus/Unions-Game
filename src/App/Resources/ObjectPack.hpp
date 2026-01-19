@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL3/SDL_error.h>
 #include <filesystem>
 #include <unordered_set>
 
@@ -25,9 +26,8 @@ public:
 
         const auto configPath = folderAbs_ / "config.xml";
 
-        std::string file;
         pugi::xml_document doc;
-        if(!readXml(doc, file, configPath.string()))
+        if (!readXml(doc, configPath.string()))
         {
             unload(textures);
             return false;
@@ -46,32 +46,39 @@ public:
         {
             ObjectDef def;
 
+            const pugi::xml_node meta = objectNode.child("meta");
+            const pugi::xml_node filler = objectNode.child("filler");
+            const pugi::xml_node form = objectNode.child("form");
+
             def.id = objectNode.attribute("id").as_uint();
-            def.level = objectNode.attribute("level").as_uint();
-            def.points = objectNode.attribute("points").as_int(static_cast<int>(def.level));
+            def.level = meta.attribute("level").as_uint();
+            def.points = meta.attribute("points").as_int(static_cast<int>(def.level));
 
-            const std::string textureFile = objectNode.attribute("texture").as_string();
-            if (def.id == 0 || textureFile.empty())
-                continue;
-
-            def.texturePath = packName_ + "/" + textureFile;
-
-            const pugi::xml_node formNode = objectNode.child("form");
-            if (!parseForm(formNode, def.form))
-                continue;
-
-            const auto texPath = folderAbs_ / textureFile;
-            if (!textures.has(def.texturePath) && loadedTextureKeys.insert(def.texturePath).second)
+            if (!parseFiller(filler, def.filler) || !parseForm(form, def.form))
             {
-                if (!textures.load(def.texturePath, texPath))
-                {
-                    unload(textures);
-                    return false;
-                }
+                unload(textures);
+                SDL_Log("Error of parseFiller or parseForm\ns");
+                return false;
             }
-            textureKeys_.insert(def.texturePath);
 
-            objects_[def.id] = std::move(def);
+            if (def.filler.type == ObjectFillerType::Texture)
+            {
+                const std::string fileName = def.filler.getTextureName();
+                const std::string texturePathKey = packName_ + '/' + fileName;
+                const auto texPath = folderAbs_ / fileName;
+                def.filler.filler = texturePathKey;
+                if (!textures.has(texturePathKey) && loadedTextureKeys.insert(texturePathKey).second)
+                {
+                    if (!textures.load(texturePathKey, texPath))
+                    {
+                        unload(textures);
+                        return false;
+                    }
+                }
+                textureKeys_.insert(texturePathKey);
+
+                objects_[def.id] = std::move(def);
+            }
         }
 
         if (objects_.empty())
@@ -114,24 +121,38 @@ public:
     }
 
 private:
-    static bool parseForm(const pugi::xml_node &formNode, ObjectFormDef &out)
+    static bool parseFiller(const pugi::xml_node &filler, ObjectFillerDef &out)
     {
-        if (!formNode)
+        if (!filler)
+            return false;
+        const std::string_view type = filler.attribute("type").as_string();
+        if (type == "texture")
+        {
+            out.type = ObjectFillerType::Texture;
+            std::string texture = filler.attribute("texture").as_string();
+            out.filler = texture;
+            return !texture.empty();
+        }
+        return false;
+    }
+    static bool parseForm(const pugi::xml_node &form, ObjectFormDef &out)
+    {
+        if (!form)
             return false;
 
-        const std::string type = formNode.attribute("type").as_string();
-        if (type == "circle" || type == "circel")
+        const std::string_view type = form.attribute("type").as_string();
+        if (type == "circle")
         {
             out.type = ObjectFormType::Circle;
-            float r = formNode.attribute("radius").as_float(0.f);
+            float r = form.attribute("radius").as_float(0.f);
             out.form = r;
             return r > 0.0f;
         }
         if (type == "ellipse")
         {
             out.type = ObjectFormType::Ellipse;
-            const float rx = formNode.attribute("rx").as_float(0.f);
-            const float ry = formNode.attribute("ry").as_float(0.f);
+            const float rx = form.attribute("rx").as_float(0.f);
+            const float ry = form.attribute("ry").as_float(0.f);
             out.form = sdl3::Vector2f{rx, ry};
             return rx > 0.0f && ry > 0.0f;
         }
@@ -141,7 +162,7 @@ private:
             std::vector<sdl3::Vector2f> vertices;
             vertices.reserve(8);
 
-            for (const pugi::xml_node v : formNode.children())
+            for (const pugi::xml_node v : form.children())
             {
                 const std::string name = v.name();
                 if (name != "vertex")
@@ -156,19 +177,18 @@ private:
             out.form = vertices;
             return vertices.size() >= 3;
         }
-
         return false;
     }
 
-    static bool readXml(pugi::xml_document &doc, std::string &file, const std::string_view configPath)
+    static bool readXml(pugi::xml_document &doc, const std::string_view configPath)
     {
         sdl3io::FileWorker read(configPath, sdl3io::FileWorkerMode::read | sdl3io::FileWorkerMode::binary);
         if (!read.isOpen())
         {
-            SDL_Log("Couldn't open the file");
+            SDL_Log("Couldn't open the file %s\n", SDL_GetError());
             return false;
         }
-        file = read.readAll();
+        std::string file = read.readAll();
         const pugi::xml_parse_result res = doc.load_string(file.c_str());
         if (!res)
         {
