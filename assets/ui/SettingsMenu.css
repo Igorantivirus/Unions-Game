@@ -1,0 +1,235 @@
+/* Базовые стили для RmlUi */
+html {
+    background-color: black;
+}
+
+:root {
+    font-size: 16px;
+}
+
+body {
+    background-color: rgb(173, 216, 230);
+    font-family: Arial;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+}
+
+main {
+    width: 92%;
+    height: 12vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    color: black;
+    font-size: 520%;
+}
+
+#choosen {
+    width: 92%;
+    text-align: center;
+    height: 14vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+
+    padding: 1vh 3%;
+}
+
+#choosen h3 {
+    color: #2c3e50;
+    font-size: 220%;
+    margin: 0 0 1vh 0;
+}
+
+.selected-game {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 2vh 3%;
+    border-radius: 12px;
+    font-size: 280%;
+    font-weight: bold;
+
+    border-width: 2px;
+    border-color: black;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#games {
+    width: 92%;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+
+.game {
+    /* background-color: white;
+    border-radius: 12px;
+    padding: 2vh 3%;
+    margin-bottom: 2vh;
+    border-width: 2px;
+
+    border-color: #007bff;
+    box-sizing: border-box; */
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5vh;
+}
+
+.name {
+    font-size: 300%;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.choos-b {
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px;
+    font-size: 200%;
+    font-weight: bold;
+    cursor: pointer;
+    border-width: 2px;
+
+    border-color: black;
+    width: 30%;
+    height: 7vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.choos-b:active {
+    background-color: #35a000;
+}
+
+.statistic {
+    
+    /* background-color: #f8f9fa; */
+    padding: 1.5vh 2%;
+    /* border-radius: 10px; */
+    margin: 1vh 0 0 0;
+    /* border-width: 1px; */
+
+    /* border-color: #dddddd; */
+    /* box-sizing: border-box; */
+}
+
+.statistic h4 {
+    color: #2c3e50;
+    font-size: 200%;
+    margin: 0 0 1vh 0;
+    text-align: center;
+}
+
+.stats-grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 2%;
+}
+
+.stat-cell {
+    width: 32%;
+    background-color: white;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: #dddddd;
+
+    padding: 1vh 1%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 140%;
+    color: #2c3e50;
+}
+
+.stat-value {
+    font-size: 220%;
+    font-weight: bold;
+    color: black;
+}
+
+footer {
+    width: 92%;
+    height: 12vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+
+    text-align: center;
+    padding-top: 1vh;
+}
+
+.exit-b {
+    width: 48.5%;
+    height: 9vh;
+
+    font-size: 200%;
+    color: white;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    border-width: 2px;
+    border-color: black;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3%;
+    line-height: 1.2;
+    text-align: center;
+}
+
+#save-exit-b {
+    background-color: #007bff;
+}
+
+#throw-exit-b {
+    background-color: #e74c3c;
+}
+
+#save-exit-b:active,
+#throw-exit-b:active {
+    background-color: #35a000;
+}
