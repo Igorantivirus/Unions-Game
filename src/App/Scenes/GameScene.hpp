@@ -19,7 +19,6 @@
 
 #include <App/GameObjects/EntityFactory.hpp>
 #include <App/GameObjects/GameContactCheker.hpp>
-#include <App/GameObjects/ObjectFactory.hpp>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
 #include <memory>
