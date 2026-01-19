@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL3/SDL_error.h>
+#include <SDLWrapper/Math/Colors.hpp>
 #include <filesystem>
 #include <unordered_set>
 
@@ -77,8 +78,8 @@ public:
                 }
                 textureKeys_.insert(texturePathKey);
 
-                objects_[def.id] = std::move(def);
             }
+            objects_[def.id] = std::move(def);
         }
 
         if (objects_.empty())
@@ -132,6 +133,17 @@ private:
             std::string texture = filler.attribute("texture").as_string();
             out.filler = texture;
             return !texture.empty();
+        }
+        if (type == "color")
+        {
+            out.type = ObjectFillerType::Color;
+            sdl3::Color color = sdl3::Color::toColor(
+                filler.attribute("r").as_float(0.f),
+                filler.attribute("g").as_float(0.f),
+                filler.attribute("b").as_float(0.f)
+            );
+            out.filler = color;
+            return color != sdl3::Colors::Black;
         }
         return false;
     }

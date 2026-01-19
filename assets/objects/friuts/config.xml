@@ -14,4 +14,14 @@
         <form type="ellipse" rx="120" ry="140" />
         <filler type="texture" texture="burger.png" />
     </object>
+    <object id="4">
+        <meta level="4" points="50" />
+        <form type="circle" radius="80" />
+        <filler type="color" r="128" g="128" b="255" />
+    </object>
+    <object id="5">
+        <meta level="5" points="100" />
+        <form type="rectangle" width="200" height="250" />
+        <filler type="color" r="0" g="128" b="255" />
+    </object>
 </root>
