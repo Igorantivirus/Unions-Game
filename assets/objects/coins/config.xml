@@ -1,34 +1,52 @@
 <root>
-
-    <object id="1" level="1" texture="kop1.png" points="1">
+    <object id="1">
+        <meta level="1" points="1" />
         <form type="circle" radius="20" />
+        <filler type="texture" texture="kop1.png" />
     </object>
-    <object id="2" level="2" texture="kop5.png" points="5">
+    <object id="2">
+        <meta level="2" points="5" />
         <form type="circle" radius="40" />
+        <filler type="texture" texture="kop5.png" />
     </object>
-    <object id="3" level="3" texture="kop10.png" points="10">
+    <object id="3">
+        <meta level="3" points="10" />
         <form type="circle" radius="60" />
+        <filler type="texture" texture="kop10.png" />
     </object>
-    <object id="4" level="4" texture="kop50.png" points="50">
+    <object id="4">
+        <meta level="4" points="50" />
         <form type="circle" radius="80" />
+        <filler type="texture" texture="kop50.png" />
     </object>
-    <object id="5" level="5" texture="rub1.png" points="10">
+    <object id="5">
+        <meta level="5" points="10" />
         <form type="circle" radius="100" />
+        <filler type="texture" texture="rub1.png" />
     </object>
-    <object id="6" level="6" texture="rub2.png" points="200">
+    <object id="6">
+        <meta level="6" points="200" />
         <form type="circle" radius="120" />
+        <filler type="texture" texture="rub2.png" />
     </object>
-    <object id="7" level="7" texture="rub5.png" points="500">
+    <object id="7">
+        <meta level="7" points="500" />
         <form type="circle" radius="140" />
+        <filler type="texture" texture="rub5.png" />
     </object>
-    <object id="8" level="8" texture="rub10.png" points="1000">
+    <object id="8">
+        <meta level="8" points="1000" />
         <form type="circle" radius="160" />
+        <filler type="texture" texture="rub10.png" />
     </object>
-    <object id="9" level="9" texture="rub25.png" points="2500">
+    <object id="9">
+        <meta level="9" points="2500" />
         <form type="circle" radius="180" />
+        <filler type="texture" texture="rub25.png" />
     </object>
-    <object id="10" level="10" texture="rub50.png" points="5000">
+    <object id="10">
+        <meta level="10" points="5000" />
         <form type="circle" radius="200" />
+        <filler type="texture" texture="rub50.png" />
     </object>
-
 </root>
