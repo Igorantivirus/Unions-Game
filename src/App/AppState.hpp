@@ -50,6 +50,12 @@ public:
         return currentPackageName_;
     }
 
+    void setCurrentPackageName(std::string name)
+    {
+        if (!name.empty())
+            currentPackageName_ = std::move(name);
+    }
+
 private:
     std::filesystem::path statPath_;
     statistic::AllGameStatistic stat_{};
@@ -57,4 +63,3 @@ private:
 };
 
 } // namespace app
-
