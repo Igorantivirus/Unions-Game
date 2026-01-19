@@ -14,10 +14,10 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_keycode.h>
 
-#include <GameObjects/Entity.hpp>
+#include <PhysicBase/Entity.hpp>
 #include <SDL3/SDL_mouse.h>
 
-#include <App/GameObjects/EntityFactory.hpp>
+#include <App/PhysicBase/EntityFactory.hpp>
 #include <App/GameObjects/GameContactCheker.hpp>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>

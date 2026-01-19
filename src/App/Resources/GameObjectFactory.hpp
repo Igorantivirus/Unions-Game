@@ -1,10 +1,10 @@
 #pragma once
 
-#include <App/GameObjects/Config.hpp>
-#include <App/GameObjects/Entity.hpp>
-#include <App/GameObjects/EntityFactory.hpp>
+#include <App/PhysicBase/Config.hpp>
+#include <App/PhysicBase/Entity.hpp>
+#include <App/PhysicBase/EntityFactory.hpp>
 #include <App/GameObjects/GameObject.hpp>
-#include <App/GameObjects/PolygonShape.hpp>
+#include <App/PhysicBase/PolygonShape.hpp>
 #include <App/Resources/PackageContainer.hpp>
 
 #include <SDLWrapper/DrawTransformObjects/CircleShape.hpp>

@@ -2,7 +2,7 @@
 
 #include <Core/Types.hpp>
 
-#include "Entity.hpp"
+#include <App/PhysicBase/Entity.hpp>
 
 class GameObject : public Entity
 {
