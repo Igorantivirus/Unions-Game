@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <root>
 	<game id="coins" name="Монеточки">
-		<statistic bestTime="01:01" record="4514" countGames="2" />
+		<statistic bestTime="01:01" record="4514" countGames="3" />
 	</game>
 	<game id="fruits" name="Фруктики">
-		<statistic bestTime="01:09" record="252" countGames="1" />
+		<statistic bestTime="01:09" record="252" countGames="2" />
 	</game>
 </root>

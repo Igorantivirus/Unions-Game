@@ -1,45 +1,5 @@
 <root>
     <object id="1">
-        <meta level="3" points="1" />
-        <form type="ellipse" rx="42.6" ry="52.5" />
-        <filler type="texture" texture="plam.png" />
-    </object>
-    <object id="4">
-        <meta level="4" points="1" />
-        <form type="circle" radius="90" />
-        <filler type="texture" texture="orange.png" />
-    </object>
-    <object id="2">
-        <meta level="2" points="1" />
-        <form type="polygon">
-            <vertex x="-44" y="-5" />
-            <vertex x="-45" y="14" />
-            <vertex x="-43" y="26" />
-            <vertex x="-33" y="38" />
-            <vertex x="-19" y="46" />
-            <vertex x="0" y="50" />
-            <vertex x="14" y="49" />
-            <vertex x="31" y="43" />
-            <vertex x="42" y="32" />
-            <vertex x="48" y="13" />
-            <vertex x="47" y="-17" />
-            <vertex x="44" y="-30" />
-            <vertex x="40" y="-46" />
-            <vertex x="35" y="-58" />
-            <vertex x="29" y="-66" />
-            <vertex x="23" y="-76" />
-            <vertex x="16" y="-84" />
-            <vertex x="2" y="-88" />
-            <vertex x="-10" y="-84" />
-            <vertex x="-19" y="-76" />
-            <vertex x="-27" y="-67" />
-            <vertex x="-35" y="-52" />
-            <vertex x="-40" y="-35" />
-            <vertex x="-43" y="-21" />
-        </form>
-        <filler type="texture" texture="avakado.png" />
-    </object>
-    <object id="3">
         <meta level="1" points="1" />
         <form type="polygon">
             <vertex x="-27" y="0" />
@@ -78,42 +38,44 @@
         </form>
         <filler type="texture" texture="berry.png" />
     </object>
-    <object id="5">
-        <meta level="5" points="1" />
-        <form type="polygon">
-            <vertex x="-125" y="-95" />
-            <vertex x="-103" y="-84" />
-            <vertex x="-94" y="-73" />
-            <vertex x="-63" y="-55" />
-            <vertex x="-15" y="-34" />
-            <vertex x="48" y="-34" />
-            <vertex x="80" y="-43" />
-            <vertex x="127" y="-63" />
-            <vertex x="163" y="-66" />
-            <vertex x="174" y="-57" />
-            <vertex x="174" y="-42" />
-            <vertex x="169" y="-28" />
-            <vertex x="157" y="-14" />
-            <vertex x="140" y="-1" />
-            <vertex x="116" y="11" />
-            <vertex x="85" y="20" />
-            <vertex x="54" y="29" />
-            <vertex x="32" y="31" />
-            <vertex x="-57" y="31" />
-            <vertex x="-97" y="21" />
-            <vertex x="-123" y="10" />
-            <vertex x="-142" y="-30" />
-            <vertex x="-142" y="-52" />
-            <vertex x="-147" y="-66" />
-            <vertex x="-148" y="-81" />
-            <vertex x="-140" y="-92" />
-        </form>
-        <filler type="texture" texture="banana.png" />
+    <object id="2">
+        <meta level="2" points="1" />
+        <form type="ellipse" rx="42.6" ry="52.5" />
+        <filler type="texture" texture="plam.png" />
     </object>
-
-    <object id="6">
-        <meta level="6" points="1" />
-        <form type="polygon">
+    <object id="3">
+        <meta level="3" points="1" />
+        <form type="polygon" sizeRatio="1.1">
+            <vertex x="-44" y="-5" />
+            <vertex x="-45" y="14" />
+            <vertex x="-43" y="26" />
+            <vertex x="-33" y="38" />
+            <vertex x="-19" y="46" />
+            <vertex x="0" y="50" />
+            <vertex x="14" y="49" />
+            <vertex x="31" y="43" />
+            <vertex x="42" y="32" />
+            <vertex x="48" y="13" />
+            <vertex x="47" y="-17" />
+            <vertex x="44" y="-30" />
+            <vertex x="40" y="-46" />
+            <vertex x="35" y="-58" />
+            <vertex x="29" y="-66" />
+            <vertex x="23" y="-76" />
+            <vertex x="16" y="-84" />
+            <vertex x="2" y="-88" />
+            <vertex x="-10" y="-84" />
+            <vertex x="-19" y="-76" />
+            <vertex x="-27" y="-67" />
+            <vertex x="-35" y="-52" />
+            <vertex x="-40" y="-35" />
+            <vertex x="-43" y="-21" />
+        </form>
+        <filler type="texture" texture="avakado.png" />
+    </object>
+    <object id="4">
+        <meta level="4" points="1" />
+        <form type="polygon" sizeRatio="1.33">
             <vertex x="-54" y="23" />
             <vertex x="-53" y="30" />
             <vertex x="-49" y="47" />
@@ -143,11 +105,46 @@
         </form>
         <filler type="texture" texture="mango.png" />
     </object>
-
-
+    <object id="5">
+        <meta level="5" points="1" />
+        <form type="polygon" sizeRatio="1.5">
+            <vertex x="-125" y="-95" />
+            <vertex x="-103" y="-84" />
+            <vertex x="-94" y="-73" />
+            <vertex x="-63" y="-55" />
+            <vertex x="-15" y="-34" />
+            <vertex x="48" y="-34" />
+            <vertex x="80" y="-43" />
+            <vertex x="127" y="-63" />
+            <vertex x="163" y="-66" />
+            <vertex x="174" y="-57" />
+            <vertex x="174" y="-42" />
+            <vertex x="169" y="-28" />
+            <vertex x="157" y="-14" />
+            <vertex x="140" y="-1" />
+            <vertex x="116" y="11" />
+            <vertex x="85" y="20" />
+            <vertex x="54" y="29" />
+            <vertex x="32" y="31" />
+            <vertex x="-57" y="31" />
+            <vertex x="-97" y="21" />
+            <vertex x="-123" y="10" />
+            <vertex x="-142" y="-30" />
+            <vertex x="-142" y="-52" />
+            <vertex x="-147" y="-66" />
+            <vertex x="-148" y="-81" />
+            <vertex x="-140" y="-92" />
+        </form>
+        <filler type="texture" texture="banana.png" />
+    </object>
+    <object id="6">
+        <meta level="6" points="1" />
+        <form type="circle" radius="150" />
+        <filler type="texture" texture="orange.png" />
+    </object>
     <object id="7">
         <meta level="7" points="1" />
-        <form type="polygon">
+        <form type="polygon" sizeRatio="3">
             <vertex x="-59" y="-4" />
             <vertex x="-59" y="33" />
             <vertex x="-56" y="44" />
@@ -183,10 +180,9 @@
         </form>
         <filler type="texture" texture="dragon.png" />
     </object>
-
     <object id="8">
         <meta level="8" points="1" />
-        <form type="polygon">
+        <form type="polygon" sizeRatio="4">
             <vertex x="-38" y="-4" />
             <vertex x="-38" y="4" />
             <vertex x="-36" y="10" />
