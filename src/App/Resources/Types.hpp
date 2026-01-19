@@ -15,7 +15,8 @@ enum class ObjectFormType : unsigned char
 {
     Circle,
     Ellipse,
-    Polygon8
+    Polygon8,
+    Rectangle
 };
 enum class ObjectFillerType : unsigned char
 {
@@ -29,7 +30,7 @@ public:
     ObjectFormType type = ObjectFormType::Circle;
 
     // float                       - Circle radius
-    // sdl3::Vector2f              - Ellipse radii
+    // sdl3::Vector2f              - Ellipse radii or Rectangle size
     // std::vector<sdl3::Vector2f> - Polygon8
     std::variant<float, sdl3::Vector2f, std::vector<sdl3::Vector2f>> form = 0.f;
 
@@ -41,6 +42,12 @@ public:
         return 0.f;
     }
     sdl3::Vector2f getRadii() const
+    {
+        if (std::holds_alternative<sdl3::Vector2f>(form))
+            return std::get<sdl3::Vector2f>(form);
+        return {0.f, 0.f};
+    }
+    sdl3::Vector2f getSize() const
     {
         if (std::holds_alternative<sdl3::Vector2f>(form))
             return std::get<sdl3::Vector2f>(form);

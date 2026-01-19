@@ -156,6 +156,14 @@ private:
             out.form = sdl3::Vector2f{rx, ry};
             return rx > 0.0f && ry > 0.0f;
         }
+        if (type == "rectangle")
+        {
+            out.type = ObjectFormType::Rectangle;
+            const float rx = form.attribute("width").as_float(0.f);
+            const float ry = form.attribute("height").as_float(0.f);
+            out.form = sdl3::Vector2f{rx, ry};
+            return rx > 0.0f && ry > 0.0f;
+        }
         if (type == "poligon8" || type == "polygon8")
         {
             out.type = ObjectFormType::Polygon8;

@@ -109,6 +109,8 @@ public:
                 return createEllipse(world, *def, tex, pos, type);
             case ObjectFormType::Polygon8:
                 return createPolygon(world, *def, tex, pos, type);
+            case ObjectFormType::Rectangle:
+                return createRectangle(world, *def, tex, pos, type);
             default:
                 SDL_Log("ObjectFactory: Unsuportable ObjectFormType.\n");
                 return std::nullopt;
@@ -144,24 +146,16 @@ private:
 
     static GameObject createEllipse(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
     {
-        const sdl3::Vector2f radii = std::get<sdl3::Vector2f>(def.form.form);
+        const sdl3::Vector2f radii = def.form.getRadii();
+        const sdl3::Color color = def.filler.getColor();
+        return wrapEntity(EntityFactory::createEllipse(world, pos, radii, color, tex, type), def);
+    }
 
-        sdl3::EllipseShape shape(radii, 40);
-        shape.setPosition(pos);
-        shape.setFillColor(sdl3::Colors::White);
-        if (tex)
-            shape.setTexture(*tex);
-
-        b2BodyDef bd;
-        bd.type = type;
-
-        b2FixtureDef fd;
-        fd.density = (type == b2_staticBody) ? 0.0f : Config::defaultDensity;
-        fd.friction = Config::defaultFrictionEllipse;
-
-        // Используем уже существующую аппроксимацию через треугольные секторы.
-        Entity e = EntityFactory::createFromShape(world, shape, bd, fd);
-        return wrapEntity(std::move(e), def);
+    static GameObject createRectangle(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
+    {
+        const sdl3::Vector2f size = def.form.getSize();
+        const sdl3::Color color = def.filler.getColor();
+        return wrapEntity(EntityFactory::createRectangle(world, pos, size, color, tex, type), def);
     }
 
     static GameObject createPolygon(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)

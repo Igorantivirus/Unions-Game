@@ -65,7 +65,7 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
         
-        if (!objectFactory_.loadPack("coins"))
+        if (!objectFactory_.loadPack("banknots"))
             SDL_Log("Failed to load object pack: conis/coins");
         
         timer_.start();
@@ -98,7 +98,8 @@ public:
             {
                 pressed_ = true;
 
-                auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
+                auto created = objectFactory_.tryCreateById(world_, 1, {event.button.x, startY_});
+                // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
                 if (!created)
                     return;
 
