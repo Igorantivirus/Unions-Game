@@ -99,7 +99,7 @@ public:
 
         try
         {
-            const sdl3::Texture *tex = library_.textures().get(def->texturePath);
+            const sdl3::Texture *tex = library_.textures().get(def->filler.getTextureName());
 
             switch (def->form.type)
             {
@@ -125,7 +125,7 @@ public:
         if (!def)
             throw std::logic_error("ObjectFactory: unknown object id");
 
-        const sdl3::Texture *tex = library_.textures().get(def->texturePath);
+        const sdl3::Texture *tex = library_.textures().get(def->filler.getTextureName());
 
         switch (def->form.type)
         {
