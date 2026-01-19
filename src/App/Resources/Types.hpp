@@ -15,7 +15,7 @@ enum class ObjectFormType : unsigned char
 {
     Circle,
     Ellipse,
-    Polygon8,
+    Polygon,
     Rectangle
 };
 enum class ObjectFillerType : unsigned char
@@ -53,7 +53,7 @@ public:
             return std::get<sdl3::Vector2f>(form);
         return {0.f, 0.f};
     }
-    std::vector<sdl3::Vector2f> getPolygon8() const
+    std::vector<sdl3::Vector2f> getPolygon() const
     {
         if (std::holds_alternative<std::vector<sdl3::Vector2f>>(form))
             return std::get<std::vector<sdl3::Vector2f>>(form);

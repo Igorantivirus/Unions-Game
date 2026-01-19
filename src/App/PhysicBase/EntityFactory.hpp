@@ -7,6 +7,143 @@
 #include "Entity.hpp"
 #include "box2d/b2_circle_shape.h"
 
+#include "PolygonShape.hpp"
+
+#include <array>
+#include <box2d/b2_polygon_shape.h>
+#include <exception>
+
+namespace
+{
+
+inline float cross(const b2Vec2 &a, const b2Vec2 &b, const b2Vec2 &c)
+{
+    // векторное произведение (b - a) x (c - a)
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
+
+// подписанная площадь ( >0 для CCW )
+inline float signedArea(const std::vector<b2Vec2> &poly)
+{
+    const int n = static_cast<int>(poly.size());
+    float area = 0.0f;
+    for (int i = 0, j = n - 1; i < n; j = i++)
+    {
+        area += poly[j].x * poly[i].y - poly[i].x * poly[j].y;
+    }
+    return 0.5f * area;
+}
+
+inline bool pointInTriangle(const b2Vec2 &p, const b2Vec2 &a, const b2Vec2 &b, const b2Vec2 &c)
+{
+    // предполагаем CCW
+    constexpr float eps = 1e-6f;
+    float c1 = cross(a, b, p);
+    float c2 = cross(b, c, p);
+    float c3 = cross(c, a, p);
+    return (c1 >= -eps && c2 >= -eps && c3 >= -eps);
+}
+
+// простая ear-clipping триангуляция простого многоугольника
+inline void earClipTriangulate(const std::vector<b2Vec2> &input,
+                               std::vector<std::array<b2Vec2, 3>> &outTriangles)
+{
+    const int n = static_cast<int>(input.size());
+    if (n < 3)
+        return;
+
+    // Копируем индексы вершин
+    std::vector<int> V(n);
+    // Обеспечиваем CCW ориентацию
+    if (signedArea(input) > 0.0f)
+    {
+        for (int i = 0; i < n; ++i)
+            V[i] = i;
+    }
+    else
+    {
+        // если CW, разворачиваем индексы
+        for (int i = 0; i < n; ++i)
+            V[i] = n - 1 - i;
+    }
+
+    int nv = n;
+    int guard = 0;
+    const int guardLimit = 10000;
+
+    while (nv > 3 && guard++ < guardLimit)
+    {
+        bool earFound = false;
+
+        for (int vi = 0; vi < nv; ++vi)
+        {
+            int i0 = V[(vi + nv - 1) % nv];
+            int i1 = V[vi];
+            int i2 = V[(vi + 1) % nv];
+
+            const b2Vec2 &a = input[i0];
+            const b2Vec2 &b = input[i1];
+            const b2Vec2 &c = input[i2];
+
+            // convex? (для CCW многоугольника "ухо" должно иметь положительный cross)
+            if (cross(a, b, c) <= 0.0f)
+                continue;
+
+            // проверяем, что внутри треугольника нет других точек
+            bool hasPointInside = false;
+            for (int vj = 0; vj < nv; ++vj)
+            {
+                int idx = V[vj];
+                if (idx == i0 || idx == i1 || idx == i2)
+                    continue;
+                if (pointInTriangle(input[idx], a, b, c))
+                {
+                    hasPointInside = true;
+                    break;
+                }
+            }
+            if (hasPointInside)
+                continue;
+
+            // нашли "ухо"
+            std::array<b2Vec2, 3> tri{a, b, c};
+            outTriangles.push_back(tri);
+
+            // удаляем вершину i1 из списка
+            V.erase(V.begin() + vi);
+            --nv;
+            earFound = true;
+            break;
+        }
+
+        if (!earFound)
+        {
+            // что-то пошло не так (самопересечения, совпадающие точки и т.п.)
+            break;
+        }
+    }
+
+    // Остался последний треугольник
+    if (nv == 3)
+    {
+        std::array<b2Vec2, 3> tri{
+            input[V[0]],
+            input[V[1]],
+            input[V[2]]};
+        outTriangles.push_back(tri);
+    }
+}
+
+inline float triangleArea2(const b2Vec2 &a, const b2Vec2 &b, const b2Vec2 &c)
+{
+    // удвоенная площадь = |(b - a) x (c - a)|
+    return std::abs(
+        (b.x - a.x) * (c.y - a.y) -
+        (b.y - a.y) * (c.x - a.x));
+}
+
+} // anonymous namespace
+
 namespace EntityFactory
 {
 
@@ -70,15 +207,153 @@ inline Entity createFromShape(b2World &world, const sdl3::CircleShape &circle, b
     return Entity(body, std::move(shapeCopy));
 }
 
+// // 4. Перегрузка для ПРОИЗВОЛЬНОГО ПОЛИГОНА (может быть невыпуклый)
+// inline Entity createFromShape(b2World &world, const sdl3::PolygonShape &polyShape, b2BodyDef bd, b2FixtureDef fd)
+// {
+//     auto shapeCopy = std::make_unique<sdl3::PolygonShape>(polyShape);
+
+//     const auto &points = shapeCopy->getPoints();
+//     if (points.size() < 3)
+//     {
+//         b2Body *body = createBaseBody(world, *shapeCopy, std::move(bd));
+//         return Entity(body, std::move(shapeCopy));
+//     }
+
+//     // Локальные -> Box2D (метры)
+//     std::vector<b2Vec2> verts;
+//     verts.reserve(points.size());
+//     for (const auto &p : points)
+//     {
+//         verts.emplace_back(p.x * Config::MPP, p.y * Config::MPP);
+//     }
+
+//     std::vector<std::array<b2Vec2, 3>> triangles;
+//     earClipTriangulate(verts, triangles);
+
+//     b2Body *body = createBaseBody(world, *shapeCopy, std::move(bd));
+
+//     int i = 0;
+//     const float minArea2 = 1e-4f; // порог на удвоенную площадь в мировых единицах, можно подобрать
+
+//     for (const auto &tri : triangles)
+//     {
+//         ++i;
+
+//         // 1) фильтруем слишком маленькие/вырожденные треугольники
+//         float a2 = triangleArea2(tri[0], tri[1], tri[2]);
+//         if (a2 < minArea2)
+//         {
+//             SDL_Log("Skip tiny triangle #%d (area2=%g)\n", i, a2);
+//             continue;
+//         }
+
+//         b2PolygonShape poly;
+//         poly.Set(tri.data(), 3);
+
+//         // 2) проверяем, что Box2D реально оставил >= 3 вершин
+//         if (poly.m_count < 3)
+//         {
+//             SDL_Log("Degenerate triangle after Box2D cleanup, skip #%d (count=%d)\n",
+//                     i, poly.m_count);
+//             continue;
+//         }
+
+//         b2FixtureDef fdPr = fd;
+//         fdPr.shape = &poly;
+//         body->CreateFixture(&fdPr);
+//     }
+
+//     return Entity(body, std::move(shapeCopy));
+// }
+
+
+// 4. Перегрузка для ПРОИЗВОЛЬНОГО ПОЛИГОНА (может быть невыпуклый)
+// ПРИМЕЧАНИЕ: После изменений этот метод корректно работает только для выпуклых полигонов.
+inline Entity createFromShape(b2World &world, const sdl3::PolygonShape &polyShape, b2BodyDef bd, b2FixtureDef fd)
+{
+    auto shapeCopy = std::make_unique<sdl3::PolygonShape>(polyShape);
+
+    const auto &points = shapeCopy->getPoints();
+    if (points.size() < 3)
+    {
+        // Недостаточно точек для создания хотя бы одного треугольника
+        b2Body *body = createBaseBody(world, *shapeCopy, std::move(bd));
+        return Entity(body, std::move(shapeCopy));
+    }
+
+    // Локальные -> Box2D (метры)
+    std::vector<b2Vec2> verts;
+    verts.reserve(points.size());
+    for (const auto &p : points)
+    {
+        verts.emplace_back(p.x * Config::MPP, p.y * Config::MPP);
+    }
+
+    // --- НАЧАЛО ИЗМЕНЕНИЙ ---
+    // Упрощенная веерная триангуляция.
+    // Вместо сложного алгоритма "ear clipping" создаем треугольники,
+    // используя общую вершину в локальной точке (0,0).
+    std::vector<std::array<b2Vec2, 3>> triangles;
+    const b2Vec2 centerPoint(0.0f, 0.0f); 
+
+    // Создаем треугольники, соединяя каждую пару соседних вершин с центром.
+    for (size_t i = 0; i < verts.size(); ++i)
+    {
+        // Берем текущую вершину и следующую (с замыканием на первую)
+        const b2Vec2& p1 = verts[i];
+        const b2Vec2& p2 = verts[(i + 1) % verts.size()];
+
+        // Треугольник состоит из центра и двух соседних вершин полигона.
+        std::array<b2Vec2, 3> tri = { centerPoint, p1, p2 };
+        triangles.push_back(tri);
+    }
+    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+
+    b2Body *body = createBaseBody(world, *shapeCopy, std::move(bd));
+
+    int i = 0;
+    const float minArea2 = 1e-4f; 
+
+    for (const auto &tri : triangles)
+    {
+        ++i;
+
+        // 1) фильтруем слишком маленькие/вырожденные треугольники
+        float a2 = triangleArea2(tri[0], tri[1], tri[2]);
+        if (a2 < minArea2)
+        {
+            SDL_Log("Skip tiny triangle #%d (area2=%g)\n", i, a2);
+            continue;
+        }
+
+        b2PolygonShape poly;
+        poly.Set(tri.data(), 3);
+
+        // 2) проверяем, что Box2D реально оставил >= 3 вершин
+        if (poly.m_count < 3)
+        {
+            SDL_Log("Degenerate triangle after Box2D cleanup, skip #%d (count=%d)\n",
+                    i, poly.m_count);
+            continue;
+        }
+
+        b2FixtureDef fdPr = fd;
+        fdPr.shape = &poly;
+        body->CreateFixture(&fdPr);
+    }
+
+    return Entity(body, std::move(shapeCopy));
+}
+
 // --- Методы для создания по параметрам ---
 
-inline Entity createRectangle(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f size, sdl3::Color color, const sdl3::Texture* texture = nullptr, b2BodyType type = b2_dynamicBody)
+inline Entity createRectangle(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f size, sdl3::Color color, const sdl3::Texture *texture = nullptr, b2BodyType type = b2_dynamicBody)
 {
     sdl3::RectangleShape rect(size);
     rect.setOrigin(size / 2.f);
     rect.setPosition(pos);
     rect.setFillColor(color);
-    if(texture)
+    if (texture)
         rect.setTexture(*texture);
 
     b2BodyDef bd;
@@ -90,12 +365,12 @@ inline Entity createRectangle(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f
     return createFromShape(world, rect, bd, fd);
 }
 
-inline Entity createEllipse(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f radii, sdl3::Color color, const sdl3::Texture* texture = nullptr, b2BodyType type = b2_dynamicBody)
+inline Entity createEllipse(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f radii, sdl3::Color color, const sdl3::Texture *texture = nullptr, b2BodyType type = b2_dynamicBody)
 {
     sdl3::EllipseShape ell(radii);
     ell.setPosition(pos);
     ell.setFillColor(color);
-    if(texture)
+    if (texture)
         ell.setTexture(*texture);
 
     b2BodyDef bd;
@@ -107,12 +382,12 @@ inline Entity createEllipse(b2World &world, sdl3::Vector2f pos, sdl3::Vector2f r
     return createFromShape(world, ell, bd, fd);
 }
 
-inline Entity createCircle(b2World &world, sdl3::Vector2f pos, const float radius, sdl3::Color color, const sdl3::Texture* texture = nullptr, b2BodyType type = b2_dynamicBody)
+inline Entity createCircle(b2World &world, sdl3::Vector2f pos, const float radius, sdl3::Color color, const sdl3::Texture *texture = nullptr, b2BodyType type = b2_dynamicBody)
 {
     sdl3::CircleShape circ(radius);
     circ.setPosition(pos);
     circ.setFillColor(color);
-    if(texture)
+    if (texture)
         circ.setTexture(*texture);
 
     b2BodyDef bd;
@@ -123,4 +398,25 @@ inline Entity createCircle(b2World &world, sdl3::Vector2f pos, const float radiu
 
     return createFromShape(world, circ, bd, fd);
 }
+
+inline Entity createPolygon(b2World &world, sdl3::Vector2f pos, const std::vector<sdl3::Vector2f> &points, sdl3::Color color, const sdl3::Texture *texture = nullptr, b2BodyType type = b2_dynamicBody)
+{
+    sdl3::PolygonShape poly(points);
+    poly.setPosition(pos);
+    poly.setFillColor(color);
+    if (texture)
+        poly.setTexture(*texture);
+
+    b2BodyDef bd;
+    bd.type = type;
+
+    b2FixtureDef fd;
+    fd.density = (type == b2_staticBody) ? 0.0f : Config::defaultDensity;
+    // можешь завести свой Config::defaultFrictionPolygon,
+    // пока возьмём, например, прямоугольник:
+    fd.friction = Config::defaultFrictionRect;
+
+    return createFromShape(world, poly, bd, fd);
+}
+
 } // namespace EntityFactory

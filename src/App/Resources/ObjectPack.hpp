@@ -176,9 +176,9 @@ private:
             out.form = sdl3::Vector2f{rx, ry};
             return rx > 0.0f && ry > 0.0f;
         }
-        if (type == "poligon8" || type == "polygon8")
+        if (type == "polygon")
         {
-            out.type = ObjectFormType::Polygon8;
+            out.type = ObjectFormType::Polygon;
             std::vector<sdl3::Vector2f> vertices;
             vertices.reserve(8);
 
@@ -191,8 +191,8 @@ private:
                 const float x = v.attribute("x").as_float();
                 const float y = v.attribute("y").as_float();
                 vertices.push_back({x, y});
-                if (vertices.size() == 8)
-                    break;
+                // if (vertices.size() == 8)
+                //     break;
             }
             out.form = vertices;
             return vertices.size() >= 3;

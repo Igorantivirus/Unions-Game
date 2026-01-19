@@ -252,7 +252,7 @@ private:
         std::size_t obj2Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data2)));
         if (obj1Ind == objects_.size() || obj2Ind == objects_.size())
             return;
-
+        
         GameObject &obj1 = objects_[obj1Ind];
         GameObject &obj2 = objects_[obj2Ind];
 

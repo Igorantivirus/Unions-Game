@@ -107,7 +107,7 @@ public:
                 return createCircle(world, *def, tex, pos, type);
             case ObjectFormType::Ellipse:
                 return createEllipse(world, *def, tex, pos, type);
-            case ObjectFormType::Polygon8:
+            case ObjectFormType::Polygon:
                 return createPolygon(world, *def, tex, pos, type);
             case ObjectFormType::Rectangle:
                 return createRectangle(world, *def, tex, pos, type);
@@ -160,38 +160,44 @@ private:
 
     static GameObject createPolygon(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
     {
-        const auto verticesPx = std::get<std::vector<sdl3::Vector2f>>(def.form.form);
-        if (verticesPx.size() < 3)
-            throw std::logic_error("ObjectFactory: polygon requires >= 3 vertices");
 
-        sdl3::PolygonShape shape(verticesPx);
-        shape.setPosition(pos);
-        shape.setFillColor(sdl3::Colors::White);
-        if (tex)
-            shape.setTexture(*tex);
+        const std::vector<sdl3::Vector2f> points = def.form.getPolygon();
+        const sdl3::Color color = def.filler.getColor();
+        return wrapEntity(EntityFactory::createPolygon(world, pos, points, color, tex, type), def);
 
-        b2BodyDef bd;
-        bd.type = type;
-        bd.position.Set(shape.getPosition().x * Config::MPP, shape.getPosition().y * Config::MPP);
-        bd.angle = shape.getRotation() * SDL_PI_F / 180.f;
 
-        b2Body *body = world.CreateBody(&bd);
+        // const auto verticesPx = std::get<std::vector<sdl3::Vector2f>>(def.form.form);
+        // if (verticesPx.size() < 3)
+        //     throw std::logic_error("ObjectFactory: polygon requires >= 3 vertices");
 
-        std::vector<b2Vec2> verts;
-        verts.reserve(std::min<std::size_t>(8, verticesPx.size()));
-        for (std::size_t i = 0; i < verticesPx.size() && verts.size() < 8; ++i)
-            verts.push_back({verticesPx[i].x * Config::MPP, verticesPx[i].y * Config::MPP});
+        // sdl3::PolygonShape shape(verticesPx);
+        // shape.setPosition(pos);
+        // shape.setFillColor(sdl3::Colors::White);
+        // if (tex)
+        //     shape.setTexture(*tex);
 
-        b2PolygonShape poly;
-        poly.Set(verts.data(), static_cast<int>(verts.size()));
+        // b2BodyDef bd;
+        // bd.type = type;
+        // bd.position.Set(shape.getPosition().x * Config::MPP, shape.getPosition().y * Config::MPP);
+        // bd.angle = shape.getRotation() * SDL_PI_F / 180.f;
 
-        b2FixtureDef fd;
-        fd.shape = &poly;
-        fd.density = (type == b2_staticBody) ? 0.0f : Config::defaultDensity;
-        fd.friction = Config::defaultFrictionRect;
-        body->CreateFixture(&fd);
+        // b2Body *body = world.CreateBody(&bd);
 
-        return wrapEntity(Entity(body, std::make_unique<sdl3::PolygonShape>(shape)), def);
+        // std::vector<b2Vec2> verts;
+        // verts.reserve(std::min<std::size_t>(8, verticesPx.size()));
+        // for (std::size_t i = 0; i < verticesPx.size() && verts.size() < 8; ++i)
+        //     verts.push_back({verticesPx[i].x * Config::MPP, verticesPx[i].y * Config::MPP});
+
+        // b2PolygonShape poly;
+        // poly.Set(verts.data(), static_cast<int>(verts.size()));
+
+        // b2FixtureDef fd;
+        // fd.shape = &poly;
+        // fd.density = (type == b2_staticBody) ? 0.0f : Config::defaultDensity;
+        // fd.friction = Config::defaultFrictionRect;
+        // body->CreateFixture(&fd);
+
+        // return wrapEntity(Entity(body, std::make_unique<sdl3::PolygonShape>(shape)), def);
     }
 
 private:
