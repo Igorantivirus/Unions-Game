@@ -1,4 +1,3 @@
-/* Базовые стили для RmlUi */
 html {
     background-color: black;
 }
@@ -85,16 +84,17 @@ h1 {
     padding-bottom: 1vh;
 }
 
-.game {
-    /* background-color: white;
+/*.game {
+
+     background-color: white;
     border-radius: 12px;
     padding: 2vh 3%;
     margin-bottom: 2vh;
     border-width: 2px;
 
     border-color: #007bff;
-    box-sizing: border-box; */
-}
+    box-sizing: border-box; 
+}*/
 
 .game-header {
     display: flex;
@@ -121,13 +121,9 @@ h1 {
     border-color: black;
     width: 30%;
     height: 7vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 0;
-    line-height: 1.2;
     text-align: center;
+    line-height: 7vh;
 }
 
 .choos-b:active {
@@ -136,10 +132,10 @@ h1 {
 
 .statistic {
     
-    /* background-color: #f8f9fa; */
     padding: 1.5vh 2%;
-    /* border-radius: 10px; */
     margin: 1vh 0 0 0;
+    /* background-color: #f8f9fa; */
+    /* border-radius: 10px; */
     /* border-width: 1px; */
 
     /* border-color: #dddddd; */
@@ -212,13 +208,12 @@ footer {
     cursor: pointer;
     border-width: 2px;
     border-color: black;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 0 3%;
-    line-height: 1.2;
     text-align: center;
+    line-height: 9vh;
+
+    margin-left: 2%;
+    margin-right: 2%;
 }
 
 #save-exit-b {
