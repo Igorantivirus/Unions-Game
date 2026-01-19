@@ -2,6 +2,7 @@
 
 #include "Engine/SceneAction.hpp"
 #include "GameScene.hpp"
+#include "SettingsMenu.hpp"
 #include <Core/Types.hpp>
 #include <Engine/OneRmlDocScene.hpp>
 #include <RmlUi/Core/ElementDocument.h>
@@ -32,6 +33,8 @@ private:
                 scene_.actionRes_ = engine::SceneAction::exitAction();
             else if (id == "start-b")
                 scene_.actionRes_ = engine::SceneAction::nextAction(GameScene::sceneID);
+            else if (id == "setts-b")
+                scene_.actionRes_ = engine::SceneAction::nextAction(SettingsMenu::sceneID);
         }
 
     private:
