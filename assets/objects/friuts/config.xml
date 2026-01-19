@@ -5,22 +5,112 @@
         <filler type="texture" texture="avakado.png" />
     </object>
     <object id="2">
-        <meta level="2" points="5" />
+        <meta level="2" points="1" />
+        <form type="polygon">
+            <vertex x="-155" y="-106" />
+            <vertex x="-153" y="-80" />
+            <vertex x="-146" y="-142" />
+            <vertex x="-143" y="-52" />
+            <vertex x="-128" y="-32" />
+            <vertex x="-110" y="-10" />
+            <vertex x="-100" y="-139" />
+            <vertex x="-84" y="3" />
+            <vertex x="-63" y="-117" />
+            <vertex x="-45" y="13" />
+            <vertex x="-24" y="-96" />
+            <vertex x="-15" y="16" />
+            <vertex x="35" y="14" />
+            <vertex x="56" y="-89" />
+            <vertex x="80" y="5" />
+            <vertex x="97" y="-100" />
+            <vertex x="141" y="-115" />
+            <vertex x="142" y="-10" />
+            <vertex x="187" y="-29" />
+            <vertex x="188" y="-132" />
+            <vertex x="222" y="-133" />
+            <vertex x="232" y="-64" />
+            <vertex x="247" y="-89" />
+            <vertex x="251" y="-123" />
+            <!-- <vertex x="-25" y="3" />
+<vertex x="55" y="9" />
+<vertex x="95" y="-2" />
+<vertex x="187" y="-33" />
+<vertex x="250" y="-25" />
+<vertex x="233" y="35" />
+<vertex x="142" y="90" />
+<vertex x="35" y="114" />
+<vertex x="-17" y="115" />
+<vertex x="-87" y="103" />
+<vertex x="-132" y="68" />
+<vertex x="-154" y="20" />
+<vertex x="-147" y="-43" />
+<vertex x="-104" y="-40" /> -->
+        </form>
+
+
+        <!-- <form type="polygon">
+            <vertex x="-40" y="10" />
+            <vertex x="-35" y="5" />
+            <vertex x="-30" y="0" />
+            <vertex x="-25" y="-5" />
+            <vertex x="-20" y="-8" />
+            <vertex x="-15" y="-10" />
+            <vertex x="-10" y="-12" />
+            <vertex x="-5" y="-13" />
+            <vertex x="0" y="-13" />
+            <vertex x="5" y="-12" />
+            <vertex x="10" y="-10" />
+            <vertex x="15" y="-8" />
+            <vertex x="20" y="-5" />
+            <vertex x="25" y="-2" />
+            <vertex x="30" y="2" />
+            <vertex x="35" y="7" />
+            <vertex x="30" y="12" />
+            <vertex x="25" y="15" />
+            <vertex x="20" y="17" />
+            <vertex x="15" y="18" />
+            <vertex x="10" y="19" />
+            <vertex x="5" y="20" />
+            <vertex x="0" y="20" />
+            <vertex x="-5" y="19" />
+            <vertex x="-10" y="18" />
+            <vertex x="-15" y="17" />
+            <vertex x="-20" y="15" />
+            <vertex x="-25" y="13" />
+            <vertex x="-30" y="11" />
+            <vertex x="-35" y="9" />
+        </form> -->
+        <!-- <form type="polygon">
+            <vertex x="-50" y="-25" />
+            <vertex x="-25" y="-25" />
+            <vertex x="0" y="-50" />
+            <vertex x="25" y="-25" />
+            <vertex x="50" y="-25" />
+            <vertex x="25" y="25" />
+            <vertex x="25" y="50" />
+            <vertex x="0" y="25" />
+            <vertex x="-25" y="50" />
+            <vertex x="-25" y="25" />
+        </form> -->
+        <filler type="texture" texture="banan.png" />
+    </object>
+    <object id="3">
+        <meta level="3" points="5" />
         <form type="ellipse" rx="40" ry="60" />
         <filler type="texture" texture="mango.png" />
     </object>
-    <object id="3">
-        <meta level="3" points="10" />
+    <object id="4">
+        <meta level="4" points="10" />
         <form type="ellipse" rx="120" ry="140" />
         <filler type="texture" texture="burger.png" />
     </object>
-    <object id="4">
-        <meta level="4" points="50" />
+    <object id="5">
+        <meta level="5" points="50" />
         <form type="circle" radius="80" />
         <filler type="color" r="128" g="128" b="255" />
     </object>
-    <object id="5">
-        <meta level="5" points="100" />
+    <object id="6">
+        <meta level="6" points="100" />
         <form type="rectangle" width="200" height="250" />
         <filler type="color" r="0" g="128" b="255" />
     </object>
