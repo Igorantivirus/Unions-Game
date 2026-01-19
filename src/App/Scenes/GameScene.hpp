@@ -65,7 +65,7 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
         
-        if (!objectFactory_.loadPack("conis") && !objectFactory_.loadPack("coins"))
+        if (!objectFactory_.loadPack("coins"))
             SDL_Log("Failed to load object pack: conis/coins");
         
         timer_.start();
