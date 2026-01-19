@@ -26,6 +26,7 @@
 #include <Engine/OneRmlDocScene.hpp>
 // #include <Resources/ObjectLibrary.hpp>
 #include <Resources/ObjectFactory.hpp>
+#include <App/AppState.hpp>
 #include <stdexcept>
 
 class GameScene : public engine::OneRmlDocScene
@@ -56,9 +57,15 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, const sdl3::Vector2i logicSize)
-        : engine::OneRmlDocScene(context, "ui/GameMenu.html", menuID), listener_(*this)
+    GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState)
+        : engine::OneRmlDocScene(context, "ui/GameMenu.html", menuID), listener_(*this), appState_(appState)
     {
+        if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
+            SDL_Log("Failed to load object pack: coins");
+
+        if (const auto *gs = appState_.stat().findById(objectFactory_.getActivePack()))
+            record_ = static_cast<int>(gs->record);
+
         bindData();
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
@@ -66,13 +73,22 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
         
-        if (!objectFactory_.loadPack("fruits"))
-            SDL_Log("Failed to load object pack: conis/coins");
-        
         timer_.start();
     }
     ~GameScene()
     {
+        statistic::GameStatistic result;
+        result.stringID = objectFactory_.getActivePack();
+        result.time = statistic::Time::fromSeconds(timer_.elapsedTimeS());
+        result.record = static_cast<unsigned int>(std::max(0, points_));
+
+
+        
+        // const int totalS = static_cast<int>(timer_.elapsedTimeS());
+        // result.time.minuts = static_cast<std::uint8_t>((totalS / 60) % 60);
+        // result.time.seconds = static_cast<std::uint8_t>(totalS % 60);
+        appState_.stat().applyGameResult(result.stringID, result);
+
         if (dataHandle_)
         {
             // Освобождаем модель данных
@@ -98,7 +114,7 @@ public:
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 pressed_ = true;
-                auto idpt = objectFactory_.getIdByLevel(0);
+                auto idpt = objectFactory_.getIdByLevel(1);
                 if(!idpt.has_value())
                     throw std::logic_error("Error");
                 auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
@@ -174,11 +190,14 @@ private:
 
 private:
     Rml::DataModelHandle dataHandle_;
+
     Rml::String time_ = "00:00";
     int points_ = 0;
     int record_ = 100;
 
     sdl3::Clock timer_;
+
+    app::AppState &appState_;
 
 private:
     void bindData()

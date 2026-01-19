@@ -2,6 +2,7 @@
 
 #include "Engine/SceneAction.hpp"
 #include "GameScene.hpp"
+#include <App/AppState.hpp>
 #include <Core/Types.hpp>
 #include <Engine/OneRmlDocScene.hpp>
 #include <RmlUi/Core/ElementDocument.h>
@@ -37,8 +38,9 @@ private:
     };
 
 public:
-    SettingsMenu(engine::Context &context)
+    SettingsMenu(engine::Context &context, app::AppState &appState)
         : engine::OneRmlDocScene(context, "ui/SettingsMenu.html", menuID), listener_(*this)
+        , appState_(appState)
     {
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
@@ -54,4 +56,5 @@ public:
 
 private:
     SettingsMenuListener listener_;
+    app::AppState &appState_;
 };

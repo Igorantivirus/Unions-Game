@@ -1,34 +1,44 @@
+#include "Core/BaseFolder.hpp"
 #include <SDL3/SDL_main.h>
 
 #include <Engine/Engine.hpp>
+#include <App/AppState.hpp>
 #include <App/GameSceneFactory.hpp>
 
-static engine::Engine app;
+static engine::Engine application;
+std::shared_ptr<app::AppState> appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     SDL_SetHint(SDL_HINT_ANDROID_TRAP_BACK_BUTTON, "1");
-    app.setAutoOrientationEnabled(false);
-    app.setFps(60);
-    auto res = app.start("Falling ellipses", "fonts/fonts.txt", {576,1024});
-    app.registrateSceneFabrick(std::make_unique<GameSceneFactory>(GameSceneFactory{}));
-    app.pushScene(MainMenuScene::sceneID);
+    application.setAutoOrientationEnabled(false);
+    application.setFps(60);
+    auto res = application.start("Falling ellipses", "fonts/fonts.txt", {576,1024});
+
+    appState = std::make_shared<app::AppState>(assets / "stat.xml");
+    if (!appState->load())
+        SDL_Log("Failed to load stat.xml");
+
+    application.registrateSceneFabrick(std::make_unique<GameSceneFactory>(appState));
+    application.pushScene(MainMenuScene::sceneID);
     return res;
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 {
-    return app.updateEvents(*event);
+    return application.updateEvents(*event);
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-    return app.iterate();
+    return application.iterate();
 }
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
-    app.close();
+    if (appState)
+        appState->save();
+    application.close();
 }
 
 // #include <SDL3/SDL_events.h>
