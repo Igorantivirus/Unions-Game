@@ -1,0 +1,17 @@
+<root>
+    <object id="1">
+        <meta level="1" points="1" />
+        <form type="ellipse" rx="20" ry="35" />
+        <filler type="texture" texture="avakado.png" />
+    </object>
+    <object id="2">
+        <meta level="2" points="5" />
+        <form type="ellipse" rx="40" ry="60" />
+        <filler type="texture" texture="mango.png" />
+    </object>
+    <object id="3">
+        <meta level="3" points="10" />
+        <form type="ellipse" rx="120" ry="140" />
+        <filler type="texture" texture="burger.png" />
+    </object>
+</root>
