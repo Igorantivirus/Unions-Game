@@ -17,17 +17,19 @@
 #include <PhysicBase/Entity.hpp>
 #include <SDL3/SDL_mouse.h>
 
-#include <App/PhysicBase/EntityFactory.hpp>
 #include <App/GameObjects/GameContactCheker.hpp>
+#include <App/PhysicBase/EntityFactory.hpp>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
 #include <memory>
 
+
 #include <Engine/OneRmlDocScene.hpp>
 // #include <Resources/ObjectLibrary.hpp>
-#include <Resources/ObjectFactory.hpp>
 #include <App/AppState.hpp>
+#include <Resources/ObjectFactory.hpp>
 #include <stdexcept>
+
 
 class GameScene : public engine::OneRmlDocScene
 {
@@ -72,7 +74,7 @@ public:
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
-        
+
         timer_.start();
     }
     ~GameScene()
@@ -110,7 +112,7 @@ public:
             {
                 pressed_ = true;
                 auto idpt = objectFactory_.getIdByLevel(1);
-                if(!idpt.has_value())
+                if (!idpt.has_value())
                     throw std::logic_error("Error");
                 auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
                 // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
@@ -156,12 +158,16 @@ public:
         world_.Step(dt, 8, 3);
         updateTime();
 
-        for (auto it = objects_.begin(); it != objects_.end(); ++it)
+        for (auto it = objects_.begin(); it != objects_.end(); /* без инкремента здесь */)
+        {
             if (it->getPosition().y > 2000.f)
             {
                 addPoints(-it->getPoints());
-                it = objects_.erase(it);
+                it = objects_.erase(it); // erase возвращает итератор на следующий элемент
             }
+            else
+                ++it;
+        }
 
         return actionRes_;
     }
@@ -269,7 +275,7 @@ private:
         std::size_t obj2Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data2)));
         if (obj1Ind == objects_.size() || obj2Ind == objects_.size())
             return;
-        
+
         GameObject &obj1 = objects_[obj1Ind];
         GameObject &obj2 = objects_[obj2Ind];
 

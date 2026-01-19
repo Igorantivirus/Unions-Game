@@ -178,6 +178,7 @@ private:
         }
         if (type == "polygon")
         {
+            float sizeRatio = form.attribute("sizeRatio").as_float(1.f);
             out.type = ObjectFormType::Polygon;
             std::vector<sdl3::Vector2f> vertices;
 
@@ -187,11 +188,9 @@ private:
                 if (name != "vertex")
                     continue;
 
-                const float x = v.attribute("x").as_float();
-                const float y = v.attribute("y").as_float();
+                const float x = v.attribute("x").as_float() * sizeRatio;
+                const float y = v.attribute("y").as_float() * sizeRatio;
                 vertices.push_back({x, y});
-                // if (vertices.size() == 8)
-                //     break;
             }
             out.form = vertices;
             return vertices.size() >= 3;
