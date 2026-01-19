@@ -140,34 +140,6 @@ private:
         const float radius = def.form.getRadius();
         const sdl3::Color color = def.filler.getColor();
         return wrapEntity(EntityFactory::createCircle(world, pos, radius, color, tex, type), def);
-
-
-        // sdl3::CircleShape shape(radius, 40);
-        // shape.setPosition(pos);
-        // shape.setFillColor(sdl3::Colors::White);
-        // if (tex)
-        //     shape.setTexture(*tex);
-
-        // b2BodyDef bd;
-        // bd.type = type;
-        // bd.position.Set(shape.getPosition().x * Config::MPP, shape.getPosition().y * Config::MPP);
-        // bd.angle = shape.getRotation() * SDL_PI_F / 180.f;
-
-        // b2Body *body = world.CreateBody(&bd);
-
-        // b2CircleShape circle;
-        // circle.m_radius = radius * Config::MPP;
-
-        // b2FixtureDef fd;
-        // fd.shape = &circle;
-        // fd.density = (type == b2_staticBody) ? 0.0f : Config::defaultDensity;
-        // fd.friction = Config::defaultFrictionEllipse;
-        // body->CreateFixture(&fd);
-
-        // return wrapEntity(EntityFactory::createCircle(world, pos, radius, {}, tex, type), def);
-        
-
-        // return wrapEntity(Entity(body, std::make_unique<sdl3::CircleShape>(shape)), def);
     }
 
     static GameObject createEllipse(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
