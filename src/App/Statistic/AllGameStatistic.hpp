@@ -11,12 +11,9 @@ namespace statistic
 struct AllGameStatistic
 {
 public:
-    std::vector<GameStatistic> gameStatistic;
-
-public:
     GameStatistic *findById(const std::string_view id)
     {
-        for (auto &gs : gameStatistic)
+        for (auto &gs : gameStatistic_)
             if (gs.stringID == id)
                 return &gs;
         return nullptr;
@@ -24,7 +21,7 @@ public:
 
     const GameStatistic *findById(const std::string_view id) const
     {
-        for (const auto &gs : gameStatistic)
+        for (const auto &gs : gameStatistic_)
             if (gs.stringID == id)
                 return &gs;
         return nullptr;
@@ -45,5 +42,28 @@ public:
         gs->gameCount += 1;
         return true;
     }
+
+    void clear()
+    {
+        gameStatistic_.clear();
+    }
+
+    bool empty() const
+    {
+        return gameStatistic_.empty();
+    }
+
+    void addGame(GameStatistic stat)
+    {
+        gameStatistic_.push_back(std::move(stat));
+    }
+
+    const std::vector<GameStatistic>& getAll() const
+    {
+        return gameStatistic_;
+    }
+
+private:
+    std::vector<GameStatistic> gameStatistic_;
 };
 } // namespace statistic

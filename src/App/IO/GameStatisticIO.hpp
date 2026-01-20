@@ -15,7 +15,7 @@ namespace IO
 
 inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, const std::filesystem::path &path)
 {
-    stat.gameStatistic.clear();
+    stat.clear();
 
     pugi::xml_document doc;
     if (auto res = doc.load_string(IO::readAllFile(path).c_str()); !res)
@@ -42,10 +42,10 @@ inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, const std::f
         gs.gameCount = statNode.attribute("countGames").as_uint();
         gs.time = core::Time::fromString(statNode.attribute("bestTime").as_string());
 
-        stat.gameStatistic.push_back(std::move(gs));
+        stat.addGame(std::move(gs));
     }
 
-    return !stat.gameStatistic.empty();
+    return !stat.empty();
 }
 
 inline bool writeAllGameStatistic(const statistic::AllGameStatistic &stat, const std::filesystem::path path)
@@ -53,7 +53,7 @@ inline bool writeAllGameStatistic(const statistic::AllGameStatistic &stat, const
     pugi::xml_document doc;
     pugi::xml_node root = doc.append_child("root");
 
-    for (const auto &gs : stat.gameStatistic)
+    for (const auto &gs : stat.getAll())
     {
         pugi::xml_node gameNode = root.append_child("game");
         pugi::xml_node statNode = gameNode.append_child("statistic");
