@@ -1,5 +1,9 @@
 <h1 align="center">Объединялы</h1>
 
+<p align="center">
+  <img src="assets/ico.png" alt="Unions logo" width="160" />
+</p>
+
 ## Кроссплатформенная простая игра
 
 [![English version](https://img.shields.io/badge/English%20version-blue)](README.md)
@@ -23,17 +27,18 @@
 
 ### Windows
 
-* Установите `UnoinsWin64.zip``
-* Разархивируйте его в удобнео для вас место
-* Запустите `Unions.exe` файл
+* Скачайте `UnoinsWin64.zip` (файл в релизах)
+* Разархивируйте его в удобное для вас место
+* Запустите `Unions.exe`
 
 ### Android
 
-* Установите `Unions-Game.apk` файл
-* Запустите для установки
+* Скачайте `Unions-Game.apk` (файл в релизах)
+* Установите APK (может потребоваться разрешить установку из неизвестных источников)
+* Запустите игру
 
 
-## ИСпользуемые библиотеки:
+## Используемые библиотеки:
 * [SDL3 3.4.0, SDL3_image 3.2.6](https://github.com/libsdl-org) - Графическая библиотека
 * [SDLWrapper 0.2.0](https://github.com/Igorantivirus/SDL_Wrapper) - С++ ООП обёртка над SDL3
 * [RmlUi 6.2](https://github.com/mikke89/RmlUi) - Библиотека для html-style интерфейса
