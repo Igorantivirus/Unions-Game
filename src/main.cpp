@@ -10,12 +10,15 @@ std::shared_ptr<app::AppState> appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    initWolders();
+    // workFolder = SDL_GetPrefPath("igorantivirus", "new_sdl");
     SDL_SetHint(SDL_HINT_ANDROID_TRAP_BACK_BUTTON, "1");
     application.setAutoOrientationEnabled(false);
     application.setFps(60);
-    auto res = application.start("Falling ellipses", "fonts/fonts.txt", {576,1024});
+    auto res = application.start("Falling ellipses", (assets / "fonts/fonts.txt").string(), {576,1024});
 
-    appState = std::make_shared<app::AppState>(assets / "stat.xml");
+    appState = std::make_shared<app::AppState>(app::AppState{"stat.xml"});
+    appState->setStrPath("stat.xml");
     if (!appState->load())
         SDL_Log("Failed to load stat.xml");
 

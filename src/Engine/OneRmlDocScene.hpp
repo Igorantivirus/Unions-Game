@@ -11,6 +11,8 @@
 #include <utility>
 #include <vector>
 
+#include <Core/BaseFolder.hpp>
+
 namespace engine
 {
 
@@ -19,7 +21,7 @@ class OneRmlDocScene : public Scene
 {
 public:
     OneRmlDocScene(Context &context, std::string docPath, std::string docId)
-        : context_(context), docPath_(std::move(docPath)), docId_(std::move(docId))
+        : context_(context), docPath_((assets / std::move(docPath)).string()), docId_(std::move(docId))
     {
     }
 

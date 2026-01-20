@@ -20,6 +20,7 @@
 
 #include <Core/FileWorker.hpp>
 #include <Core/Types.hpp>
+#include <Core/BaseFolder.hpp>
 
 namespace engine
 {
@@ -203,7 +204,7 @@ private:
         std::size_t last = 0;
         for (std::size_t cur = strFile.find('\n', last); cur != std::string::npos; cur = strFile.find('\n', last))
         {
-            std::string pr = strFile.substr(last, cur - last);
+            std::string pr = (assets / strFile.substr(last, cur - last)).string();
             if (!pr.empty() && pr.back() == '\r')
                 pr.pop_back();
             last = cur + 1;

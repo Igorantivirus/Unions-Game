@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/SceneAction.hpp"
-#include "GameScene.hpp"
 #include <App/AppState.hpp>
 #include <Core/Types.hpp>
 #include <Engine/OneRmlDocScene.hpp>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL3/SDL_log.h>
 #include <string>
 
 #include <SDL3/SDL_iostream.h>
@@ -59,8 +60,10 @@ public:
     bool close()
     {
         mode_ = static_cast<FileWorkerMode>(0);
+        bool res = false;
         if (io_)
-            return SDL_CloseIO(io_);
+            res = SDL_CloseIO(io_); 
+        io_ = nullptr;
         return false;
     }
 
