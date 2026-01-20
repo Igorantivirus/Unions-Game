@@ -5,7 +5,7 @@
 #include <SDL3/SDL_log.h>
 #include <SDLWrapper/FileWorker.hpp>
 
-#include <App/Statistic/GameStatistic.hpp>
+#include <App/Statistic/AllGameStatistic.hpp>
 #include <Core/Time.hpp>
 
 #include "FullFileWorker.hpp"
