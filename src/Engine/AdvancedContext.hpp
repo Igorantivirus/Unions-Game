@@ -1,25 +1,27 @@
 #pragma once
 
-#include <RmlUi/Debugger/Debugger.h>
-#include <SDL3/SDL_error.h>
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_video.h>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_video.h>
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include <RmlUi/Core.h>
+#include <RmlUi/Debugger/Debugger.h>
 #include <RmlUi/FileInterface_SDL.hpp>
 #include <RmlUi/RmlUi_Platform_SDL.h>
 #include <RmlUi/RmlUi_Renderer_SDL.h>
-#ifndef NDEBUG
+#ifdef DEBUG_BUILD_TYPE
 #include <RmlUi/Debugger.h>
 #endif
 
+#include <Core/PathMeneger.hpp>
+#include <Core/StringUtils.hpp>
 #include <Core/Types.hpp>
-#include <Core/BaseFolder.hpp>
 
 namespace engine
 {
@@ -36,7 +38,7 @@ public:
         quit();
     }
 
-    bool init(std::shared_ptr<SDL_Window> window, std::shared_ptr<SDL_Renderer> renderer, const std::string_view &fontsPath)
+    bool init(std::shared_ptr<SDL_Window> window, std::shared_ptr<SDL_Renderer> renderer, const std::filesystem::path &fontsPath)
     {
         window_ = window;
         renderer_ = renderer;
@@ -73,7 +75,7 @@ public:
         }
         context_->SetDensityIndependentPixelRatio(SDL_GetWindowDisplayScale(window_.get()));
 
-#ifndef NDEBUG
+#ifdef DEBUG_BUILD_TYPE
         if (debugInit_ = Rml::Debugger::Initialise(context_); !debugInit_)
         {
             SDL_Log("Rml::Debugger::Initialise failed");
@@ -138,7 +140,6 @@ public:
         auto found = documents_.find(ID);
         return found == documents_.end() ? nullptr : found->second;
     }
-
     void closeDocument(const std::string &ID)
     {
         auto it = documents_.find(ID);
@@ -167,7 +168,7 @@ public:
                 doc->Hide();
     }
 
-    Rml::Context* getContext()
+    Rml::Context *getContext()
     {
         return context_;
     }
@@ -184,12 +185,12 @@ private:
     std::unordered_map<std::string, Rml::ElementDocument *> documents_;
 
     bool initialized_ = false;
-#ifndef NDEBUG
+#ifdef DEBUG_BUILD_TYPE
     bool debugInit_ = false;
 #endif
 
 private:
-    bool loadFonts(const std::string_view fontsPath)
+    bool loadFonts(const std::filesystem::path fontsPath)
     {
         std::string strFile;
         {
@@ -203,7 +204,8 @@ private:
         std::size_t last = 0;
         for (std::size_t cur = strFile.find('\n', last); cur != std::string::npos; cur = strFile.find('\n', last))
         {
-            std::string pr = (assets / strFile.substr(last, cur - last)).string();
+            
+            std::string pr = core::PathManager::inAssets(core::viewSubstr(strFile, last, cur - last));
             if (!pr.empty() && pr.back() == '\r')
                 pr.pop_back();
             last = cur + 1;
@@ -211,7 +213,6 @@ private:
             if (pr.empty())
                 continue;
 
-            SDL_Log("Next: \"%s\"", pr.c_str());
             const bool fallback = (pr.find("Emoji") != std::string::npos);
             if (!Rml::LoadFontFace(pr, fallback))
                 SDL_Log("Failed to load font: %s", pr.c_str());

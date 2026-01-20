@@ -17,9 +17,12 @@
 
 #include "AdvancedContext.hpp"
 #include "Core/Types.hpp"
+#include "Engine/EngineSettings.hpp"
+#include "EngineSettings.hpp"
 #include "Scene.hpp"
 #include "SceneAction.hpp"
 #include "SceneFabrick.hpp"
+#include "WindowSizeInfo.hpp"
 
 namespace engine
 {
@@ -27,34 +30,6 @@ namespace engine
 class Engine
 {
 public:
-    SDL_AppResult start(const std::string_view wName, const std::string_view fontPath, const sdl3::Vector2i size, const std::string& icoName)
-    {
-        baseLandscapeLogicalSize_ = {std::max(size.x, size.y), std::min(size.x, size.y)};
-        basePortraitLogicalSize_ = {baseLandscapeLogicalSize_.y, baseLandscapeLogicalSize_.x};
-        windowLogicslSize_ = (size.x >= size.y) ? baseLandscapeLogicalSize_ : basePortraitLogicalSize_;
-        
-        sdl3::VideoMode mode = sdl3::VideoMode::getDefaultVideoMode();
-        mode.width = size.x;
-        mode.height = size.y;
-        if (!window_.create(wName, mode))
-            return SDL_APP_FAILURE;
-        window_.setLogicalPresentation(windowLogicslSize_, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-
-        sdl3::View view = window_.getView();
-        centerPos_.x = windowLogicslSize_.x / 2.f;
-        centerPos_.y = windowLogicslSize_.y / 2.f;
-        view.setCenterPosition(centerPos_);
-        window_.setView(view);
-
-        window_.loadIconFromFile(icoName);
-
-        if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), fontPath))
-            return SDL_APP_FAILURE;
-
-        cl_.start();
-
-        return SDL_APP_CONTINUE;
-    }
     void close()
     {
         scenes_.clear();
@@ -62,11 +37,165 @@ public:
         window_.close();
     }
 
+    SDL_AppResult start(EngineSettings setts)
+    {
+        winSizeInfo_.init(setts.windowSize);
+
+        sdl3::VideoMode mode = sdl3::VideoMode::getDefaultVideoMode();
+        mode.width = setts.windowSize.x;
+        mode.height = setts.windowSize.y;
+
+        if (!window_.create(std::move(setts.appName), mode))
+            return SDL_APP_FAILURE;
+        if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), setts.fontPath))
+            return SDL_APP_FAILURE;
+        if (!window_.loadIconFromFile(setts.icoName))
+            SDL_Log("Error of open icon");
+        if (setts.setLogicalPresentation)
+            window_.setLogicalPresentation(setts.windowSize, setts.mode);
+        mode_ = setts.mode;
+        autoOrientationEnabled_ = setts.autoOrientationEnabled;
+
+        registrateSceneFabrick(std::move(setts.scenesFabrick));
+        setFps(setts.fps);
+        pushScene(setts.startSceneID);
+
+        return SDL_APP_CONTINUE;
+    }
+
+    // SET METHODS
+
     void registrateSceneFabrick(SceneFabrickPtr ptr)
     {
         sceneFabrick_ = std::move(ptr);
         sceneFabrick_->setContext(context_);
         sceneFabrick_->setRenderWindow(window_);
+    }
+    void setFps(const unsigned int fps)
+    {
+        fps_ = fps;
+        if (fps_ > 0)
+            desiredFrameMS_ = 1000.f / static_cast<float>(fps_);
+    }
+    void setAutoOrientationEnabled(const bool enabled)
+    {
+        autoOrientationEnabled_ = enabled;
+    }
+    bool isAutoOrientationEnabled() const
+    {
+        return autoOrientationEnabled_;
+    }
+
+    // ITERATE METHODS
+
+    SDL_AppResult updateEvents(SDL_Event &event)
+    {
+        if (event.type == SDL_EVENT_QUIT)
+            return SDL_APP_SUCCESS;
+        if (autoOrientationEnabled_ && event.type == SDL_EVENT_WINDOW_RESIZED)
+            handleWindowResize(event.window.data1, event.window.data2);
+        if (scenes_.empty())
+            return SDL_APP_FAILURE;
+        window_.convertEventToRenderCoordinates(&event);
+        context_.updateEvents(event);
+        window_.convertEventToViewCoordinates(&event);
+        scenes_.back()->updateEvent(event);
+        return SDL_APP_CONTINUE;
+    }
+
+    SDL_AppResult iterate()
+    {
+        if (scenes_.empty())
+            return SDL_APP_FAILURE;
+        const float dt = cl_.elapsedTimeS();
+        cl_.start();
+        SceneAction &act = scenes_.back()->update(dt);
+        SDL_AppResult res = processSceneAction(act);
+        if (res != SDL_APP_CONTINUE)
+            return res;
+        safeDrawScene();
+        fpsDelay();
+        return res;
+    }
+
+    // GET METHODS
+
+    sdl3::RenderWindow &getWindow()
+    {
+        return window_;
+    }
+
+    const unsigned int getFps() const
+    {
+        return fps_;
+    }
+
+private:
+    std::vector<ScenePtr> scenes_;
+    SceneFabrickPtr sceneFabrick_;
+
+    // желаемое время кадра (мс)
+    float desiredFrameMS_{};
+    unsigned int fps_{};
+
+private:
+    sdl3::RenderWindow window_;
+    Context context_;
+    sdl3::ClockNS cl_;
+
+    WindowSizeInfo winSizeInfo_;
+    SDL_RendererLogicalPresentation mode_;
+    bool autoOrientationEnabled_ = true;
+
+private:
+    void handleWindowResize(const int windowW, const int windowH)
+    {
+        if(!winSizeInfo_.handleWindowResize(windowH, windowW))
+            return;
+        
+        auto view = window_.getView();
+        view.setCenterPosition(winSizeInfo_.centerPos);
+        window_.setLogicalPresentation(winSizeInfo_.windowLogicslSize, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+        window_.setView(view);
+    }
+
+    void safeDrawScene()
+    {
+        window_.clear(sdl3::Colors::White);
+        context_.update();
+        context_.render();
+        scenes_.back()->draw(window_);
+        window_.display();
+    }
+
+    void fpsDelay()
+    {
+        if (fps_ == 0)
+            return;
+
+        // фактическое время, затраченное на кадр (мс)
+        float frameMS = cl_.elapsedTimeMS();
+
+        if (frameMS < desiredFrameMS_)
+            SDL_Delay(static_cast<Uint32>(desiredFrameMS_ - frameMS));
+    }
+
+private: // SceneActionType process
+    SDL_AppResult processSceneAction(SceneAction &act)
+    {
+        SDL_AppResult res = SDL_APP_CONTINUE;
+        if (act.type == SceneActionType::None)
+            return SDL_APP_CONTINUE;
+        else if (act.type == SceneActionType::PushScene)
+            pushScene(std::get<IDType>(act.value));
+        else if (act.type == SceneActionType::PopScene)
+            popScene();
+        else if (act.type == SceneActionType::SwitchScene)
+            switchScene(std::get<IDType>(act.value));
+        else if (act.type == SceneActionType::Exit)
+            res = SDL_APP_SUCCESS;
+        act = SceneAction::noneAction();
+        return res;
     }
 
     void pushScene(const IDType sceneId)
@@ -94,140 +223,6 @@ public:
         scenes_.back()->hide();
         scenes_.pop_back();
         pushScene(sceneId);
-    }
-
-    SDL_AppResult updateEvents(SDL_Event &event)
-    {
-        if (event.type == SDL_EVENT_QUIT)
-            return SDL_APP_SUCCESS;
-        if (event.type == SDL_EVENT_WINDOW_RESIZED)
-        {
-            if (autoOrientationEnabled_)
-                handleWindowResize(event.window.data1, event.window.data2);
-        }
-        if (scenes_.empty())
-            return SDL_APP_FAILURE;
-        window_.convertEventToRenderCoordinates(&event);
-        context_.updateEvents(event);
-        window_.convertEventToViewCoordinates(&event);
-        scenes_.back()->updateEvent(event);
-        return SDL_APP_CONTINUE;
-    }
-
-    SDL_AppResult iterate()
-    {
-        if (scenes_.empty())
-            return SDL_APP_FAILURE;
-        const float dt = cl_.elapsedTimeS();
-        cl_.start();
-        SceneAction &act = scenes_.back()->update(dt);
-        SDL_AppResult res = processSceneAction(act);
-        if (res != SDL_APP_CONTINUE)
-            return res;
-        safeDrawScene();
-        fpsDelay();
-        return res;
-    }
-
-    sdl3::RenderWindow &getWindow()
-    {
-        return window_;
-    }
-
-    void setFps(const unsigned int fps)
-    {
-        fps_ = fps;
-        if (fps_ > 0)
-            desiredFrameMS_ = 1000.f / static_cast<float>(fps_);
-    }
-    const unsigned int getFps() const
-    {
-        return fps_;
-    }
-
-    // Если true — при ресайзе окна автоматически меняем "ориентацию" (своп logical size).
-    // Если false — SDL_EVENT_WINDOW_RESIZED не трогает logical presentation (LETTERBOX сам масштабирует).
-    void setAutoOrientationEnabled(const bool enabled)
-    {
-        autoOrientationEnabled_ = enabled;
-    }
-    bool isAutoOrientationEnabled() const
-    {
-        return autoOrientationEnabled_;
-    }
-
-private:
-    std::vector<ScenePtr> scenes_;
-    SceneFabrickPtr sceneFabrick_;
-
-    unsigned int fps_{};
-    // желаемое время кадра (мс)
-    float desiredFrameMS_{};
-
-private:
-    sdl3::RenderWindow window_;
-    Context context_;
-    sdl3::ClockNS cl_;
-
-    sdl3::Vector2i baseLandscapeLogicalSize_;
-    sdl3::Vector2i basePortraitLogicalSize_;
-    sdl3::Vector2i windowLogicslSize_;
-    sdl3::Vector2f centerPos_;
-    bool autoOrientationEnabled_ = true;
-
-private:
-    void handleWindowResize(const int windowW, const int windowH)
-    {
-        const bool isLandscape = windowW >= windowH;
-        const sdl3::Vector2i desired = isLandscape ? baseLandscapeLogicalSize_ : basePortraitLogicalSize_;
-
-        if (desired.x == windowLogicslSize_.x && desired.y == windowLogicslSize_.y)
-            return;
-
-        auto view = window_.getView();
-        view.setCenterPosition(centerPos_);
-        
-        windowLogicslSize_ = desired;
-        window_.setLogicalPresentation(desired, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-        window_.setView(view);
-    }
-
-    SDL_AppResult processSceneAction(SceneAction &act)
-    {
-        SDL_AppResult res = SDL_APP_CONTINUE;
-        if (act.type == SceneActionType::None)
-            return SDL_APP_CONTINUE;
-        else if (act.type == SceneActionType::PushScene)
-            pushScene(std::get<IDType>(act.value));
-        else if (act.type == SceneActionType::PopScene)
-            popScene();
-        else if (act.type == SceneActionType::SwitchScene)
-            switchScene(std::get<IDType>(act.value));
-        else if (act.type == SceneActionType::Exit)
-            res = SDL_APP_SUCCESS;
-        act = SceneAction::noneAction();
-        return res;
-    }
-
-    void safeDrawScene()
-    {
-        window_.clear(sdl3::Colors::White);
-        context_.update();
-        context_.render();
-        scenes_.back()->draw(window_);
-        window_.display();
-    }
-
-    void fpsDelay()
-    {
-        if (fps_ == 0)
-            return;
-
-        // фактическое время, затраченное на кадр (мс)
-        float frameMS = cl_.elapsedTimeMS();
-
-        if (frameMS < desiredFrameMS_)
-            SDL_Delay(static_cast<Uint32>(desiredFrameMS_ - frameMS));
     }
 };
 
