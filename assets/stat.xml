@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
-<root lastPackage="coins">
+<root lastPackage="planets">
 	<game id="coins" name="Монеточки">
 		<statistic bestTime="00:00" record="0" countGames="0" />
 	</game>
 	<game id="fruits" name="Фруктики">
+		<statistic bestTime="00:00" record="0" countGames="0" />
+	</game>
+	<game id="planets" name="Планетки">
 		<statistic bestTime="00:00" record="0" countGames="0" />
 	</game>
 </root>

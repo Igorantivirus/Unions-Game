@@ -1,0 +1,105 @@
+<root>
+    <object id="1">
+        <meta level="1" points="1" />
+        <form type="circle" radius="20" />
+        <filler type="texture" texture="mercury.png" />
+    </object>
+    <object id="2">
+        <meta level="2" points="5" />
+        <form type="circle" radius="40" />
+        <filler type="texture" texture="mars.png" />
+    </object>
+    <object id="3">
+        <meta level="3" points="10" />
+        <form type="circle" radius="60" />
+        <filler type="texture" texture="venus.png" />
+    </object>
+    <object id="4">
+        <meta level="4" points="50" />
+        <form type="circle" radius="80" />
+        <filler type="texture" texture="earth.png" />
+    </object>
+    <object id="5">
+        <meta level="5" points="10" />
+        <form type="circle" radius="100" />
+        <filler type="texture" texture="uranus.png" />
+    </object>
+    <object id="6">
+        <meta level="6" points="200" />
+        <form type="circle" radius="120" />
+        <filler type="texture" texture="neptune.png" />
+    </object>
+    <object id="7">
+        <meta level="7" points="500" />
+        <form type="polygon" sizeRatio="0.65">
+            <vertex x="-225" y="26" />
+            <vertex x="-221" y="54" />
+            <vertex x="-212" y="89" />
+            <vertex x="-243" y="127" />
+            <vertex x="-266" y="156" />
+            <vertex x="-288" y="188" />
+            <vertex x="-306" y="220" />
+            <vertex x="-320" y="257" />
+            <vertex x="-321" y="278" />
+            <vertex x="-317" y="290" />
+            <vertex x="-304" y="299" />
+            <vertex x="-280" y="299" />
+            <vertex x="-249" y="289" />
+            <vertex x="-206" y="269" />
+            <vertex x="-152" y="237" />
+            <vertex x="-102" y="202" />
+            <vertex x="-55" y="215" />
+            <vertex x="-6" y="218" />
+            <vertex x="34" y="212" />
+            <vertex x="76" y="198" />
+            <vertex x="112" y="178" />
+            <vertex x="141" y="153" />
+            <vertex x="167" y="123" />
+            <vertex x="186" y="89" />
+            <vertex x="202" y="46" />
+            <vertex x="208" y="10" />
+            <vertex x="210" y="-27" />
+            <vertex x="204" y="-66" />
+            <vertex x="241" y="-110" />
+            <vertex x="273" y="-150" />
+            <vertex x="293" y="-179" />
+            <vertex x="306" y="-199" />
+            <vertex x="319" y="-225" />
+            <vertex x="330" y="-252" />
+            <vertex x="331" y="-278" />
+            <vertex x="316" y="-292" />
+            <vertex x="295" y="-292" />
+            <vertex x="270" y="-285" />
+            <vertex x="235" y="-269" />
+            <vertex x="195" y="-247" />
+            <vertex x="157" y="-223" />
+            <vertex x="110" y="-191" />
+            <vertex x="86" y="-203" />
+            <vertex x="55" y="-212" />
+            <vertex x="19" y="-218" />
+            <vertex x="-18" y="-218" />
+            <vertex x="-64" y="-208" />
+            <vertex x="-119" y="-183" />
+            <vertex x="-161" y="-148" />
+            <vertex x="-191" y="-109" />
+            <vertex x="-213" y="-63" />
+            <vertex x="-223" y="-22" />
+        </form>
+        <filler type="texture" texture="saturn.png" />
+    </object>
+    <object id="8">
+        <meta level="8" points="1000" />
+        <form type="circle" radius="160" />
+        <filler type="texture" texture="upiter.png" />
+    </object>
+    <object id="9">
+        <meta level="9" points="2500" />
+        <form type="circle" radius="180" />
+        <filler type="texture" texture="sun.png" />
+    </object>
+    <object id="10">
+        <meta level="10" points="5000" />
+        <form type="circle" radius="220" />
+        <filler type="texture" texture="black.png" />
+    </object>
+</root>
