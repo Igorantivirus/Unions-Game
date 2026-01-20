@@ -49,10 +49,12 @@ inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, std::string&
     return !stat.empty();
 }
 
-inline bool writeAllGameStatistic(const statistic::AllGameStatistic &stat, const std::filesystem::path path)
+inline bool writeAllGameStatistic(const statistic::AllGameStatistic &stat,const std::string& currentPackName, const std::filesystem::path path)
 {
     pugi::xml_document doc;
     pugi::xml_node root = doc.append_child("root");
+
+    root.append_attribute("lastPackage").set_value(currentPackName.c_str());
 
     for (const auto &gs : stat.getAll())
     {

@@ -31,7 +31,7 @@ public:
 
     bool save() const
     {
-        return IO::writeAllGameStatistic(stat_, workStatFile_);
+        return IO::writeAllGameStatistic(stat_, currentPackageName_, workStatFile_);
     }
 
     statistic::AllGameStatistic &stat()
