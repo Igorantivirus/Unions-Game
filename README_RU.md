@@ -1,79 +1,48 @@
-<h1 align="center">Crossplatform SDL3+RmlUi example</h1>
+<h1 align="center">Объединялы</h1>
 
-## Кроссплатформенный SDL3+RmlUi проект
+## Кроссплатформенная простая игра
 
 [![English version](https://img.shields.io/badge/English%20version-blue)](README.md)
 
 ## Описание
 
-Легковесный кроссплатформенный С++ проект с библиотеками SDL3 + RmlUi с легким подключением библиотек для Android
+Легковесная кроссплатформенная игра - убивалка времени
 
-# Особенности Платформ
+Объединяйте одинаковые объекты для получения объектов нового уровня.
 
-1. Windows
-   * Используется статическая линковка библиотеки
-   * Библиотеки SDL3 должны быть уже статически собраны и находится по пути `EXTERNAL_DIR` (смотри `Инструкция по сборке`)
-   * Весь Cmake смотри в файле `cmake/AppWindows.cmake`
-2. Android
-   * Сборка через Cmake + Ninja из Android Studio
-   * Весь Cmake смотри в файле `cmake/AppAndroid.cmake` 
-3. Linux
-   * В настоящий момент нет cmake файла для сборки под Linux, вы можете отправить нам pull request с файлом `AppLinux.cmake`, если вы будете уверены, что она работает
+# Доступные платформы:
 
-## Зависимости
+1. Windows (`UnoinsWin64.zip` файл в релизах)
+2. Android (`Unions-Game.apk` файл в релизах)
 
-Язык программирования: **С++23**
+## Доступные уровни
 
-Библиотеки:
-* [RmlUi](https://github.com/mikke89/RmlUi) - библиотека для Ui
-* [FreeType](https://freetype.org/) - Поддержка шрифтов для RmlUi
-* [SDL3, SDL3_image](https://github.com/libsdl-org) - Графическая библиотека (используются *.aar* файлы из официальных релизов)
-* [SDL_gfx](https://github.com/sabdul-khabir/SDL3_gfx) - Графические примитивы для SDL3
+На данный момент в игре доступны уровни с монетами ЦБ РФ и с фруктами.
 
 ## Установка и запуск
 
-### Предварительные требования
+### Windows
 
-#### Для Windows
-* Используйте **С++23**
-* Cmake **3.22**+
+* Установите `UnoinsWin64.zip``
+* Разархивируйте его в удобнео для вас место
+* Запустите `Unions.exe` файл
 
-#### Для Android
+### Android
 
-* SDK - **35**
-* NDK - **25.1.8937393**+
-* Cmake **3.22**+
+* Установите `Unions-Game.apk` файл
+* Запустите для установки
 
-### Инструкция по сборке
 
-#### Важно!
-Cmake переменная EXTERNAL_DIR должна указывать на директорию, в которой находятся библиотеки RmlUi, SDL3 и другие
+## ИСпользуемые библиотеки:
+* [SDL3 3.4.0, SDL3_image 3.2.6](https://github.com/libsdl-org) - Графическая библиотека
+* [SDLWrapper 0.2.0](https://github.com/Igorantivirus/SDL_Wrapper) - С++ ООП обёртка над SDL3
+* [RmlUi 6.2](https://github.com/mikke89/RmlUi) - Библиотека для html-style интерфейса
+* [FreeType 2.14.1](https://freetype.org/) - Библиотека для поддержки шрифтов
+* [pugixml 1.15](https://github.com/zeux/pugixml) - Библиотека для работы с xml файлами
+* [Box2D 2.4.2](https://github.com/erincatto/box2d) - Библиотека физического движка
 
-1. **Клонируйте репозиторий**
-   ```sh
-   git clone https://github.com/Igorantivirus/Crossplatform-Example-SDL3-RmlUi-project
-   cd Crossplatform-Example-SDL3-RmlUi-project
-   ```
-
-2. **Соберите CMake**
-
-    #### Для Android
-    * В файле `build.gradle` измените аргумент для Cmake `"-DEXTERNAL_DIR=\"ПУТЬ_ДО_БИБЛИОТЕК\""`
-    * Запустите синхронизацию gradle файлов через `Ctrl+Shift+O`
-       
-    #### Для Windows
-    ```sh
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DEXTERNAL_DIR="ПУТЬ_ДО_БИБЛИОТЕК" -DUSE_CONSOLE=FALSE
-    ```
-
-3. **Соберите проект** 
-   
-    #### Для Android
-    Запустите проект на эмуляторе или на Вашем устройстве
-    #### Для Widnows
-    ```sh
-    cmake --build build --config Release
-    ```
+## Используемые шрифты:
+* Arial
 
 ## Лицензия 
 MIT Лицензия
