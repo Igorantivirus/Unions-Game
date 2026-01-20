@@ -10,10 +10,14 @@ namespace names
 
 }
 
+namespace assets
+{
+    constexpr const std::string_view packages = "objects";
+}
+
 namespace assets::fonts
 {
     constexpr const std::string_view fontPath = "fonts/fonts.txt";
-
 }
 
 namespace assets::ui
