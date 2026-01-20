@@ -1,6 +1,5 @@
 #pragma once
 
-#include <App/IO/PathMeneger.hpp>
 #include <SDLWrapper/FileWorker.hpp>
 #include <App/Statistic/GameStatistic.hpp>
 #include <App/IO/GameStatisticIO.hpp>
@@ -16,30 +15,23 @@ namespace app
 class AppState
 {
 public:
-    explicit AppState(const std::string& statPath)
-        : statPath_(statPath), workFolderStatPath_(IO::PathManager::workFolder() / statPath)
+    explicit AppState(const std::filesystem::path& workStatFile, const std::filesystem::path& assetsStatFile)
+        : workStatFile_(workStatFile), assetsStatFile_(assetsStatFile)
     {
         if(!load())
             SDL_Log("Failed to load appState");
     }
 
-
-    void setStrPath(const std::string& statPath)
-    {
-        statPath_ = statPath;
-        workFolderStatPath_ = core::PathManager::workFolder() / statPath;
-        SDL_Log("%s\n%s\n", statPath_.string().c_str(), workFolderStatPath_.string().c_str());
-    }
     bool load()
     {
-        if (!std::filesystem::exists(workFolderStatPath_))
-            createStatFile();
-        return IO::readAllGameStatistic(stat_, workFolderStatPath_);
+        if (!std::filesystem::exists(workStatFile_))
+            IO::createAndMove(assetsStatFile_, workStatFile_);
+        return IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
     }
 
     bool save() const
     {
-        return IO::writeAllGameStatistic(stat_, workFolderStatPath_);
+        return IO::writeAllGameStatistic(stat_, workStatFile_);
     }
 
     statistic::AllGameStatistic &stat()
@@ -50,11 +42,6 @@ public:
     const statistic::AllGameStatistic &stat() const
     {
         return stat_;
-    }
-
-    const std::string statPath() const
-    {
-        return statPath_.string();
     }
 
     const std::string &getCurrentPackageName() const
@@ -69,30 +56,10 @@ public:
     }
 
 private:
-    std::filesystem::path statPath_;
-    std::filesystem::path workFolderStatPath_;
+    std::filesystem::path workStatFile_;
+    std::filesystem::path assetsStatFile_;
     statistic::AllGameStatistic stat_{};
-    std::string currentPackageName_ = "coins";
-
-private:
-    void createStatFile()
-    {
-        sdl3::FileWorker file;
-        if (!file.open(core::PathManager::assets() / statPath_, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary))
-        {
-            SDL_Log("Error of open stat file from assets\n");
-            return;
-        }
-        std::string data = file.readAll();
-        file.close();
-        if (!file.open(workFolderStatPath_, sdl3::FileWorkerMode::write | sdl3::FileWorkerMode::binary))
-        {
-            SDL_Log("Polnoy govno\n");
-            return;
-        }
-        file.write(data);
-        file.close();
-    }
+    std::string currentPackageName_;
 };
 
 using AppStatePtr = std::shared_ptr<AppState>;
