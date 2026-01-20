@@ -9,5 +9,5 @@ inline constexpr const float defaultDensity = 1.f;
 
 inline constexpr const float defaultFrictionRect = 0.3f;
 inline constexpr const float defaultFrictionEllipse = 0.5f;
-inline constexpr const float defaultFrictionCircle = defaultFrictionEllipse;
+inline constexpr const float defaultFrictionCircle = 0.5f;
 } // namespace Config
