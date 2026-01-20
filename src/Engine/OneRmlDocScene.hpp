@@ -1,17 +1,15 @@
 #pragma once
 
-#include "AdvancedContext.hpp"
-#include "Scene.hpp"
+#include <stdexcept>
+#include <vector>
 
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/EventListener.h>
 
-#include <stdexcept>
-#include <string>
-#include <utility>
-#include <vector>
+#include <App/IO/PathMeneger.hpp>
 
-#include <Core/BaseFolder.hpp>
+#include "AdvancedContext.hpp"
+#include "Scene.hpp"
 
 namespace engine
 {
@@ -20,8 +18,8 @@ namespace engine
 class OneRmlDocScene : public Scene
 {
 public:
-    OneRmlDocScene(Context &context, std::string docPath, std::string docId)
-        : context_(context), docPath_((assets / std::move(docPath)).string()), docId_(std::move(docId))
+    OneRmlDocScene(Context &context, std::string_view assetRmlFile)
+        : context_(context), docPath_(IO::PathManager::inAssets(assetRmlFile)), docId_(assetRmlFile)
     {
     }
 
@@ -130,7 +128,7 @@ private:
 //         doc_ = context_.loadIfNoDocument(htmlRmlPath, HeirScene::menuID);
 //         if (!doc_)
 //             throw std::logic_error("The document cannot be empty.");
-        
+
 //     }
 //     virtual ~OneRmlDocScene()
 //     {
@@ -156,13 +154,12 @@ private:
 
 // protected:
 
-//     void bindListener() 
+//     void bindListener()
 //     {
 //         doc_->AddEventListener(Rml::EventId::Click, listenerPtr_, true);
 //     }
 
 //     void bindData() {}
-    
 
 // private:
 //     Rml::EventListener *listenerPtr_;
