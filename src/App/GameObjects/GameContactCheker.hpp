@@ -8,6 +8,9 @@
 
 #include "GameObject.hpp"
 
+namespace objects
+{
+
 class GameContactCheker : public b2ContactListener
 {
 public:
@@ -33,3 +36,5 @@ public:
         // контакт закончился
     }
 };
+
+} // namespace objects
