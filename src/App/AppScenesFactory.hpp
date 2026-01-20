@@ -15,9 +15,10 @@ namespace app
 class AppScenesFactory : public engine::SceneFabrick
 {
 public:
-    explicit AppScenesFactory(app::AppStatePtr appState = nullptr)
-        : appState_(std::move(appState))
+
+    void setAppState(app::AppState& appState)
     {
+        appState_ = &appState;
     }
 
     engine::ScenePtr genSceneByID(const IDType id) const override
@@ -32,7 +33,7 @@ public:
     }
 
 private:
-    app::AppStatePtr appState_;
+    app::AppState* appState_;
 };
 
 } // namespace app

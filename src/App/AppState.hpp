@@ -1,8 +1,9 @@
 #pragma once
 
-#include <SDLWrapper/FileWorker.hpp>
-#include <App/Statistic/GameStatistic.hpp>
 #include <App/IO/GameStatisticIO.hpp>
+#include <App/Statistic/GameStatistic.hpp>
+#include <SDLWrapper/FileWorker.hpp>
+
 
 #include <SDL3/SDL_log.h>
 
@@ -15,11 +16,13 @@ namespace app
 class AppState
 {
 public:
-    explicit AppState(const std::filesystem::path& workStatFile, const std::filesystem::path& assetsStatFile)
-        : workStatFile_(workStatFile), assetsStatFile_(assetsStatFile)
+    void setWorkStatisticFile(const std::filesystem::path &workStatFile)
     {
-        if(!load())
-            SDL_Log("Failed to load appState");
+        workStatFile_ = workStatFile;
+    }
+    void setAssetsStatisticFile(const std::filesystem::path &assetsStatFile)
+    {
+        assetsStatFile_ = assetsStatFile;
     }
 
     bool load()

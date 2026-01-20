@@ -10,15 +10,23 @@
 #include <App/Scenes/MainMenuScene.hpp>
 #include <Engine/Engine.hpp>
 
-
 static engine::Engine game;
-static app::AppStatePtr appState;
+static app::AppState appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     core::PathManager::init();
 
-    appState = std::make_shared<app::AppState>(core::PathManager::workFolder() / names::statisticFile, core::PathManager::assets() / names::statisticFile);
+    appState.setWorkStatisticFile(core::PathManager::workFolder() / names::statisticFile);
+    appState.setAssetsStatisticFile(core::PathManager::assets() / names::statisticFile);
+
+    if (!appState.load())
+    {
+        SDL_Log("Error! appSate not loaded");
+        return SDL_APP_FAILURE;
+    }
+    auto fabrick = std::make_unique<app::AppScenesFactory>();
+    fabrick->setAppState(appState);
 
     engine::EngineSettings settings;
 
@@ -31,7 +39,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     settings.mode = SDL_LOGICAL_PRESENTATION_LETTERBOX;
     settings.startSceneID = scenes::ids::mainMenu;
     settings.setLogicalPresentation = true;
-    settings.scenesFabrick = std::make_unique<app::AppScenesFactory>(appState);
+    settings.scenesFabrick = std::move(fabrick);
 
     return game.start(std::move(settings));
 }
@@ -48,7 +56,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
-    if (appState)
-        appState->save();
+    appState.save();
     game.close();
 }
