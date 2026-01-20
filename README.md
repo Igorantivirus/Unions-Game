@@ -1,53 +1,53 @@
-<h1 align="center">Unions</h1>
+<h1 align="center">Объединялы</h1>
 
 <p align="center">
   <img src="assets/ico.png" alt="Unions logo" width="160" />
 </p>
 
-## Simple cross-platform game
+## Кроссплатформенная простая игра
 
-[![Russian version](https://img.shields.io/badge/Russian%20version-blue)](README_RU.md)
+[![English version](https://img.shields.io/badge/English%20version-blue)](README_EN.md)
 
-## Description
+## Описание
 
-Lightweight cross-platform time-killer game.
+Легковесная кроссплатформенная игра - убивалка времени
 
-Merge identical objects to obtain a new, higher-level object.
+Объединяйте одинаковые объекты для получения объектов нового уровня.
 
-# Available platforms:
+# Доступные платформы:
 
-1. Windows (`UnoinsWin64.zip` asset in Releases)
-2. Android (`Unions-Game.apk` asset in Releases)
+1. Windows (`UnoinsWin64.zip` файл в релизах)
+2. Android (`Unions-Game.apk` файл в релизах)
 
-## Available levels
+## Доступные уровни
 
-At the moment, the game includes levels with Bank of Russia coins and with fruits.
+На данный момент в игре доступны уровни с монетами ЦБ РФ и с фруктами.
 
-## Install and Run
+## Установка и запуск
 
 ### Windows
 
-* Download `UnoinsWin64.zip` (asset in Releases)
-* Extract it to a convenient location
-* Run `Unions.exe`
+* Скачайте `UnoinsWin64.zip` (файл в релизах)
+* Разархивируйте его в удобное для вас место
+* Запустите `Unions.exe`
 
 ### Android
 
-* Download `Unions-Game.apk` (asset in Releases)
-* Install the APK (you may need to allow installs from unknown sources)
-* Launch the game
+* Скачайте `Unions-Game.apk` (файл в релизах)
+* Установите APK (может потребоваться разрешить установку из неизвестных источников)
+* Запустите игру
 
 
-## Used libraries:
-* [SDL3 3.4.0, SDL3_image 3.2.6](https://github.com/libsdl-org) - Graphics library
-* [SDLWrapper 0.2.0](https://github.com/Igorantivirus/SDL_Wrapper) - C++ OOP wrapper over SDL3
-* [RmlUi 6.2](https://github.com/mikke89/RmlUi) - HTML/CSS-like UI library
-* [FreeType 2.14.1](https://freetype.org/) - Font rendering library
-* [pugixml 1.15](https://github.com/zeux/pugixml) - XML parsing library
-* [Box2D 2.4.2](https://github.com/erincatto/box2d) - Physics engine library
+## Используемые библиотеки:
+* [SDL3 3.4.0, SDL3_image 3.2.6](https://github.com/libsdl-org) - Графическая библиотека
+* [SDLWrapper 0.2.0](https://github.com/Igorantivirus/SDL_Wrapper) - С++ ООП обёртка над SDL3
+* [RmlUi 6.2](https://github.com/mikke89/RmlUi) - Библиотека для html-style интерфейса
+* [FreeType 2.14.1](https://freetype.org/) - Библиотека для поддержки шрифтов
+* [pugixml 1.15](https://github.com/zeux/pugixml) - Библиотека для работы с xml файлами
+* [Box2D 2.4.2](https://github.com/erincatto/box2d) - Библиотека физического движка
 
-## Used fonts:
+## Используемые шрифты:
 * Arial
 
-## License
-MIT License
+## Лицензия 
+MIT Лицензия
