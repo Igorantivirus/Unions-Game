@@ -1,20 +1,22 @@
 #pragma once
 
-#include "Engine/SceneAction.hpp"
-#include "GameScene.hpp"
-#include "SettingsMenu.hpp"
 #include <Core/Types.hpp>
 #include <Engine/OneRmlDocScene.hpp>
+#include <Engine/SceneAction.hpp>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
 #include <RmlUi/Core/ID.h>
 
+#include <App/HardStrings.hpp>
+
+#include "IDs.hpp"
+
+namespace scenes
+{
+
 class MainMenuScene : public engine::OneRmlDocScene
 {
-public:
-    inline static constexpr const IDType sceneID = 0;
-
 private:
     class MainMenuListener : public Rml::EventListener
     {
@@ -22,18 +24,17 @@ private:
         MainMenuListener(MainMenuScene &scene) : scene_(scene)
         {
         }
-
         void ProcessEvent(Rml::Event &ev) override
         {
             Rml::Element *el = ev.GetTargetElement();
             const Rml::String &id = el->GetId();
 
-            if (id == "exit-b")
+            if (id == ui::mainMenu::exitB)
                 scene_.actionRes_ = engine::SceneAction::exitAction();
-            else if (id == "start-b")
-                scene_.actionRes_ = engine::SceneAction::nextAction(GameScene::sceneID);
-            else if (id == "setts-b")
-                scene_.actionRes_ = engine::SceneAction::nextAction(SettingsMenu::sceneID);
+            else if (id == ui::mainMenu::startB)
+                scene_.actionRes_ = engine::SceneAction::nextAction(ids::gameMenu);
+            else if (id == ui::mainMenu::settsB)
+                scene_.actionRes_ = engine::SceneAction::nextAction(ids::setsMenu);
         }
 
     private:
@@ -42,7 +43,7 @@ private:
 
 public:
     MainMenuScene(engine::Context &context)
-        : engine::OneRmlDocScene(context, assets::ui::gameMenuRmlFile), listener_(*this)
+        : engine::OneRmlDocScene(context, ui::mainMenu::file), listener_(*this)
     {
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
@@ -59,3 +60,5 @@ public:
 private:
     MainMenuListener listener_;
 };
+
+} // namespace scenes

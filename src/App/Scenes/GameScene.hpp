@@ -1,40 +1,40 @@
 #pragma once
 
-#include "AppEvents.hpp"
-#include <App/HardStrings.hpp>
-#include "Engine/AdvancedContext.hpp"
-#include "Engine/SceneAction.hpp"
-#include <Core/Types.hpp>
-#include <Engine/Scene.hpp>
+#include <memory>
+
+#include <SDL3/SDL_events.h>
+#include <SDL3/SDL_keycode.h>
+#include <SDL3/SDL_mouse.h>
+#include <SDLWrapper/Clock.hpp>
+#include <SDLWrapper/Names.hpp>
+
 #include <RmlUi/Config/Config.h>
 #include <RmlUi/Core/DataModelHandle.h>
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
 #include <RmlUi/Core/ID.h>
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_keycode.h>
 
-#include <PhysicBase/Entity.hpp>
-#include <SDL3/SDL_mouse.h>
-
-#include <App/GameObjects/GameContactCheker.hpp>
-#include <App/PhysicBase/EntityFactory.hpp>
-#include <SDLWrapper/Clock.hpp>
-#include <SDLWrapper/Names.hpp>
-#include <memory>
-
-#include <Engine/OneRmlDocScene.hpp>
+#include <App/AppEvents.hpp>
 #include <App/AppState.hpp>
+#include <App/GameObjects/GameContactCheker.hpp>
+#include <App/HardStrings.hpp>
+#include <App/Physics/EntityFactory.hpp>
+#include <Core/PathMeneger.hpp>
+#include <Core/Types.hpp>
+#include <Engine/AdvancedContext.hpp>
+#include <Engine/OneRmlDocScene.hpp>
+#include <Engine/Scene.hpp>
+#include <Engine/SceneAction.hpp>
+#include <Physics/Entity.hpp>
 #include <Resources/ObjectFactory.hpp>
-#include <stdexcept>
+#include <Statistic/GameStatistic.hpp>
+
+namespace scenes
+{
 
 class GameScene : public engine::OneRmlDocScene
 {
-public:
-    inline static constexpr const IDType sceneID = 1;
-    inline static const std::string menuID = "game_menu";
-
 private:
     class GameSceneListener : public Rml::EventListener
     {
@@ -48,7 +48,7 @@ private:
             Rml::Element *el = ev.GetTargetElement();
             const Rml::String &id = el->GetId();
 
-            if (id == assets::gameMenu::backB)
+            if (id == ui::gameMenu::backB)
                 scene_.actionRes_ = engine::SceneAction::popAction();
         }
 
@@ -57,14 +57,13 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState)
-        : engine::OneRmlDocScene(context, assets::ui::gameMenuRmlFile), listener_(*this), appState_(appState)
+    GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState) : engine::OneRmlDocScene(context, ui::gameMenu::file), listener_(*this), appState_(appState), packages_(core::PathManager::assets() / assets::packages), objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: coins");
 
         if (const auto *gs = appState_.stat().findById(objectFactory_.getActivePack()))
-            record_ = static_cast<int>(gs->record);
+            stat_.record = static_cast<int>(gs->record);
 
         bindData();
         loadDocumentOrThrow();
@@ -73,22 +72,18 @@ public:
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
 
+        stat_.stringID = objectFactory_.getActivePack();
+
         timer_.start();
     }
     ~GameScene()
     {
-        statistic::GameStatistic result;
-        result.stringID = objectFactory_.getActivePack();
-        result.time = statistic::Time::fromSeconds(timer_.elapsedTimeS());
-        result.record = record_;
-
-        appState_.stat().applyGameResult(result.stringID, result);
+        appState_.stat().applyGameResult(stat_.stringID, stat_);
 
         if (dataHandle_)
         {
             // Освобождаем модель данных
             dataHandle_ = Rml::DataModelHandle();
-
             // Удаляем модель из контекста
             context_.getContext()->RemoveDataModel("game_stats");
         }
@@ -96,7 +91,7 @@ public:
 
     void updateEvent(const SDL_Event &event) override
     {
-        if (event.type == AppEventsType::COLLISION)
+        if (event.type == app::AppEventsType::COLLISION)
         {
             updateCollision(event);
         }
@@ -125,7 +120,7 @@ public:
         {
             if (event.button.button == SDL_BUTTON_LEFT)
             {
-                if(!pressed_ || !prEntity_)
+                if (!pressed_ || !prEntity_)
                     return;
                 prEntity_->setEnabled(true);
                 addPoints(prEntity_->getPoints());
@@ -139,7 +134,7 @@ public:
         {
             if (!pressed_)
                 return;
-            if(startTimer_.elapsedTimeS() < secondsForStart)
+            if (startTimer_.elapsedTimeS() < secondsForStart)
                 return;
 
             if (!prEntity_)
@@ -147,13 +142,16 @@ public:
 
                 auto idpt = objectFactory_.getIdByLevel(1);
                 if (!idpt.has_value())
-                    throw std::logic_error("Error");
+                {
+                    SDL_Log("Error! Not found object by level 1");
+                    actionRes_ = engine::SceneAction::popAction();
+                }
                 auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.motion.x, startY_});
                 // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
                 if (!created)
                     return;
 
-                prEntity_ = std::make_unique<GameObject>(std::move(*created));
+                prEntity_ = std::make_unique<objects::GameObject>(std::move(*created));
                 prEntity_->setEnabled(false);
             }
 
@@ -195,15 +193,14 @@ private:
 
 private:
     b2World world_{b2Vec2(0.0f, 9.81f)};
-    GameContactCheker contactCheker_;
-    std::vector<Entity> glass_;
-    std::vector<GameObject> objects_;
+    objects::GameContactCheker contactCheker_;
+    std::vector<physics::Entity> glass_;
+    std::vector<objects::GameObject> objects_;
 
-    // resources::ObjectLibrary objectLibrary_;
-    // resources::ObjectFactory objectFactory_{objectLibrary_};
+    resources::PackageContainer packages_;
     resources::ObjectFactory objectFactory_;
 
-    std::unique_ptr<GameObject> prEntity_ = nullptr;
+    std::unique_ptr<objects::GameObject> prEntity_ = nullptr;
     bool pressed_ = false;
     float startY_;
 
@@ -213,9 +210,7 @@ private:
 private:
     Rml::DataModelHandle dataHandle_;
 
-    Rml::String time_ = "00:00";
-    int points_ = 0;
-    int record_ = 100;
+    statistic::GameStatistic stat_;
 
     sdl3::Clock timer_;
 
@@ -227,9 +222,14 @@ private:
         Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel("game_stats");
         if (constructor)
         {
-            constructor.Bind("game_time", &time_);
-            constructor.Bind("points", &points_);
-            constructor.Bind("record", &record_);
+            constructor.RegisterScalar<core::Time>(
+                [](const core::Time &t, Rml::Variant &out)
+                {
+                    out = Rml::String(core::Time::toString(t)); // Variant станет строкой
+                });
+            constructor.Bind("game_time", &stat_.time);
+            constructor.Bind("points", &stat_.gameCount);
+            constructor.Bind("record", &stat_.record);
         }
         dataHandle_ = constructor.GetModelHandle();
     }
@@ -241,23 +241,12 @@ private:
         float yPos = logicSize.y;
         // float yPos = logicSize.y / 2.f + std::min(logicSize.x, logicSize.y) / 2.f;
 
-        glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f, yPos}, {glassSize.x, thikness}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
-        glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f - glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
-        glass_.push_back(EntityFactory::createRectangle(world_, {logicSize.x / 2.f + glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
+        glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f, yPos}, {glassSize.x, thikness}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
+        glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f - glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
+        glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f + glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
 
         startY_ = (yPos - (glassSize.y)) / 2.f;
     }
-
-    // bool loadObjectPack(const std::string_view folder)
-    // {
-    //     return objectFactory_.loadPack(folder);
-    // }
-
-    // void unloadObjectPack(const std::string_view folder)
-    // {
-    //     (void)folder;
-    //     objectFactory_.unloadPack();
-    // }
 
     std::size_t getByID(const IDType id)
     {
@@ -269,23 +258,13 @@ private:
 
     void addPoints(const int points)
     {
-        points_ += points;
+        stat_.gameCount += points;
         dataHandle_.DirtyVariable("points");
-        if (points_ > record_)
-        {
-            record_ = points_;
-            dataHandle_.DirtyVariable("record");
-        }
     }
 
     void updateTime()
     {
-        int s = static_cast<int>(timer_.elapsedTimeS());
-        time_[0] = s / 60 / 10 + '0';
-        time_[1] = s / 60 % 10 + '0';
-        time_[2] = ':';
-        time_[3] = s % 60 / 10 + '0';
-        time_[4] = s % 60 % 10 + '0';
+        stat_.time = core::Time::fromSeconds(timer_.elapsedTimeS());
         dataHandle_.DirtyVariable("game_time");
     }
 
@@ -297,11 +276,12 @@ private:
         if (obj1Ind == objects_.size() || obj2Ind == objects_.size())
             return;
 
-        GameObject &obj1 = objects_[obj1Ind];
-        GameObject &obj2 = objects_[obj2Ind];
+        objects::GameObject &obj1 = objects_[obj1Ind];
+        objects::GameObject &obj2 = objects_[obj2Ind];
 
         const IDType level1 = obj1.getLevel();
         const IDType level2 = obj2.getLevel();
+
         const auto mergedIdOpt = objectFactory_.getMergeResultId(level1, level2);
         if (!mergedIdOpt)
             return;
@@ -319,3 +299,5 @@ private:
         addPoints(objects_.back().getPoints());
     }
 };
+
+} // namespace scenes

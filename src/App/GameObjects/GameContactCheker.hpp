@@ -28,7 +28,7 @@ public:
         if (!objA || !objB || !objA->isEnabled() || !objB->isEnabled() || objA->getBody()->GetType() == b2_staticBody || objB->getBody()->GetType() == b2_staticBody)
             return;
         if (objA->getLevel() == objB->getLevel())
-            sdl3::EventRegistrator::createEventCorrect(AppEventsType::COLLISION, objA->getLevel(), objA->getID(), objB->getID());
+            sdl3::EventRegistrator::createEventCorrect(app::AppEventsType::COLLISION, objA->getLevel(), objA->getID(), objB->getID());
     }
 
     void EndContact(b2Contact *contact) override

@@ -13,6 +13,7 @@ constexpr const std::string_view windowName = "Объединялы";
 namespace assets
 {
 constexpr const std::string_view packages = "objects";
+constexpr const std::string_view packagConf = "config.xml";
 constexpr const std::string_view fontPath = "fonts/fonts.txt";
 
 } // namespace assets

@@ -34,10 +34,10 @@ public:
         if (!gs)
             return false;
 
-        if (result.record > gs->record)
+        if (result.gameCount > gs->record)
         {
             gs->time = result.time;
-            gs->record = result.record;
+            gs->record = result.gameCount;
         }
         gs->gameCount += 1;
         return true;

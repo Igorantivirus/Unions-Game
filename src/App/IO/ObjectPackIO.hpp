@@ -87,7 +87,7 @@ bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &text
 
     pack.setPackageName(packName);
 
-    const auto configFile = folderPath / names::statisticFile;
+    const auto configFile = folderPath / assets::packagConf;
 
     pugi::xml_document doc;
     if (!doc.load_string(IO::readAllFile(configFile).c_str()))
@@ -133,7 +133,7 @@ bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &text
         pack.addObject(std::move(def));
     }
 
-    return pack.empty();
+    return !pack.empty();
 }
 
 } // namespace IO::ObjectPack

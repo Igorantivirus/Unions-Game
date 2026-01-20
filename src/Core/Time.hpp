@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL3/SDL_log.h>
 #include <array>
 #include <cstdint>
 #include <string>
@@ -21,10 +22,8 @@ struct Time
     {
         unsigned int s = static_cast<unsigned int>(seconds);
         Time res;
-        res.minuts = s / 60 / 10;
-        res.minuts = s / 60 % 10;
-        res.seconds = s % 60 / 10;
-        res.seconds = s % 60 % 10;
+        res.minuts = s / 60;
+        res.seconds = s % 60;
         return res;
     }
     static Time fromString(const std::string &string)

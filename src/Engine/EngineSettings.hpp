@@ -13,8 +13,8 @@ namespace engine
 struct EngineSettings
 {
     std::string_view appName;
-    std::string_view icoName;
-    std::filesystem::path fontPath;
+    std::filesystem::path icoFile;
+    std::filesystem::path fontFile;
 
     sdl3::Vector2i windowSize;
     bool autoOrientationEnabled = false;

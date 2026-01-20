@@ -1,33 +1,37 @@
 #include "App/HardStrings.hpp"
+#include "App/Scenes/IDs.hpp"
 #include "Core/PathMeneger.hpp"
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
 
-#include <App/Scenes/MainMenuScene.hpp>
 #include <App/AppScenesFactory.hpp>
-#include <App/HardStrings.hpp>
 #include <App/AppState.hpp>
+#include <App/HardStrings.hpp>
+#include <App/Scenes/MainMenuScene.hpp>
 #include <Engine/Engine.hpp>
+
 
 static engine::Engine game;
 static app::AppStatePtr appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    core::PathManager::init();
+
     appState = std::make_shared<app::AppState>(core::PathManager::workFolder() / names::statisticFile, core::PathManager::assets() / names::statisticFile);
 
     engine::EngineSettings settings;
 
     settings.appName = names::windowName;
-    settings.icoName = names::mainIco;
+    settings.icoFile = core::PathManager::assets() / names::mainIco;
+    settings.fontFile = core::PathManager::assets() / assets::fontPath;
     settings.windowSize = {576, 1024};
     settings.autoOrientationEnabled = false;
-    settings.fontPath = assets::fonts::fontPath;
     settings.fps = 60;
     settings.mode = SDL_LOGICAL_PRESENTATION_LETTERBOX;
-    settings.startSceneID = MainMenuScene::sceneID;
+    settings.startSceneID = scenes::ids::mainMenu;
     settings.setLogicalPresentation = true;
-    settings.scenesFabrick = std::make_unique<AppScenesFactory>(appState);
+    settings.scenesFabrick = std::make_unique<app::AppScenesFactory>(appState);
 
     return game.start(std::move(settings));
 }

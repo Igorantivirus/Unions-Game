@@ -47,9 +47,9 @@ public:
 
         if (!window_.create(std::move(setts.appName), mode))
             return SDL_APP_FAILURE;
-        if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), setts.fontPath))
+        if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), setts.fontFile))
             return SDL_APP_FAILURE;
-        if (!window_.loadIconFromFile(setts.icoName))
+        if (!window_.loadIconFromFile(setts.icoFile.string()))
             SDL_Log("Error of open icon");
         if (setts.setLogicalPresentation)
             window_.setLogicalPresentation(setts.windowSize, setts.mode);
