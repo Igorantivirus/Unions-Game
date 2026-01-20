@@ -53,4 +53,9 @@ inline bool writeAllFile(const std::string_view &path, const std::string &str)
     return file.write(str);
 }
 
+inline bool createAndMove(const std::filesystem::path &existing, const std::filesystem::path &newFile)
+{
+    return writeAllFile(newFile, readAllFile(existing));
+}
+
 } // namespace IO
