@@ -3,7 +3,7 @@
 
 # Если вы используете RmlUi или другие библиотеки, которые вызывают Java из C++, 
 # добавьте также их пакеты. Например:
--keep class com.igorantivirus.new_sdl.** { *; }
+-keep class com.igorantivirus.unions.** { *; }
 
 # Не позволять переименовывать нативные методы
 -keepclasseswithmembernames class * {

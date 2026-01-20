@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)  # Запрещает fallback на старый стандарт
 set(CMAKE_CXX_EXTENSIONS OFF)        # Отключает расширения компилятора
 
-project("Android-SDL3-Example" LANGUAGES CXX C)
+project("Unions" LANGUAGES CXX C)
 
 #УСТАНОВКА ПЕРЕМЕННЫХ
 
@@ -58,7 +58,6 @@ find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3-static)
 find_package(Freetype CONFIG REQUIRED)
 find_package(RmlUi CONFIG REQUIRED)
 find_package(SDLWrapper CONFIG REQUIRED)
-
 
 #ВРЕМЕННОЕ ПОДКЛЮЧЕНИЕ
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)

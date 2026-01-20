@@ -48,7 +48,7 @@
       "displayName": "Windows Release",
       "binaryDir": "build",
       "cacheVariables": {
-        "USE_CONSOLE": "TRUE",
+        "USE_CONSOLE": "FALSE",
         "CMAKE_BUILD_TYPE": "Release"
       }
     }

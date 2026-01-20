@@ -4,21 +4,7 @@
 #include <filesystem>
 
 inline static std::filesystem::path assets;
-
-// #ifdef ANDROID
-//     "./"
-// #else
-//     "assets"
-// #endif
-//     ;
-
 inline static std::filesystem::path workFolder;
-// #ifdef ANDROID
-//     ""
-// #else
-//     "./"
-// #endif
-//     ;
 
 static void initWolders()
 {
@@ -28,7 +14,7 @@ static void initWolders()
     workFolder = SDL_GetPrefPath("igorantivirus", "new_sdl");
 
 #else
-    assets = "../assets";
-    workFolder = "./";
+    assets = "assets";
+    workFolder = "";
 #endif
 }
