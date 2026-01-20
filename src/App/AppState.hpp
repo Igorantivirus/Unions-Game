@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/BaseFolder.hpp"
-#include "Core/FileWorker.hpp"
+#include <Core/BaseFolder.hpp>
+#include <SDLWrapper/FileWorker.hpp>
 #include <App/Statistic/GameStatistic.hpp>
 #include <App/Statistic/GameStatisticReader.hpp>
 
@@ -76,15 +76,15 @@ private:
 private:
     void createStatFile()
     {
-        sdl3io::FileWorker file;
-        if (!file.open((assets / statPath_).string(), sdl3io::FileWorkerMode::read | sdl3io::FileWorkerMode::binary))
+        sdl3::FileWorker file;
+        if (!file.open(assets / statPath_, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary))
         {
             SDL_Log("Error of open stat file from assets\n");
             return;
         }
         std::string data = file.readAll();
         file.close();
-        if (!file.open(workFolderStatPath_.string(), sdl3io::FileWorkerMode::write | sdl3io::FileWorkerMode::binary))
+        if (!file.open(workFolderStatPath_, sdl3::FileWorkerMode::write | sdl3::FileWorkerMode::binary))
         {
             SDL_Log("Polnoy govno\n");
             return;

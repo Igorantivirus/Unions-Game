@@ -2,12 +2,12 @@
 
 #include <SDL3/SDL_error.h>
 #include <SDLWrapper/Math/Colors.hpp>
+#include <SDLWrapper/FileWorker.hpp>
 #include <filesystem>
 #include <unordered_set>
 
 #include <pugixml/pugixml.hpp>
 
-#include "Core/FileWorker.hpp"
 #include "TextureManager.hpp"
 #include "Types.hpp"
 
@@ -200,7 +200,7 @@ private:
 
     static bool readXml(pugi::xml_document &doc, const std::string_view configPath)
     {
-        sdl3io::FileWorker read(configPath, sdl3io::FileWorkerMode::read | sdl3io::FileWorkerMode::binary);
+        sdl3::FileWorker read(configPath, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary);
         if (!read.isOpen())
         {
             SDL_Log("Couldn't open the file %s\n", SDL_GetError());

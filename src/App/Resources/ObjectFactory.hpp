@@ -4,11 +4,11 @@
 #include <App/PhysicBase/Entity.hpp>
 #include <App/PhysicBase/EntityFactory.hpp>
 #include <App/GameObjects/GameObject.hpp>
-#include <App/PhysicBase/PolygonShape.hpp>
 #include <App/Resources/PackageContainer.hpp>
 
 #include <SDLWrapper/DrawTransformObjects/CircleShape.hpp>
 #include <SDLWrapper/DrawTransformObjects/EllipseShape.hpp>
+#include <SDLWrapper/DrawTransformObjects/PolygonShape.hpp>
 #include <SDLWrapper/Math/Colors.hpp>
 
 #include <box2d/box2d.h>

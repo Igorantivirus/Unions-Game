@@ -18,7 +18,6 @@
 #include <RmlUi/Debugger.h>
 #endif
 
-#include <Core/FileWorker.hpp>
 #include <Core/Types.hpp>
 #include <Core/BaseFolder.hpp>
 
@@ -194,7 +193,7 @@ private:
     {
         std::string strFile;
         {
-            sdl3io::FileWorker file(fontsPath, sdl3io::FileWorkerMode::read | sdl3io::FileWorkerMode::binary);
+            sdl3::FileWorker file(fontsPath, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary);
             if (!file.isOpen())
                 return false;
             strFile = file.readAll();

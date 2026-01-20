@@ -1,13 +1,12 @@
 #pragma once
 
 #include <SDLWrapper/DrawTransformObjects/CircleShape.hpp>
+#include <SDLWrapper/DrawTransformObjects/PolygonShape.hpp>
 #include <SDLWrapper/Names.hpp>
 
 #include "Config.hpp"
 #include "Entity.hpp"
 #include "box2d/b2_circle_shape.h"
-
-#include "PolygonShape.hpp"
 
 #include <array>
 #include <box2d/b2_polygon_shape.h>

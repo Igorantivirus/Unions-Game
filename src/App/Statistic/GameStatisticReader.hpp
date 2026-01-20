@@ -2,7 +2,7 @@
 
 #include "GameStatistic.hpp"
 
-#include <Core/FileWorker.hpp>
+#include <SDLWrapper/FileWorker.hpp>
 #include <SDL3/SDL_log.h>
 
 #include <sstream>
@@ -15,7 +15,7 @@ namespace statistic::reader
     {
         stat.gameStatistic.clear();
 
-        sdl3io::FileWorker read(path, sdl3io::FileWorkerMode::read | sdl3io::FileWorkerMode::binary);
+        sdl3::FileWorker read(path, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary);
         if (!read.isOpen())
         {
             SDL_Log("GameStatisticReader: couldn't open %s", std::string(path).c_str());
@@ -89,7 +89,7 @@ namespace statistic::reader
 
         out = outStream.str();
 
-        sdl3io::FileWorker write(path, sdl3io::FileWorkerMode::write | sdl3io::FileWorkerMode::binary);
+        sdl3::FileWorker write(path, sdl3::FileWorkerMode::write | sdl3::FileWorkerMode::binary);
         if (!write.isOpen())
         {
             SDL_Log("GameStatisticReader: couldn't write %s", std::string(path).c_str());
