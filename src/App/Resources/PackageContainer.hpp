@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <Core/BaseFolder.hpp>
+#include <App/IO/ObjectPackIO.hpp>
 
 namespace resources
 {
@@ -14,7 +14,7 @@ namespace resources
 class PackageContainer
 {
 public:
-    explicit PackageContainer(std::filesystem::path objectsRoot = assets / "objects")
+    explicit PackageContainer(std::filesystem::path objectsRoot)
         : objectsRoot_(std::move(objectsRoot))
     {
     }
@@ -36,7 +36,7 @@ public:
     bool loadByOtherPath(const std::filesystem::path &folderAbs, const std::string packName)
     {
         auto &pack = packs_[packName];
-        if (!pack.loadFromFolder(folderAbs, textures_, packName))
+        if (!IO::readObjectPack(pack, textures_, packName, folderAbs))
         {
             packs_.erase(packName);
             return false;
