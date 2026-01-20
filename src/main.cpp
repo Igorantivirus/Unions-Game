@@ -1,4 +1,5 @@
 #include "App/HardStrings.hpp"
+#include "Core/PathMeneger.hpp"
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
 
@@ -13,7 +14,7 @@ static app::AppStatePtr appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    appState = std::make_shared<app::AppState>(names::statisticFile);
+    appState = std::make_shared<app::AppState>(core::PathManager::workFolder() / names::statisticFile, core::PathManager::assets() / names::statisticFile);
 
     engine::EngineSettings settings;
 
