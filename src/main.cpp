@@ -1,9 +1,8 @@
-#include "App/HardStrings.hpp"
-#include "App/Scenes/IDs.hpp"
-#include "Core/PathMeneger.hpp"
-#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
 
+#include <App/HardStrings.hpp>
+#include <App/Scenes/IDs.hpp>
+#include "Core/PathMeneger.hpp"
 #include <App/AppScenesFactory.hpp>
 #include <App/AppState.hpp>
 #include <App/HardStrings.hpp>
