@@ -11,7 +11,7 @@
 #include <array>
 #include <box2d/b2_polygon_shape.h>
 
-namespace EntityFactory
+namespace physics::EntityFactory
 {
 
 // Вспомогательная функция для инициализации базовых параметров тела
@@ -218,4 +218,4 @@ inline Entity createPolygon(b2World &world, sdl3::Vector2f pos, const std::vecto
     return createFromShape(world, poly, bd, fd);
 }
 
-} // namespace EntityFactory
+} // namespace physics::EntityFactory

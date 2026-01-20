@@ -7,6 +7,8 @@
 #include "Config.hpp"
 #include <Core/Types.hpp>
 
+namespace physics
+{
 
 class Entity : public sdl3::Drawable
 {
@@ -134,3 +136,5 @@ private:
         target.draw(*m_shape.get());
     }
 };
+
+} // namespace physics

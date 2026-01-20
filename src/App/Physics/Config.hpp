@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Config
+namespace physics::Config
 {
 inline constexpr const float PPM = 50.f; // Пикселей в метре
 inline constexpr const float MPP = 1.f / PPM;
