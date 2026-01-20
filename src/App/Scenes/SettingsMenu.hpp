@@ -10,11 +10,12 @@
 #include <RmlUi/Core/EventListener.h>
 #include <RmlUi/Core/ID.h>
 
+#include <App/Assets/HardStrings.hpp>
+
 class SettingsMenu : public engine::OneRmlDocScene
 {
 public:
     inline static constexpr const IDType sceneID = 2;
-    inline static const std::string menuID = "settings_menu";
 
 private:
     class SettingsMenuListener : public Rml::EventListener
@@ -34,7 +35,7 @@ private:
 
             const Rml::String &id = el->GetId();
 
-            if (id == "save-exit-b" || id == "throw-exit-b")
+            if (id == assets::gameMenu::saveExitB || id == assets::gameMenu::saveThrowB)
                 scene_.actionRes_ = engine::SceneAction::popAction();
             else if (id.rfind("choose-", 0) == 0)
             {
@@ -50,8 +51,7 @@ private:
 
 public:
     SettingsMenu(engine::Context &context, app::AppState &appState)
-        : engine::OneRmlDocScene(context, "ui/SettingsMenu.html", menuID), listener_(*this)
-        , appState_(appState)
+        : engine::OneRmlDocScene(context, assets::ui::setsMenuRmlFile), listener_(*this), appState_(appState)
     {
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);

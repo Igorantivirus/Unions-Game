@@ -14,7 +14,6 @@ class MainMenuScene : public engine::OneRmlDocScene
 {
 public:
     inline static constexpr const IDType sceneID = 0;
-    inline static const std::string menuID = "main_menu";
 
 private:
     class MainMenuListener : public Rml::EventListener
@@ -43,7 +42,7 @@ private:
 
 public:
     MainMenuScene(engine::Context &context)
-        : engine::OneRmlDocScene(context, "ui/MainMenu.html", menuID), listener_(*this)
+        : engine::OneRmlDocScene(context, assets::ui::gameMenuRmlFile), listener_(*this)
     {
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);

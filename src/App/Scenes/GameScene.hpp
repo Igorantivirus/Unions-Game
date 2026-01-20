@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AppEvents.hpp"
+#include <App/HardStrings.hpp>
 #include "Engine/AdvancedContext.hpp"
 #include "Engine/SceneAction.hpp"
 #include <Core/Types.hpp>
@@ -24,7 +25,6 @@
 #include <memory>
 
 #include <Engine/OneRmlDocScene.hpp>
-// #include <Resources/ObjectLibrary.hpp>
 #include <App/AppState.hpp>
 #include <Resources/ObjectFactory.hpp>
 #include <stdexcept>
@@ -48,7 +48,7 @@ private:
             Rml::Element *el = ev.GetTargetElement();
             const Rml::String &id = el->GetId();
 
-            if (id == "back-b")
+            if (id == assets::gameMenu::backB)
                 scene_.actionRes_ = engine::SceneAction::popAction();
         }
 
@@ -58,7 +58,7 @@ private:
 
 public:
     GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState)
-        : engine::OneRmlDocScene(context, "ui/GameMenu.html", menuID), listener_(*this), appState_(appState)
+        : engine::OneRmlDocScene(context, assets::ui::gameMenuRmlFile), listener_(*this), appState_(appState)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: coins");
