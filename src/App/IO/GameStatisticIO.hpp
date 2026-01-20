@@ -13,7 +13,7 @@
 namespace IO
 {
 
-inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, const std::filesystem::path &path)
+inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, std::string& currentPackName, const std::filesystem::path &path)
 {
     stat.clear();
 
@@ -27,6 +27,7 @@ inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, const std::f
     const pugi::xml_node root = doc.child("root");
     if (!root)
         return false;
+    currentPackName = root.attribute("lastPackage").as_string();
 
     for (const pugi::xml_node gameNode : root.children("game"))
     {
