@@ -8,6 +8,8 @@
 #include <Scenes/MainMenuScene.hpp>
 #include <Scenes/SettingsMenu.hpp>
 
+namespace app
+{
 
 class AppScenesFactory : public engine::SceneFabrick
 {
@@ -31,3 +33,5 @@ public:
 private:
     app::AppStatePtr appState_;
 };
+
+} // namespace app
