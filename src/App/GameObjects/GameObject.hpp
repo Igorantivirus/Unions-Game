@@ -2,12 +2,12 @@
 
 #include <Core/Types.hpp>
 
-#include <App/PhysicBase/Entity.hpp>
+#include <App/Physics/Entity.hpp>
 
 namespace objects
 {
 
-class GameObject : public Entity
+class GameObject : public physics::Entity
 {
 public:
     GameObject(b2Body *body, std::unique_ptr<sdl3::Shape> shape, const IDType level, const int points) : Entity(body, std::move(shape)), level_(level), points_(points)
