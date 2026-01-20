@@ -27,7 +27,7 @@ namespace engine
 class Engine
 {
 public:
-    SDL_AppResult start(const std::string_view wName, const std::string_view fontPath, const sdl3::Vector2i size)
+    SDL_AppResult start(const std::string_view wName, const std::string_view fontPath, const sdl3::Vector2i size, const std::string& icoName)
     {
         baseLandscapeLogicalSize_ = {std::max(size.x, size.y), std::min(size.x, size.y)};
         basePortraitLogicalSize_ = {baseLandscapeLogicalSize_.y, baseLandscapeLogicalSize_.x};
@@ -45,6 +45,8 @@ public:
         centerPos_.y = windowLogicslSize_.y / 2.f;
         view.setCenterPosition(centerPos_);
         window_.setView(view);
+
+        window_.loadIconFromFile(icoName);
 
         if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), fontPath))
             return SDL_APP_FAILURE;
