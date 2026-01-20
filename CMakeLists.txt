@@ -20,6 +20,12 @@ if(ANDROID)
   endif()
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set(BUILD_TYPE_MACRO "RELEASE_BUILD_TYPE")
+else()
+  set(BUILD_TYPE_MACRO "DEBUG_BUILD_TYPE")
+endif()
+
 if(MSVC)
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
@@ -80,6 +86,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
   RMLUI_SDL_VERSION_MAJOR=3
   RMLUI_STATIC_LIB
   SDL_MAIN_USE_CALLBACKS
+  ${BUILD_TYPE_MACRO}
 )
 
 if(ANDROID)
