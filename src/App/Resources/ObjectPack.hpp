@@ -1,20 +1,21 @@
 #pragma once
 
-#include <SDL3/SDL_error.h>
-#include <SDLWrapper/FileWorker.hpp>
-#include <SDLWrapper/Math/Colors.hpp>
 #include <filesystem>
 #include <unordered_set>
+
+#include <SDL3/SDL_log.h>
+#include <SDLWrapper/FileWorker.hpp>
+#include <SDLWrapper/Math/Colors.hpp>
 
 #include <pugixml/pugixml.hpp>
 
 #include "TextureManager.hpp"
 #include "Types.hpp"
 
-#include <SDL3/SDL_log.h>
-
 namespace resources
 {
+
+// Пакет одной игры (имя и определения объектов)
 class ObjectPack
 {
 public:

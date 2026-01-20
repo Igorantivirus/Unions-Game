@@ -1,16 +1,16 @@
 #pragma once
 
-#include "ObjectPack.hpp"
-
 #include <filesystem>
 #include <string>
 #include <unordered_map>
 
 #include <App/IO/ObjectPackIO.hpp>
 
+#include "ObjectPack.hpp"
+
 namespace resources
 {
-
+//Контейнер пакетов
 class PackageContainer
 {
 public:
@@ -18,6 +18,8 @@ public:
         : objectsRoot_(std::move(objectsRoot))
     {
     }
+
+    
 
     TextureManager &textures()
     {

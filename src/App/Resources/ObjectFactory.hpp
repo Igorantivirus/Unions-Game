@@ -1,11 +1,11 @@
 #pragma once
 
-#include <App/PhysicBase/Config.hpp>
-#include <App/PhysicBase/Entity.hpp>
-#include <App/PhysicBase/EntityFactory.hpp>
-#include <App/GameObjects/GameObject.hpp>
-#include <App/Resources/PackageContainer.hpp>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
+#include <SDL3/SDL_log.h>
 #include <SDLWrapper/DrawTransformObjects/CircleShape.hpp>
 #include <SDLWrapper/DrawTransformObjects/EllipseShape.hpp>
 #include <SDLWrapper/DrawTransformObjects/PolygonShape.hpp>
@@ -13,20 +13,22 @@
 
 #include <box2d/box2d.h>
 
-#include <SDL3/SDL_log.h>
-
-#include <optional>
-#include <stdexcept>
-#include <string>
-#include <vector>
+#include <App/GameObjects/GameObject.hpp>
+#include <App/Physics/Config.hpp>
+#include <App/Physics/Entity.hpp>
+#include <App/Physics/EntityFactory.hpp>
+#include <App/Resources/PackageContainer.hpp>
 
 namespace resources
 {
-
+//Фабрика GameObject, создаёт по PackageContainer
 class ObjectFactory
 {
 public:
-    ObjectFactory() = default;
+    ObjectFactory(PackageContainer& packages) : packages_(packages)
+    {
+
+    }
 
     bool loadPack(const std::string &packName)
     {
@@ -86,7 +88,7 @@ public:
         return getIdByLevel(levelA + 1);
     }
 
-    std::optional<GameObject> tryCreateById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
+    std::optional<objects::GameObject> tryCreateById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
     {
         const ObjectDef *def = getDefById(id);
         if (!def)
@@ -121,7 +123,7 @@ public:
         }
     }
 
-    GameObject createById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
+    objects::GameObject createById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
     {
         auto opt = tryCreateById(world, id, pos, type);
         if (!opt.has_value())
@@ -130,42 +132,42 @@ public:
     }
 
 private:
-    static GameObject wrapEntity(Entity &&entity, const ObjectDef &def)
+    static objects::GameObject wrapEntity(physics::Entity &&entity, const ObjectDef &def)
     {
-        return GameObject(std::move(entity), def.level, def.points);
+        return objects::GameObject(std::move(entity), def.level, def.points);
     }
 
-    static GameObject createCircle(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
+    static objects::GameObject createCircle(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
     {
         const float radius = def.form.getRadius();
         const sdl3::Color color = def.filler.getColor();
-        return wrapEntity(EntityFactory::createCircle(world, pos, radius, color, tex, type), def);
+        return wrapEntity(physics::EntityFactory::createCircle(world, pos, radius, color, tex, type), def);
     }
 
-    static GameObject createEllipse(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
+    static objects::GameObject createEllipse(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
     {
         const sdl3::Vector2f radii = def.form.getRadii();
         const sdl3::Color color = def.filler.getColor();
-        return wrapEntity(EntityFactory::createEllipse(world, pos, radii, color, tex, type), def);
+        return wrapEntity(physics::EntityFactory::createEllipse(world, pos, radii, color, tex, type), def);
     }
 
-    static GameObject createRectangle(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
+    static objects::GameObject createRectangle(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
     {
         const sdl3::Vector2f size = def.form.getSize();
         const sdl3::Color color = def.filler.getColor();
-        return wrapEntity(EntityFactory::createRectangle(world, pos, size, color, tex, type), def);
+        return wrapEntity(physics::EntityFactory::createRectangle(world, pos, size, color, tex, type), def);
     }
 
-    static GameObject createPolygon(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
+    static objects::GameObject createPolygon(b2World &world, const ObjectDef &def, const sdl3::Texture *tex, const sdl3::Vector2f pos, const b2BodyType type)
     {
 
         const std::vector<sdl3::Vector2f> points = def.form.getPolygon();
         const sdl3::Color color = def.filler.getColor();
-        return wrapEntity(EntityFactory::createPolygon(world, pos, points, color, tex, type), def);
+        return wrapEntity(physics::EntityFactory::createPolygon(world, pos, points, color, tex, type), def);
     }
 
 private:
-    PackageContainer packages_;
+    PackageContainer& packages_;
     std::string activePack_;
 };
 

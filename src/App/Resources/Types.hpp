@@ -1,13 +1,13 @@
 #pragma once
 
-#include <SDLWrapper/Math/Colors.hpp>
 #include <string>
 #include <variant>
 #include <vector>
 
-#include <Core/Types.hpp>
-
+#include <SDLWrapper/Math/Colors.hpp>
 #include <SDLWrapper/Names.hpp>
+
+#include <Core/Types.hpp>
 
 namespace resources
 {
@@ -94,5 +94,5 @@ struct ObjectDef
     ObjectFormDef form;
     ObjectFillerDef filler;
 };
-constexpr const int a = sizeof(ObjectDef);
+
 } // namespace resources
