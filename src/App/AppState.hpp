@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Core/BaseFolder.hpp>
+#include <App/IO/PathMeneger.hpp>
 #include <SDLWrapper/FileWorker.hpp>
 #include <App/Statistic/GameStatistic.hpp>
-#include <App/Statistic/GameStatisticReader.hpp>
+#include <App/IO/GameStatisticIO.hpp>
 
 #include <SDL3/SDL_log.h>
 
@@ -17,28 +17,29 @@ class AppState
 {
 public:
     explicit AppState(const std::string& statPath)
-        : statPath_(statPath), workFolderStatPath_(workFolder / statPath)
+        : statPath_(statPath), workFolderStatPath_(IO::PathManager::workFolder() / statPath)
     {
-        SDL_Log("%s\n", workFolderStatPath_.string().c_str());
+        if(!load())
+            SDL_Log("Failed to load appState");
     }
 
 
     void setStrPath(const std::string& statPath)
     {
         statPath_ = statPath;
-        workFolderStatPath_ = workFolder / statPath;
+        workFolderStatPath_ = core::PathManager::workFolder() / statPath;
         SDL_Log("%s\n%s\n", statPath_.string().c_str(), workFolderStatPath_.string().c_str());
     }
     bool load()
     {
         if (!std::filesystem::exists(workFolderStatPath_))
             createStatFile();
-        return statistic::reader::readAllGameStatistic(stat_, workFolderStatPath_.string());
+        return IO::readAllGameStatistic(stat_, workFolderStatPath_);
     }
 
     bool save() const
     {
-        return statistic::reader::writeAllGameStatistic(stat_, workFolderStatPath_.string());
+        return IO::writeAllGameStatistic(stat_, workFolderStatPath_);
     }
 
     statistic::AllGameStatistic &stat()
@@ -77,7 +78,7 @@ private:
     void createStatFile()
     {
         sdl3::FileWorker file;
-        if (!file.open(assets / statPath_, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary))
+        if (!file.open(core::PathManager::assets() / statPath_, sdl3::FileWorkerMode::read | sdl3::FileWorkerMode::binary))
         {
             SDL_Log("Error of open stat file from assets\n");
             return;
@@ -93,5 +94,7 @@ private:
         file.close();
     }
 };
+
+using AppStatePtr = std::shared_ptr<AppState>;
 
 } // namespace app
