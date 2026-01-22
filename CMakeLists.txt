@@ -6,7 +6,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)        # Отключает расширения �
 
 project("Unions" LANGUAGES CXX C)
 
-#УСТАНОВКА ПЕРЕМЕННЫХ
+#--------------------------SET--------------------------#
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(EXTERN_DIR "${PROJECT_SOURCE_DIR}/extern")
@@ -30,11 +30,9 @@ if(MSVC)
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-set(RmlUi_DIR      "${EXTERNAL_DIR}/rmlui/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/RmlUi")
+set(RmlUi_DIR      "${EXTERNAL_DIR}/RmlUi-6.2/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/RmlUi")
 set(Freetype_DIR   "${EXTERNAL_DIR}/FreeType/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/freetype")
 set(SDLWrapper_DIR "${EXTERNAL_DIR}/SDLWrapper/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/SDLWrapper")
-
-message("Freetype_DIR=${Freetype_DIR}")
 
 if(NOT DEFINED EXTERNAL_DIR)
     message(ERROR EXTERNAL_DIR is not defined)
@@ -57,7 +55,7 @@ set(INCLUDE_PATHS
   D:/dev/libraries/box2d-2.4.2/include
 )
 
-# ПОДКЛЮЧЕНИЕ БИБЛИОТЕК
+#--------------------------FIND_PACKAGE--------------------------#
 
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3-static)
@@ -78,7 +76,7 @@ else()
   add_executable(${PROJECT_NAME} ${SOURCE_CPP} ${SOURCE_HPP})
 endif()
 
-#TARGET НАСТРОЙКИ
+#--------------------------TARGET--------------------------#
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_PATHS})
 
@@ -115,7 +113,7 @@ else()
 
 endif()
 
-#ОПТИМИЗАЦИЯ И ПОСТНАСТРОЙКИ
+#--------------------------OPTIMIATION--------------------------#
 
 if(ANDROID AND (CMAKE_BUILD_TYPE MATCHES "Release|MinSizeRel"))
   target_compile_options(${PROJECT_NAME} PRIVATE
