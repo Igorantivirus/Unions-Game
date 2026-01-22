@@ -43,7 +43,7 @@ struct Time
     static std::string toString(const Time &time)
     {
         std::string res;
-        res.resize(6, 0);
+        res.resize(5, 0);
         res[0] = time.minuts / 10 + '0';
         res[1] = time.minuts % 10 + '0';
         res[2] = ':';
