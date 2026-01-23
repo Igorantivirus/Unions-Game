@@ -1,230 +1,111 @@
-html {
-    background-color: black;
-}
-
-:root {
-    font-size: 16px;
-}
-
+/* Общие настройки */
 body {
-    background-color: rgb(173, 216, 230);
+    margin: 0px;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
     font-family: Arial;
-    margin: 0;
-    width: 100%;
-    height: 100vh;
+    font-size: 18dp;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-
-    padding-top: 3vh;
-    padding-bottom: 3vh;
+    background-color: rgb(173, 216, 230);
 }
 
-main {
-    width: 92%;
-    height: 12vh;
-
+/* Шапка / футер фиксированы, скролл только в #games */
+#header {
+    flex: 0 0 80dp;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
 }
 
-h1 {
-    margin: 0;
-    color: black;
-    font-size: 520%;
-}
-
-#choosen {
-    width: 92%;
-    text-align: center;
-    height: 14vh;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-
-    padding: 1vh 3%;
-}
-
-#choosen h3 {
-    color: #2c3e50;
-    font-size: 220%;
-    margin: 0 0 1vh 0;
-}
-
-.selected-game {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    padding: 2vh 3%;
-    border-radius: 12px;
-    font-size: 280%;
-    font-weight: bold;
-
-    border-width: 2px;
-    border-color: black;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-#games {
-    width: 92%;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;
-
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-}
-
-/*.game {
-
-     background-color: white;
-    border-radius: 12px;
-    padding: 2vh 3%;
-    margin-bottom: 2vh;
-    border-width: 2px;
-
-    border-color: #007bff;
-    box-sizing: border-box; 
-}*/
-
-.game-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5vh;
-}
-
-.name {
-    font-size: 300%;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.choos-b {
-    background-color: #007bff;
-    color: white;
-    border-radius: 10px;
-    font-size: 200%;
-    font-weight: bold;
-    cursor: pointer;
-    border-width: 2px;
-
-    border-color: black;
-    width: 30%;
-    height: 7vh;
-    padding: 0;
-    text-align: center;
-    line-height: 7vh;
-}
-
-.choos-b:active {
-    background-color: #35a000;
-}
-
-.statistic {
-    
-    padding: 1.5vh 2%;
-    margin: 1vh 0 0 0;
-    /* background-color: #f8f9fa; */
-    /* border-radius: 10px; */
-    /* border-width: 1px; */
-
-    /* border-color: #dddddd; */
-    /* box-sizing: border-box; */
-}
-
-.statistic h4 {
-    color: #2c3e50;
-    font-size: 200%;
-    margin: 0 0 1vh 0;
-    text-align: center;
-}
-
-.stats-grid {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 2%;
-}
-
-.stat-cell {
-    width: 32%;
-    background-color: white;
-    border-radius: 10px;
-    border-width: 1px;
-    border-color: #dddddd;
-
-    padding: 1vh 1%;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.stat-label {
-    font-size: 140%;
-    color: #2c3e50;
-}
-
-.stat-value {
-    font-size: 220%;
-    font-weight: bold;
+#header h1 {
+    margin: 0px;
+    font-size: 32dp;
     color: black;
 }
 
-footer {
-    width: 92%;
-    height: 12vh;
-
+#footer {
+    flex: 0 0 90dp;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-
-    text-align: center;
-    padding-top: 1vh;
+    justify-content: center;
+    padding: 8dp;
 }
 
 .exit-b {
-    width: 48.5%;
-    height: 9vh;
+    flex: 1 1 0;
+    height: 100%;
+    margin: 0px 6dp;
 
-    font-size: 200%;
-    color: white;
+    font-size: 20dp;
     font-weight: bold;
-    border-radius: 12px;
-    cursor: pointer;
-    border-width: 2px;
-    border-color: black;
-    padding: 0 3%;
+
+    color: white;
+    background-color: rgb(0, 80, 200);
+
+    border: 2dp black;
+    border-radius: 10dp;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    line-height: 9vh;
-
-    margin-left: 2%;
-    margin-right: 2%;
 }
 
-#save-exit-b {
-    background-color: #007bff;
+.exit-b:active {
+    background-color: red;
 }
 
-#throw-exit-b {
-    background-color: #e74c3c;
+/* СКРОЛЛ-ЗОНА */
+#games {
+    flex: 1 1 auto;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding: 10dp;
 }
 
-#save-exit-b:active,
-#throw-exit-b:active {
-    background-color: #35a000;
+/*statistic*/
+
+/* -------------------------------
+   ВАЖНО: стили скроллбаров
+   -------------------------------
+   RmlUi при overflow:auto создаёт дочерний элемент 'scrollbarvertical'.
+   Если не задать ширину, он может занять всю область (auto),
+   и будет выглядеть как "всё сломалось". :contentReference[oaicite:3]{index=3}
+*/
+
+/* Вертикальный скроллбар только внутри #games */
+#games scrollbarvertical {
+    width: 14dp;
+}
+
+/* Уберём кнопки-стрелки (по желанию) */
+#games scrollbarvertical sliderarrowdec,
+#games scrollbarvertical sliderarrowinc {
+    width: 0px;
+    height: 0px;
+}
+
+/* Дорожка */
+#games scrollbarvertical slidertrack {
+    margin-left: 2dp;
+    width: 10dp;
+    background-color: rgb(200, 200, 200);
+    border-radius: 10dp;
+}
+
+/* Ползунок */
+#games scrollbarvertical sliderbar {
+    margin-left: 2dp;
+    width: 10dp;
+    min-height: 24dp;
+    /* чтобы не становился слишком маленьким */
+    background-color: rgb(120, 120, 120);
+    border-radius: 10dp;
 }

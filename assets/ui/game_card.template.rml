@@ -1,0 +1,25 @@
+﻿<template name="game-card" content="slot">
+
+    <head>
+        <link type="text/rcss" href="rml.rcss" />
+        <link type="text/rcss" href="game_card.template.rcss" />
+    </head>
+
+    <body>
+        <div class="game">
+            <div class="game-label">
+                <div class="game-name"></div>
+                <button class="choose-b"><span class="btn-text">Выбрать</span></button>
+            </div>
+
+            <div class="game-statistic">
+                <div class="stat-label">Время рекорда:<br />00:00</div>
+                <div class="stat-label">Рекорд очков:<br />645982</div>
+                <div class="stat-label">Игр сыграно:<br />45</div>
+            </div>
+
+            <!-- <div id="slot"></div> -->
+        </div>
+    </body>
+
+</template>

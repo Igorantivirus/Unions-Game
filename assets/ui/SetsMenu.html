@@ -1,26 +1,33 @@
-<rml lang="ru">
-    <head>
-        <title>Настройки игр</title>
-        <link type="text/rcss" href="SetsMenu.css"/>
-    </head>
+<rml>
 
-    <body>
-        <main>
-            <h1>Настройки игр</h1>
-        </main>
+  <head>
+    <title>Scroll demo</title>
 
-        <div id="choosen">
-            <h3>Выбранная игра:</h3>
-            <div class="selected-game">
-                <p id="selected-game-name"></p>
-            </div>
-        </div>
+    <!-- База: дефолтное поведение div/h1/p/... как в HTML -->
+    <link type="text/rcss" href="rml.rcss" />
 
-        <div id="games"></div>
+    <!-- Ваши стили поверх базы -->
+    <link type="text/rcss" href="scrol.rcss" />
 
-        <footer>
-            <button id="save-exit-b" class="exit-b"><span>Сохранить и выйти</span></button>
-            <button id="throw-exit-b" class="exit-b"><span>Сбросить и выйти</span></button>
-        </footer>
-    </body>
+    <link rel="template" type="text/template" href="game_card.template.rml" />
+  </head>
+
+  <body>
+    <div id="header">
+      <h1>Выбор игры</h1>
+    </div>
+
+    <div id="games">
+      
+        <template src="game-card"></template>
+        <template src="game-card"></template>
+        <template src="game-card"></template>
+
+    </div>
+
+    <div id="footer">
+      <button id="save-exit-b" class="exit-b"><span>Сохранить и выйти</span></button>
+      <button id="drop-exit-b" class="exit-b"><span>Сбросить и выйти</span></button>
+    </div>
+  </body>
 </rml>
