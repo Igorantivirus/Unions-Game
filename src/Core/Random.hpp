@@ -4,7 +4,7 @@
 #include <type_traits>
 #include <limits>
 
-namespace rnd
+namespace core
 {
     template<typename T>
     constexpr bool use_short_distribution_v = std::is_same_v<T, bool> || std::is_same_v<T, char> || std::is_same_v<T, unsigned char>;
