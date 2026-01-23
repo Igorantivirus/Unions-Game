@@ -3,6 +3,7 @@
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/StringUtilities.h>
 #include <RmlUi/Core/SystemInterface.h>
+#include <SDL3/SDL_log.h>
 
 static Rml::TouchList TouchEventToTouchList(SDL_Event &ev, Rml::Context *context, SDL_FingerID finger_id)
 {
@@ -129,6 +130,21 @@ void SystemInterface_SDL::DeactivateKeyboard()
         SDL_StopTextInput();
 #endif
     }
+}
+
+bool SystemInterface_SDL::LogMessage(Rml::Log::Type type, const Rml::String &message)
+{
+#ifdef DEBUG_BUILD_TYPE
+    switch(type)
+    {
+        case Rml::Log::Type::LT_ERROR: SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s\n", message.c_str()); break;
+        case Rml::Log::Type::LT_WARNING: SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "%s\n", message.c_str()); break;
+        case Rml::Log::Type::LT_INFO: SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "%s\n", message.c_str()); break;
+        case Rml::Log::Type::LT_DEBUG: SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s\n", message.c_str()); break;
+        default: SDL_Log("%s\n", message.c_str()); break;
+    }
+#endif
+    return true;
 }
 
 struct WindowCoordMapperCache

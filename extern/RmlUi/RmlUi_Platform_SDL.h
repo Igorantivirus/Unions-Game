@@ -32,11 +32,7 @@ public:
 	void ActivateKeyboard(Rml::Vector2f caret_position, float line_height) override;
 	void DeactivateKeyboard() override;
 
-	bool LogMessage(Rml::Log::Type type, const Rml::String& message) override
-	{
-		SDL_Log("RmlUi: %s\n", message.c_str());
-		return true;
-	}
+	bool LogMessage(Rml::Log::Type type, const Rml::String& message) override;
 
 private:
 	SDL_Window* window = nullptr;
