@@ -38,6 +38,8 @@ private:
                 scene_.actionRes_ = engine::SceneAction::exitAction();
             else if (id == ui::mainMenu::startB)
                 scene_.actionRes_ = engine::SceneAction::nextAction(ids::gameMenu);
+            else if (id == ui::mainMenu::todevB)
+                SDL_OpenURL(ui::mainMenu::githubUrl.data());
             else if (id == ui::mainMenu::settsB)
                 scene_.actionRes_ = engine::SceneAction::nextAction(ids::setsMenu);
         }
