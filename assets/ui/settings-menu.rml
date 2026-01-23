@@ -3,7 +3,7 @@
   <head>
     <title>Scroll demo</title>
     <link type="text/rcss" href="rml.rcss" />
-    <link type="text/rcss" href="SetsMenu.css" />
+    <link type="text/rcss" href="settings-menu.rcss" />
     <link type="text/template" href="game-card.rml" />
   </head>
 

@@ -3,7 +3,7 @@
     <head>
         <title>Document</title>
         <link type="text/rcss" href="rml.rcss"/>
-        <link type="text/rcss" href="MainMenu.css"/>
+        <link type="text/rcss" href="main-menu.rcss"/>
     </head>
 
     <body>

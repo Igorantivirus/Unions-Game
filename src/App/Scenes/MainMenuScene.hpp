@@ -27,6 +27,11 @@ private:
         void ProcessEvent(Rml::Event &ev) override
         {
             Rml::Element *el = ev.GetTargetElement();
+            while (el && el->GetId().empty())
+                el = el->GetParentNode();
+            if (!el)
+                return;
+
             const Rml::String &id = el->GetId();
 
             if (id == ui::mainMenu::exitB)

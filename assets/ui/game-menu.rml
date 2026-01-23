@@ -3,7 +3,7 @@
   <head>
     <title>Game HUD</title>
     <link type="text/rcss" href="rml.rcss" />
-    <link type="text/rcss" href="GameMenu.css" />
+    <link type="text/rcss" href="game-menu.rcss" />
 
     <link type="text/template" href="overlays/gameover-overlay.rml" />
     <link type="text/template" href="overlays/pause-overlay.rml" />

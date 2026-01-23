@@ -21,7 +21,7 @@ constexpr const std::string_view fontPath = "fonts/fonts.txt";
 
 namespace ui::mainMenu
 {
-constexpr const std::string_view file = "ui/MainMenu.html";
+constexpr const std::string_view file = "ui/main-menu.rml";
 constexpr const std::string_view exitB = "exit-b";
 constexpr const std::string_view startB = "start-b";
 constexpr const std::string_view settsB = "setts-b";
@@ -29,7 +29,7 @@ constexpr const std::string_view settsB = "setts-b";
 
 namespace ui::gameMenu
 {
-constexpr const std::string_view file = "ui/GameMenu.html";
+constexpr const std::string_view file = "ui/game-menu.rml";
 constexpr const std::string_view backB = "back-b";
 
 inline const std::string gameStats = "game-status";
@@ -53,7 +53,7 @@ inline const std::string maxDeathLabel = "maxdeath";
 
 namespace ui::setsMenu
 {
-constexpr const std::string_view file = "ui/SetsMenu.html";
+constexpr const std::string_view file = "ui/settings-menu.rml";
 constexpr const std::string_view saveExitB = "save-exit-b";
 constexpr const std::string_view saveThrowB = "throw-exit-b";
 } // namespace ui::setsMenu
