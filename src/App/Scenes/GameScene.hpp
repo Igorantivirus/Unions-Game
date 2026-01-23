@@ -102,7 +102,7 @@ public:
     }
     ~GameScene()
     {
-        appState_.stat().applyGameResult(stat_.stringID, stat_);
+        applyStatistic();
         if (dataHandle_)
         {
             dataHandle_ = Rml::DataModelHandle(); // Освобождаем модель данных
@@ -202,6 +202,7 @@ private: // Сцена
 
     void retart()
     {
+        applyStatistic();
         setPause(false);
 
         prEntity_.reset();
@@ -219,6 +220,11 @@ private: // Сцена
 
         dataHandle_.DirtyVariable(ui::gameMenu::deathLabel);
         gameOverOverlay->SetClass(ui::gameMenu::openClass, false);
+    }
+
+    void applyStatistic()
+    {   
+        appState_.stat().applyGameResult(stat_.stringID, stat_);
     }
 
     void bindData()
