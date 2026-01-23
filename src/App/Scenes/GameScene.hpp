@@ -77,7 +77,12 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState) : engine::OneRmlDocScene(context, ui::gameMenu::file), listener_(*this), appState_(appState), packages_(core::PathManager::assets() / assets::packages), objectFactory_(packages_)
+    GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState)
+        : engine::OneRmlDocScene(context, ui::gameMenu::file),
+          listener_(*this),
+          appState_(appState),
+          packages_(core::PathManager::assets() / assets::packages, appState_.textures()),
+          objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: %s", appState.getCurrentPackageName().c_str());

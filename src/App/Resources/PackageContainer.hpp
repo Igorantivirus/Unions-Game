@@ -7,6 +7,7 @@
 #include <App/IO/ObjectPackIO.hpp>
 
 #include "ObjectPack.hpp"
+#include "TextureManager.hpp"
 
 namespace resources
 {
@@ -14,8 +15,8 @@ namespace resources
 class PackageContainer
 {
 public:
-    explicit PackageContainer(std::filesystem::path objectsRoot)
-        : objectsRoot_(std::move(objectsRoot))
+    PackageContainer(std::filesystem::path objectsRoot, TextureManager& textures)
+        : objectsRoot_(std::move(objectsRoot)), textures_(textures)
     {
     }
 
@@ -51,16 +52,12 @@ public:
         auto it = packs_.find(packName);
         if (it == packs_.end())
             return;
-        it->second.unload(textures_);
         packs_.erase(it);
     }
 
     void unloadAll()
     {
-        for (auto &[name, pack] : packs_)
-            pack.unload(textures_);
         packs_.clear();
-        textures_.clear();
     }
 
     const ObjectPack *getPack(const std::string packName) const
@@ -78,7 +75,7 @@ public:
 private:
     std::filesystem::path objectsRoot_;
 
-    TextureManager textures_;
+    TextureManager& textures_;
     std::unordered_map<std::string, ObjectPack> packs_;
 };
 
