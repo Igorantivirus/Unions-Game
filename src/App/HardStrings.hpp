@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <string_view>
 
 namespace names
@@ -30,6 +31,11 @@ namespace ui::gameMenu
 {
 constexpr const std::string_view file = "ui/GameMenu.html";
 constexpr const std::string_view backB = "back-b";
+
+inline const std::string gameStats = "game-status";
+inline const std::string timeLabel = "time";
+inline const std::string pointsLabel = "points";
+inline const std::string recordLabel = "record";
 } // namespace ui::gameMenu
 
 namespace ui::setsMenu

@@ -85,7 +85,8 @@ public:
             // Освобождаем модель данных
             dataHandle_ = Rml::DataModelHandle();
             // Удаляем модель из контекста
-            context_.getContext()->RemoveDataModel("game_stats");
+            
+            context_.getContext()->RemoveDataModel(ui::gameMenu::gameStats);
         }
     }
 
@@ -219,12 +220,12 @@ private:
 private:
     void bindData()
     {
-        Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel("game_stats");
+        Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel(ui::gameMenu::gameStats);
         if (constructor)
         {
-            constructor.Bind("game_time", &stat_.time);
-            constructor.Bind("points", &stat_.gameCount);
-            constructor.Bind("record", &stat_.record);
+            constructor.Bind(ui::gameMenu::timeLabel, &stat_.time);
+            constructor.Bind(ui::gameMenu::pointsLabel, &stat_.gameCount);
+            constructor.Bind(ui::gameMenu::recordLabel, &stat_.record);
         }
         dataHandle_ = constructor.GetModelHandle();
     }
@@ -234,7 +235,6 @@ private:
         glass_.clear();
 
         float yPos = logicSize.y;
-        // float yPos = logicSize.y / 2.f + std::min(logicSize.x, logicSize.y) / 2.f;
 
         glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f, yPos}, {glassSize.x, thikness}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
         glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f - glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
@@ -254,18 +254,17 @@ private:
     void addPoints(const int points)
     {
         stat_.gameCount += points;
-        dataHandle_.DirtyVariable("points");
+        dataHandle_.DirtyVariable(ui::gameMenu::pointsLabel);
     }
 
     void updateTime()
     {
         stat_.time = core::Time::fromSeconds(timer_.elapsedTimeS());
-        dataHandle_.DirtyVariable("game_time");
+        dataHandle_.DirtyVariable(ui::gameMenu::timeLabel);
     }
 
     void updateCollision(const SDL_Event &event)
     {
-
         std::size_t obj1Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data1)));
         std::size_t obj2Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data2)));
         if (obj1Ind == objects_.size() || obj2Ind == objects_.size())
