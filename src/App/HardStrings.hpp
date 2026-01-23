@@ -36,6 +36,19 @@ inline const std::string gameStats = "game-status";
 inline const std::string timeLabel = "time";
 inline const std::string pointsLabel = "points";
 inline const std::string recordLabel = "record";
+
+inline const std::string pauseB = "pause-b";
+inline const std::string pauseOverlayId = "pause-overlay";
+inline const std::string gameOverOverlayId = "gameover-overlay";
+
+inline const std::string openClass = "open";
+inline const std::string restartClass = "restart";
+inline const std::string exitClass = "exit";
+inline const std::string resumeClass = "resume";
+
+inline const std::string deathLabel = "death";
+inline const std::string maxDeathLabel = "maxdeath";
+
 } // namespace ui::gameMenu
 
 namespace ui::setsMenu
@@ -43,4 +56,4 @@ namespace ui::setsMenu
 constexpr const std::string_view file = "ui/SetsMenu.html";
 constexpr const std::string_view saveExitB = "save-exit-b";
 constexpr const std::string_view saveThrowB = "throw-exit-b";
-} // namespace ui::gameMenu
+} // namespace ui::setsMenu

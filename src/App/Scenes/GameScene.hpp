@@ -52,36 +52,24 @@ private:
             const Rml::String &id = el->GetId();
             const std::string classes = el->GetClassNames();
 
-            if (id == "pause-b")
+            if (id == ui::gameMenu::pauseB)
             {
                 scene_.setPause(true);
                 
             }
-            else if (el->IsClassSet("restart"))
+            else if (el->IsClassSet(ui::gameMenu::restartClass))
             {
                 scene_.retart();
             }
-            else if (el->IsClassSet("exit"))
+            else if (el->IsClassSet(ui::gameMenu::exitClass))
             {
                 scene_.actionRes_ = engine::SceneAction::popAction();
             }
-            else if (el->IsClassSet("resume"))
+            else if (el->IsClassSet(ui::gameMenu::resumeClass))
             {
                 scene_.setPause(false);
             }
 
-            // else if (id == "btn-resume")
-            // {
-            //     scene_.setPause(false);
-            // }
-            // else if (id == "btn-restart" || id == "btn-go-restart")
-            // {
-            //     scene_.retart();
-            // }
-            // else if (id == "btn-exit" || id == "btn-go-menu")
-            // {
-            //     scene_.actionRes_ = engine::SceneAction::popAction();
-            // }
         }
 
     private:
@@ -92,7 +80,7 @@ public:
     GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState) : engine::OneRmlDocScene(context, ui::gameMenu::file), listener_(*this), appState_(appState), packages_(core::PathManager::assets() / assets::packages), objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
-            SDL_Log("Failed to load object pack: coins");
+            SDL_Log("Failed to load object pack: %s", appState.getCurrentPackageName().c_str());
         if (const auto *gs = appState_.stat().findById(objectFactory_.getActivePack()))
             stat_.record = static_cast<int>(gs->record);
         if (auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
@@ -101,8 +89,8 @@ public:
         bindData();
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
-        gameOverOverlay = document()->GetElementById("gameover-overlay");
-        pauseOverlay = document()->GetElementById("pause-overlay");
+        gameOverOverlay = document()->GetElementById(ui::gameMenu::gameOverOverlayId);
+        pauseOverlay = document()->GetElementById(ui::gameMenu::pauseOverlayId);
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
@@ -209,7 +197,7 @@ private: // Сцена
         startTimer_.pause(pause);
         startTimer_.start();
         if (openPauseMenu)
-            pauseOverlay->SetClass("open", pause);
+            pauseOverlay->SetClass(ui::gameMenu::openClass, pause);
     }
 
     void retart()
@@ -229,8 +217,8 @@ private: // Сцена
         updateTime();
         addPoints(0);
 
-        dataHandle_.DirtyVariable("death");
-        gameOverOverlay->SetClass("open", false);
+        dataHandle_.DirtyVariable(ui::gameMenu::deathLabel);
+        gameOverOverlay->SetClass(ui::gameMenu::openClass, false);
     }
 
     void bindData()
@@ -241,8 +229,8 @@ private: // Сцена
             constructor.Bind(ui::gameMenu::timeLabel, &stat_.time);
             constructor.Bind(ui::gameMenu::pointsLabel, &stat_.gameCount);
             constructor.Bind(ui::gameMenu::recordLabel, &stat_.record);
-            constructor.Bind("death", &countDeath_);
-            constructor.Bind("maxdeath", &settings_.deathCount);
+            constructor.Bind(ui::gameMenu::deathLabel, &countDeath_);
+            constructor.Bind(ui::gameMenu::maxDeathLabel, &settings_.deathCount);
         }
         dataHandle_ = constructor.GetModelHandle();
     }
@@ -256,10 +244,10 @@ private: // Сцена
     void addCountDeath()
     {
         ++countDeath_;
-        dataHandle_.DirtyVariable("death");
+        dataHandle_.DirtyVariable(ui::gameMenu::deathLabel);
         if (countDeath_ >= settings_.deathCount)
         {
-            gameOverOverlay->SetClass("open", true);
+            gameOverOverlay->SetClass(ui::gameMenu::openClass, true);
             setPause(true, false);
         }
     }
@@ -347,7 +335,7 @@ private: // Временный объект
         auto idpt = objectFactory_.getIdByLevel(level);
         if (!idpt.has_value())
         {
-            SDL_Log("Error! Not found object by level 1");
+            SDL_Log("Error! Not found object by level %d\n", static_cast<int>(level));
             actionRes_ = engine::SceneAction::popAction();
         }
         auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startPoss_.x, -startPoss_.y});
