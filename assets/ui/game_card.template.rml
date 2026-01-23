@@ -13,9 +13,18 @@
             </div>
 
             <div class="game-statistic">
-                <div class="stat-label">Время рекорда:<br />00:00</div>
-                <div class="stat-label">Рекорд очков:<br />645982</div>
-                <div class="stat-label">Игр сыграно:<br />45</div>
+                <div class="stat-label">
+                    <p>Время рекорда:</p>
+                    <p></p>
+                </div>
+                <div class="stat-label">
+                    <p>Рекорд очков:</p>
+                    <p></p>
+                </div>
+                <div class="stat-label">
+                    <p>Игр сыграно:</p>
+                    <p></p>
+                </div>
             </div>
 
             <!-- <div id="slot"></div> -->
