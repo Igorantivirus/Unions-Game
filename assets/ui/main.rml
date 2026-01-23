@@ -1,0 +1,32 @@
+<rml lang="ru">
+
+    <head>
+        <title>Document</title>
+        <link type="text/rcss" href="main.rcss"/>
+        <link type="text/rcss" href="rml.rcss"/>
+    </head>
+
+    <body>
+
+        <div id="head">
+            <h1>Объединялы</h1>
+        </div>
+
+        <div id="main">
+            <button id="start-b" class="menu-button"><span>Начать</span></button>
+            <button id="setts-b" class="menu-button"><span>Выбор режима</span></button>
+            <button id="todev-b" class="menu-button"><span>На страницу разработки</span></button>
+            <button id="exit-b" class="menu-button"><span>Выйти</span></button>
+        </div>
+
+        <div id="foot">
+            <div class="footMenu">
+                <p>Версия - 1.0.0</p>
+            </div>
+            <div class="footMenu">
+                Автор - Igorantivirus
+            </div>
+        </div>
+
+    </body>
+</rml>
