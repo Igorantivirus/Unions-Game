@@ -33,7 +33,6 @@
 #include <Resources/ObjectFactory.hpp>
 #include <Statistic/GameStatistic.hpp>
 
-
 namespace scenes
 {
 
@@ -61,7 +60,7 @@ private:
                 el = el->GetParentNode();
             if (!el)
                 return;
-            
+
             const Rml::String &id = el->GetId();
 
             if (id == "pause-button")
@@ -100,6 +99,9 @@ public:
         if (const auto *gs = appState_.stat().findById(objectFactory_.getActivePack()))
             stat_.record = static_cast<int>(gs->record);
 
+        if (auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
+            settings_ = pack->getSetings();
+
         bindData();
         loadDocumentOrThrow();
         listener_.init(document());
@@ -111,10 +113,7 @@ public:
 
         stat_.stringID = objectFactory_.getActivePack();
 
-        if (auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
-            settings_ = pack->getSetings();
-
-        SDL_Log("%d, %d\n", (int)settings_.levelRange.x, (int)settings_.levelRange.y);
+        
 
         timer_.start();
     }
@@ -182,20 +181,15 @@ public:
                 addPoints(-it->getPoints());
                 it = objects_.erase(it); // erase возвращает итератор на следующий элемент
                 ++countDeath_;
-                if(countDeath_ >= settings_.deathCount)
+                dataHandle_.DirtyVariable("death");
+                if (countDeath_ >= settings_.deathCount)
                 {
                     gameOverOverlay->SetClass("open", true);
                     setPause(true);
                 }
             }
             else
-            {
-                // if(it->getPosition().y < startY_)
-                // {
-                //     SDL_Log("Game over\n");
-                // }
                 ++it;
-            }
         }
 
         return actionRes_;
@@ -236,8 +230,6 @@ private:
 
     app::AppState &appState_;
 
-
-
     Rml::Element *gameOverOverlay = nullptr;
 
 private:
@@ -250,6 +242,9 @@ private:
 
     void retart()
     {
+        prEntity_.reset();
+        startTimer_.start();
+
         countDeath_ = 0;
 
         timer_.start();
@@ -259,6 +254,7 @@ private:
         updateTime();
         addPoints(0);
 
+        dataHandle_.DirtyVariable("death");
         gameOverOverlay->SetClass("open", false);
     }
 
@@ -298,6 +294,9 @@ private:
             constructor.Bind(ui::gameMenu::timeLabel, &stat_.time);
             constructor.Bind(ui::gameMenu::pointsLabel, &stat_.gameCount);
             constructor.Bind(ui::gameMenu::recordLabel, &stat_.record);
+
+            constructor.Bind("death", &countDeath_);
+            constructor.Bind("maxdeath", &settings_.deathCount);
         }
         dataHandle_ = constructor.GetModelHandle();
     }
