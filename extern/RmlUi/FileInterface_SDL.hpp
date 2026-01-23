@@ -1,6 +1,7 @@
 #ifndef FileInterface_SDL_HPP
 #define FileInterface_SDL_HPP
 
+#include <filesystem>
 #include <map>
 
 #include <RmlUi/Core/FileInterface.h>
@@ -16,7 +17,19 @@ public:
 
     Rml::FileHandle Open(const Rml::String &path) override
     {
-        SDL_IOStream *io_stream = SDL_IOFromFile(path.c_str(), "rb");
+        SDL_Log("%s\n", path.c_str());
+
+        // RmlUi typically uses forward slashes in resolved paths, while some Windows file APIs expect
+        // backslashes. Normalize to the platform-preferred form before opening.
+        const std::filesystem::path fs_path = std::filesystem::path(path.c_str()).lexically_normal().make_preferred();
+        const std::string native_path = fs_path.string();
+
+        SDL_IOStream *io_stream = SDL_IOFromFile(native_path.c_str(), "rb");
+        if (!io_stream && native_path != path.c_str())
+        {
+            // Fallback: try the original path verbatim.
+            io_stream = SDL_IOFromFile(path.c_str(), "rb");
+        }
         if (!io_stream)
         {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to open file '%s': %s", path.c_str(), SDL_GetError());

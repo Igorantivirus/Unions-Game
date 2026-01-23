@@ -1,31 +1,3 @@
-/*
- * This source file is part of RmlUi, the HTML/CSS Interface Middleware
- *
- * For the latest information, see http://github.com/mikke89/RmlUi
- *
- * Copyright (c) 2008-2010 CodePoint Ltd, Shift Technology Ltd
- * Copyright (c) 2019-2023 The RmlUi Team, and contributors
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- */
-
 #include "RmlUi_Renderer_SDL.h"
 #include <RmlUi/Core/Core.h>
 #include <RmlUi/Core/FileInterface.h>
@@ -87,69 +59,32 @@ void RenderInterface_SDL::ReleaseGeometry(Rml::CompiledGeometryHandle geometry)
 	delete reinterpret_cast<GeometryView*>(geometry);
 }
 
-// void RenderInterface_SDL::RenderGeometry(Rml::CompiledGeometryHandle handle, Rml::Vector2f translation, Rml::TextureHandle texture)
-// {
-// 	const GeometryView* geometry = reinterpret_cast<GeometryView*>(handle);
-// 	const Rml::Vertex* vertices = geometry->vertices.data();
-// 	const size_t num_vertices = geometry->vertices.size();
-// 	const int* indices = geometry->indices.data();
-// 	const size_t num_indices = geometry->indices.size();
-
-// 	Rml::UniquePtr<SDL_Vertex[]> sdl_vertices{new SDL_Vertex[num_vertices]};
-
-// 	for (size_t i = 0; i < num_vertices; i++)
-// 	{
-// 		sdl_vertices[i].position = {vertices[i].position.x + translation.x, vertices[i].position.y + translation.y};
-// 		sdl_vertices[i].tex_coord = {vertices[i].tex_coord.x, vertices[i].tex_coord.y};
-
-// 		const auto& color = vertices[i].colour;
-// #if SDL_MAJOR_VERSION >= 3
-// 		sdl_vertices[i].color = {color.red / 255.f, color.green / 255.f, color.blue / 255.f, color.alpha / 255.f};
-// #else
-// 		sdl_vertices[i].color = {color.red, color.green, color.blue, color.alpha};
-// #endif
-// 	}
-
-// 	SDL_Texture* sdl_texture = (SDL_Texture*)texture;
-
-// 	SDL_RenderGeometry(renderer, sdl_texture, sdl_vertices.get(), (int)num_vertices, indices, (int)num_indices);
-// }
-
-//Changed
-void RenderInterface_SDL::RenderGeometry(Rml::CompiledGeometryHandle handle,
-                                         Rml::Vector2f translation,
-                                         Rml::TextureHandle texture)
+void RenderInterface_SDL::RenderGeometry(Rml::CompiledGeometryHandle handle, Rml::Vector2f translation, Rml::TextureHandle texture)
 {
-    const GeometryView* geometry = reinterpret_cast<GeometryView*>(handle);
-    const Rml::Vertex* vertices = geometry->vertices.data();
-    const size_t num_vertices = geometry->vertices.size();
-    const int* indices = geometry->indices.data();
-    const size_t num_indices = geometry->indices.size();
+	const GeometryView* geometry = reinterpret_cast<GeometryView*>(handle);
+	const Rml::Vertex* vertices = geometry->vertices.data();
+	const size_t num_vertices = geometry->vertices.size();
+	const int* indices = geometry->indices.data();
+	const size_t num_indices = geometry->indices.size();
 
-    Rml::UniquePtr<SDL_Vertex[]> sdl_vertices{new SDL_Vertex[num_vertices]};
+	Rml::UniquePtr<SDL_Vertex[]> sdl_vertices{new SDL_Vertex[num_vertices]};
 
-    for (size_t i = 0; i < num_vertices; i++)
-    {
-        // 1) исходная позиция + translation, z=0, w=1
-        Rml::Vector4f p4(vertices[i].position.x + translation.x, vertices[i].position.y + translation.y, 0.0f, 1.0f);
+	for (size_t i = 0; i < num_vertices; i++)
+	{
+		sdl_vertices[i].position = {vertices[i].position.x + translation.x, vertices[i].position.y + translation.y};
+		sdl_vertices[i].tex_coord = {vertices[i].tex_coord.x, vertices[i].tex_coord.y};
 
-        // 2) применяем матрицу, если есть
-        if (has_transform_)
-            p4 = transform_ * p4;
+		const auto& color = vertices[i].colour;
+#if SDL_MAJOR_VERSION >= 3
+		sdl_vertices[i].color = {color.red / 255.f, color.green / 255.f, color.blue / 255.f, color.alpha / 255.f};
+#else
+		sdl_vertices[i].color = {color.red, color.green, color.blue, color.alpha};
+#endif
+	}
 
-        sdl_vertices[i].position = { p4.x, p4.y };
-        sdl_vertices[i].tex_coord = { vertices[i].tex_coord.x, vertices[i].tex_coord.y };
+	SDL_Texture* sdl_texture = (SDL_Texture*)texture;
 
-        const auto& color = vertices[i].colour;
-    #if SDL_MAJOR_VERSION >= 3
-        sdl_vertices[i].color = { color.red / 255.f, color.green / 255.f, color.blue / 255.f, color.alpha / 255.f };
-    #else
-        sdl_vertices[i].color = { color.red, color.green, color.blue, color.alpha };
-    #endif
-    }
-
-    SDL_Texture* sdl_texture = (SDL_Texture*)texture;
-    SDL_RenderGeometry(renderer, sdl_texture, sdl_vertices.get(), (int)num_vertices, indices, (int)num_indices);
+	SDL_RenderGeometry(renderer, sdl_texture, sdl_vertices.get(), (int)num_vertices, indices, (int)num_indices);
 }
 
 void RenderInterface_SDL::EnableScissorRegion(bool enable)
@@ -269,19 +204,4 @@ Rml::TextureHandle RenderInterface_SDL::GenerateTexture(Rml::Span<const Rml::byt
 void RenderInterface_SDL::ReleaseTexture(Rml::TextureHandle texture_handle)
 {
 	SDL_DestroyTexture((SDL_Texture*)texture_handle);
-}
-
-//Added
-void RenderInterface_SDL::SetTransform(const Rml::Matrix4f* m)
-{
-    if (m)
-	{
-        transform_ = *m;
-        has_transform_ = true;
-    }
-	else
-	{
-        has_transform_ = false;
-        transform_ = Rml::Matrix4f::Identity();
-    }
 }
