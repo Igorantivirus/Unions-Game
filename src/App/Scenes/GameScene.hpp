@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SDL3/SDL_log.h>
 #include <memory>
 
 #include <SDL3/SDL_events.h>
@@ -43,17 +44,47 @@ private:
         {
         }
 
+        void init(Rml::ElementDocument *doc)
+        {
+            if (!doc)
+                return;
+            overlay = doc->GetElementById("pause-overlay");
+        }
+
         void ProcessEvent(Rml::Event &ev) override
         {
             Rml::Element *el = ev.GetTargetElement();
+            while (el && el->GetId().empty())
+                el = el->GetParentNode();
+            if (!el)
+                return;
             const Rml::String &id = el->GetId();
 
-            if (id == ui::gameMenu::backB)
+            if (id == "pause-button")
+            {
+                overlay->SetClass("open", true);
+                scene_.setPause(true);
+            }
+            else if (id == "btn-resume")
+            {
+                overlay->SetClass("open", false);
+                scene_.setPause(false);
+            }
+            else if (id == "btn-restart")
+            {
+                overlay->SetClass("open", false);
+                scene_.setPause(false);
+                scene_.retart();
+            }
+            else if (id == "btn-exit")
+            {
                 scene_.actionRes_ = engine::SceneAction::popAction();
+            }
         }
 
     private:
         GameScene &scene_;
+        Rml::Element *overlay = nullptr;
     };
 
 public:
@@ -67,6 +98,7 @@ public:
 
         bindData();
         loadDocumentOrThrow();
+        listener_.init(document());
         addEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
@@ -85,13 +117,15 @@ public:
             // Освобождаем модель данных
             dataHandle_ = Rml::DataModelHandle();
             // Удаляем модель из контекста
-            
+
             context_.getContext()->RemoveDataModel(ui::gameMenu::gameStats);
         }
     }
 
     void updateEvent(const SDL_Event &event) override
     {
+        if(paused_)
+            return;
         if (event.type == app::AppEventsType::COLLISION)
         {
             updateCollision(event);
@@ -102,6 +136,8 @@ public:
         }
         if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
         {
+            if(event.button.y <= 100)
+                return;
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 pressed_ = true;
@@ -172,6 +208,9 @@ public:
 
     engine::SceneAction &update(const float dt) override
     {
+        if(paused_)
+            return actionRes_;
+
         world_.Step(dt, 8, 3);
         updateTime();
 
@@ -193,6 +232,8 @@ private:
     GameSceneListener listener_;
 
 private:
+    bool paused_ = false;
+
     b2World world_{b2Vec2(0.0f, 9.81f)};
     objects::GameContactCheker contactCheker_;
     std::vector<physics::Entity> glass_;
@@ -218,6 +259,23 @@ private:
     app::AppState &appState_;
 
 private:
+    void setPause(const bool pause)
+    {
+        paused_ = pause;
+        timer_.pause(pause);
+        startTimer_.pause(pause);
+    }
+
+    void retart()
+    {
+        timer_.start();
+        stat_.gameCount = 0;
+        objects_.clear();
+
+        updateTime();
+        addPoints(0);
+    }
+
     void bindData()
     {
         Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel(ui::gameMenu::gameStats);
