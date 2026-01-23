@@ -11,6 +11,7 @@
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include <RmlUi/Core.h>
+#include <RmlUi/Core/DataModelHandle.h>
 #include <RmlUi/Debugger/Debugger.h>
 #include <RmlUi/FileInterface_SDL.hpp>
 #include <RmlUi/RmlUi_Platform_SDL.h>
@@ -21,6 +22,7 @@
 
 #include <Core/PathMeneger.hpp>
 #include <Core/StringUtils.hpp>
+#include <Core/Time.hpp>
 #include <Core/Types.hpp>
 
 namespace engine
@@ -74,6 +76,10 @@ public:
             return false;
         }
         context_->SetDensityIndependentPixelRatio(SDL_GetWindowDisplayScale(window_.get()));
+
+        // Register shared data types once per UI context (not per scene/model).
+        // This avoids "type already registered/bound" warnings when scenes recreate their models.
+        registerRmlDataTypes_();
 
 #ifdef DEBUG_BUILD_TYPE
         if (debugInit_ = Rml::Debugger::Initialise(context_); !debugInit_)
@@ -188,6 +194,31 @@ private:
 #ifdef DEBUG_BUILD_TYPE
     bool debugInit_ = false;
 #endif
+
+private:
+    void registerRmlDataTypes_()
+    {
+        if (rmlDataTypesRegistered_ || !context_)
+            return;
+        rmlDataTypesRegistered_ = true;
+
+        Rml::DataModelConstructor constructor = context_->CreateDataModel("__engine_types");
+        if (!constructor)
+            return;
+
+        constructor.RegisterScalar<core::Time>(
+            [](const core::Time &t, Rml::Variant &out)
+            {
+                out = Rml::String(core::Time::toString(t));
+            });
+
+        // Keep the model alive for the lifetime of the context.
+        engineTypesModel_ = constructor.GetModelHandle();
+    }
+
+private:
+    bool rmlDataTypesRegistered_ = false;
+    Rml::DataModelHandle engineTypesModel_;
 
 private:
     bool loadFonts(const std::filesystem::path fontsPath)

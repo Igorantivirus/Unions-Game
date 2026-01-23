@@ -222,11 +222,6 @@ private:
         Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel("game_stats");
         if (constructor)
         {
-            constructor.RegisterScalar<core::Time>(
-                [](const core::Time &t, Rml::Variant &out)
-                {
-                    out = Rml::String(core::Time::toString(t)); // Variant станет строкой
-                });
             constructor.Bind("game_time", &stat_.time);
             constructor.Bind("points", &stat_.gameCount);
             constructor.Bind("record", &stat_.record);
