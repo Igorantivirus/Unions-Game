@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Resources/Types.hpp"
-#include <SDL3/SDL_log.h>
 #include <memory>
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_keycode.h>
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mouse.h>
 #include <SDLWrapper/Clock.hpp>
 #include <SDLWrapper/Names.hpp>
@@ -22,16 +21,12 @@
 #include <App/GameObjects/GameContactCheker.hpp>
 #include <App/HardStrings.hpp>
 #include <App/Physics/EntityFactory.hpp>
+#include <App/Resources/ObjectFactory.hpp>
+#include <App/Statistic/GameStatistic.hpp>
 #include <Core/PathMeneger.hpp>
 #include <Core/Random.hpp>
-#include <Core/Types.hpp>
 #include <Engine/AdvancedContext.hpp>
 #include <Engine/OneRmlDocScene.hpp>
-#include <Engine/Scene.hpp>
-#include <Engine/SceneAction.hpp>
-#include <Physics/Entity.hpp>
-#include <Resources/ObjectFactory.hpp>
-#include <Statistic/GameStatistic.hpp>
 
 namespace scenes
 {
@@ -46,13 +41,6 @@ private:
         {
         }
 
-        void init(Rml::ElementDocument *doc)
-        {
-            if (!doc)
-                return;
-            overlay = doc->GetElementById("pause-overlay");
-        }
-
         void ProcessEvent(Rml::Event &ev) override
         {
             Rml::Element *el = ev.GetTargetElement();
@@ -65,18 +53,14 @@ private:
 
             if (id == "pause-button")
             {
-                overlay->SetClass("open", true);
                 scene_.setPause(true);
             }
             else if (id == "btn-resume")
             {
-                overlay->SetClass("open", false);
                 scene_.setPause(false);
             }
             else if (id == "btn-restart" || id == "btn-go-restart")
             {
-                overlay->SetClass("open", false);
-                scene_.setPause(false);
                 scene_.retart();
             }
             else if (id == "btn-exit" || id == "btn-go-menu")
@@ -87,7 +71,6 @@ private:
 
     private:
         GameScene &scene_;
-        Rml::Element *overlay = nullptr;
     };
 
 public:
@@ -95,38 +78,32 @@ public:
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: coins");
-
         if (const auto *gs = appState_.stat().findById(objectFactory_.getActivePack()))
             stat_.record = static_cast<int>(gs->record);
-
         if (auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
             settings_ = pack->getSetings();
 
         bindData();
         loadDocumentOrThrow();
-        listener_.init(document());
-        gameOverOverlay = document()->GetElementById("gameover-overlay");
         addEventListener(Rml::EventId::Click, &listener_, true);
+        gameOverOverlay = document()->GetElementById("gameover-overlay");
+        pauseOverlay = document()->GetElementById("pause-overlay");
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
 
         stat_.stringID = objectFactory_.getActivePack();
 
-        
-
         timer_.start();
     }
     ~GameScene()
     {
         appState_.stat().applyGameResult(stat_.stringID, stat_);
-
         if (dataHandle_)
         {
-            // Освобождаем модель данных
-            dataHandle_ = Rml::DataModelHandle();
-            // Удаляем модель из контекста
-            context_.getContext()->RemoveDataModel(ui::gameMenu::gameStats);
+            dataHandle_ = Rml::DataModelHandle(); // Освобождаем модель данных
+
+            context_.getContext()->RemoveDataModel(ui::gameMenu::gameStats); // Удаляем модель из контекста
         }
     }
 
@@ -140,16 +117,16 @@ public:
             actionRes_ = engine::SceneAction::popAction();
         else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
         {
-            if (event.button.y < startY_)
+            if (event.button.y < startPoss_.y)
                 return;
             startEntityObject(event.button.x);
         }
         else if (event.type == SDL_EVENT_MOUSE_MOTION)
         {
-            if (event.button.y < startY_)
+            if (event.button.y < startPoss_.y)
                 return;
             if (prEntity_)
-                prEntity_->setPosition({event.motion.x, startY_});
+                prEntity_->setPosition({event.motion.x, startPoss_.y});
         }
     }
 
@@ -170,78 +147,56 @@ public:
 
         if (!prEntity_ && startTimer_.elapsedTimeS() >= settings_.summonTimeStepS)
             createPrEntity();
-
         world_.Step(dt, 8, 3);
         updateTime();
-
-        for (auto it = objects_.begin(); it != objects_.end(); /* без инкремента здесь */)
-        {
-            if (it->getPosition().y > 2000.f)
-            {
-                addPoints(-it->getPoints());
-                it = objects_.erase(it); // erase возвращает итератор на следующий элемент
-                ++countDeath_;
-                dataHandle_.DirtyVariable("death");
-                if (countDeath_ >= settings_.deathCount)
-                {
-                    gameOverOverlay->SetClass("open", true);
-                    setPause(true);
-                }
-            }
-            else
-                ++it;
-        }
-
+        updatecorrectnessElements();
         return actionRes_;
     }
 
-private:
-    GameSceneListener listener_;
-
-private:
+private: // Сцена
+    app::AppState &appState_;
     bool paused_ = false;
+    GameSceneListener listener_;
+    Rml::Element *gameOverOverlay = nullptr;
+    Rml::Element *pauseOverlay = nullptr;
 
+private: // Информация на экране
+    Rml::DataModelHandle dataHandle_;
+    statistic::GameStatistic stat_;
+    sdl3::Clock timer_;
+    unsigned countDeath_ = 0;
+
+private: // Физический мир
     b2World world_{b2Vec2(0.0f, 9.81f)};
     objects::GameContactCheker contactCheker_;
     std::vector<physics::Entity> glass_;
     std::vector<objects::GameObject> objects_;
 
+private: // Информация о пакете
     resources::PackageContainer packages_;
     resources::ObjectFactory objectFactory_;
-
-    std::unique_ptr<objects::GameObject> prEntity_ = nullptr;
-
-    float startY_;
-    float startX_;
-
-    unsigned countDeath_ = 0;
-
-    sdl3::Clock startTimer_;
-
     resources::PackageSettings settings_;
+
+private: // Временный объект
+    sdl3::Clock startTimer_;
+    std::unique_ptr<objects::GameObject> prEntity_ = nullptr;
+    sdl3::Vector2f startPoss_;
     core::Random<IDType> random_;
 
-private:
-    Rml::DataModelHandle dataHandle_;
-
-    statistic::GameStatistic stat_;
-
-    sdl3::Clock timer_;
-
-    app::AppState &appState_;
-
-    Rml::Element *gameOverOverlay = nullptr;
-
-private:
-    void setPause(const bool pause)
+private: // Сцена
+    void setPause(const bool pause, const bool openPauseMenu = true)
     {
         paused_ = pause;
         timer_.pause(pause);
         startTimer_.pause(pause);
+        if (openPauseMenu)
+            pauseOverlay->SetClass("open", pause);
     }
 
     void retart()
     {
+        setPause(false);
+
         prEntity_.reset();
         startTimer_.start();
 
@@ -258,34 +213,6 @@ private:
         gameOverOverlay->SetClass("open", false);
     }
 
-    void createPrEntity()
-    {
-        IDType level = random_(settings_.levelRange.x, settings_.levelRange.y);
-        auto idpt = objectFactory_.getIdByLevel(level);
-        if (!idpt.has_value())
-        {
-            SDL_Log("Error! Not found object by level 1");
-            actionRes_ = engine::SceneAction::popAction();
-        }
-        auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startX_, -startY_});
-        if (!created)
-            return;
-
-        prEntity_ = std::make_unique<objects::GameObject>(std::move(*created));
-        prEntity_->setEnabled(false);
-    }
-    void startEntityObject(const float xPos)
-    {
-        if (!prEntity_)
-            return;
-        prEntity_->setPosition({xPos, startY_});
-        prEntity_->setEnabled(true);
-        addPoints(prEntity_->getPoints());
-        objects_.push_back(std::move(*prEntity_.get()));
-        prEntity_.reset();
-        startTimer_.start();
-    }
-
     void bindData()
     {
         Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel(ui::gameMenu::gameStats);
@@ -294,13 +221,36 @@ private:
             constructor.Bind(ui::gameMenu::timeLabel, &stat_.time);
             constructor.Bind(ui::gameMenu::pointsLabel, &stat_.gameCount);
             constructor.Bind(ui::gameMenu::recordLabel, &stat_.record);
-
             constructor.Bind("death", &countDeath_);
             constructor.Bind("maxdeath", &settings_.deathCount);
         }
         dataHandle_ = constructor.GetModelHandle();
     }
 
+    void addPoints(const int points)
+    {
+        stat_.gameCount += points;
+        dataHandle_.DirtyVariable(ui::gameMenu::pointsLabel);
+    }
+
+    void addCountDeath()
+    {
+        ++countDeath_;
+        dataHandle_.DirtyVariable("death");
+        if (countDeath_ >= settings_.deathCount)
+        {
+            gameOverOverlay->SetClass("open", true);
+            setPause(true, false);
+        }
+    }
+
+    void updateTime()
+    {
+        stat_.time = core::Time::fromSeconds(timer_.elapsedTimeS());
+        dataHandle_.DirtyVariable(ui::gameMenu::timeLabel);
+    }
+
+private: // Физический мир
     void generateGlass(const sdl3::Vector2i logicSize, const sdl3::Vector2f glassSize, const float thikness)
     {
         glass_.clear();
@@ -311,8 +261,10 @@ private:
         glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f - glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
         glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f + glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
 
-        startY_ = (yPos - (glassSize.y)) / 2.f;
-        startX_ = logicSize.x / 2.f;
+        startPoss_ =
+            {
+                logicSize.x / 2.f,
+                (yPos - (glassSize.y)) / 2.f};
     }
 
     std::size_t getByID(const IDType id)
@@ -321,18 +273,6 @@ private:
             if (objects_[i].getID() == id)
                 return i;
         return objects_.size();
-    }
-
-    void addPoints(const int points)
-    {
-        stat_.gameCount += points;
-        dataHandle_.DirtyVariable(ui::gameMenu::pointsLabel);
-    }
-
-    void updateTime()
-    {
-        stat_.time = core::Time::fromSeconds(timer_.elapsedTimeS());
-        dataHandle_.DirtyVariable(ui::gameMenu::timeLabel);
     }
 
     void updateCollision(const SDL_Event &event)
@@ -363,6 +303,50 @@ private:
 
         objects_.push_back(std::move(*created));
         addPoints(objects_.back().getPoints());
+    }
+
+    void updatecorrectnessElements()
+    {
+        for (auto it = objects_.begin(); it != objects_.end();)
+        {
+            if (it->getPosition().y > 2000.f)
+            {
+                addPoints(-it->getPoints());
+                it = objects_.erase(it); // erase возвращает итератор на следующий элемент
+                addCountDeath();
+            }
+            else
+                ++it;
+        }
+    }
+
+private: // Временный объект
+    void createPrEntity()
+    {
+        IDType level = random_(settings_.levelRange.x, settings_.levelRange.y);
+        auto idpt = objectFactory_.getIdByLevel(level);
+        if (!idpt.has_value())
+        {
+            SDL_Log("Error! Not found object by level 1");
+            actionRes_ = engine::SceneAction::popAction();
+        }
+        auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startPoss_.x, -startPoss_.y});
+        if (!created)
+            return;
+
+        prEntity_ = std::make_unique<objects::GameObject>(std::move(*created));
+        prEntity_->setEnabled(false);
+    }
+    void startEntityObject(const float xPos)
+    {
+        if (!prEntity_)
+            return;
+        prEntity_->setPosition({xPos, startPoss_.y});
+        prEntity_->setEnabled(true);
+        addPoints(prEntity_->getPoints());
+        objects_.push_back(std::move(*prEntity_.get()));
+        prEntity_.reset();
+        startTimer_.start();
     }
 };
 
