@@ -5,7 +5,7 @@ body {
     height: 100%;
 
     /* background-color: transparent; */
-    background-color: rgb(173, 216, 230);
+    /* background-color: rgb(170, 210, 230); */
     color: black;
 
     font-family: "DejaVu Sans";
@@ -44,7 +44,7 @@ body {
 
     padding: 10dp 12dp;
 
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 255);
 
     border-radius: 10dp;
     border-color: black;
@@ -72,9 +72,10 @@ body {
     align-items: center;
     justify-content: center;
 
-    border-radius: 26dp;
     background-color: rgb(0, 90, 220);
-    border: 2dp rgba(0, 0, 0, 0.35);
+    border-color: black;
+    border-radius: 26dp;
+    border-width: 2dp;
 
     font-size: 18dp;
     font-weight: bold;
@@ -82,182 +83,5 @@ body {
 }
 
 .icon-button:active {
-    background-color: rgb(4, 27, 63);
-}
-
-/* Оверлей паузы (по умолчанию скрыт) */
-.overlay {
-    position: absolute;
-    top: 0dp;
-    left: 0dp;
-    right: 0dp;
-    bottom: 0dp;
-
-    display: none;
-    /* скрыто */
-    align-items: center;
-    justify-content: center;
-
-    z-index: 100;
-
-    background-color: rgba(0, 0, 0, 0.55);
-}
-
-/* Когда пауза открыта */
-.overlay.open {
-    display: flex;
-}
-
-/* Панель меню */
-.panel {
-    width: 420dp;
-    max-width: 90%;
-
-    padding: 16dp;
-    margin-left: 10%;
-    margin-right: 10%;
-
-    background-color: rgba(255, 255, 255, 0.92);
-
-    border-radius: 14dp;
-    border-width: 2dp;
-    border-color: black;
-
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-
-.panel h2 {
-    margin: 0dp 0dp 12dp 0dp;
-    font-size: 22dp;
-    color: black;
-}
-
-/* Кнопки меню */
-.menu-btn {
-    width: 100%;
-    height: 46dp;
-
-    margin: 8dp 0dp;
-    border-radius: 12dp;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 18dp;
-    font-weight: bold;
-
-    background-color: rgb(230, 235, 245);
-    border: 2dp rgba(0, 0, 0, 0.25);
-    color: black;
-}
-
-.menu-btn.primary {
-    background-color: rgb(0, 120, 60);
-    color: white;
-}
-
-.menu-btn.danger {
-    background-color: rgb(190, 40, 40);
-    color: white;
-}
-
-.menu-btn:active {
-    transform: scale(0.98);
-    opacity: 0.92;
-}
-
-
-
-
-/* #pause-button span,
-.choose-b span,
-.btn-text {
-  pointer-events: none;
-} */
-
-
-
-
-
-
-
-
-
-
-
-/* ============================
-   Game Over overlay (добавлено)
-   ============================ */
-
-#gameover-overlay {
-    /* отдельный id на случай тонкой настройки */
-}
-
-/* Панель Game Over: наследует базовую .panel, здесь только мягкие отличия */
-#gameover-overlay .gameover-panel {
-    width: 460dp;
-    max-width: 92%;
-
-    padding-top: 18dp;
-
-    /* чуть более плотная рамка, но без ломания общего стиля */
-    background-color: rgba(255, 255, 255, 200);
-    
-    border-color: black;
-    border-radius: 25dp;
-    border-width: 2dp;
-}
-
-#gameover-overlay .gameover-title {
-    margin: 0dp;
-    font-size: 24dp;
-}
-
-#gameover-overlay .gameover-subtitle {
-    margin: 6dp 0dp 0dp 0dp;
-    font-size: 16dp;
-    opacity: 0.9;
-}
-
-#gameover-overlay .gameover-divider {
-    margin: 12dp 0dp 10dp 0dp;
-    height: 2dp;
-    background-color: rgba(190, 40, 40, 0.85);
-    border-radius: 2dp;
-}
-
-#gameover-overlay .gameover-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 8dp;
-
-    margin: 6dp 0dp 10dp 0dp;
-    padding: 10dp 12dp;
-
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 10dp;
-    border: 1dp rgba(0, 0, 0, 0.15);
-}
-
-#gameover-overlay .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    font-size: 16dp;
-}
-
-#gameover-overlay .stat-label {
-    opacity: 0.9;
-}
-
-#gameover-overlay .stat-value {
-    font-weight: bold;
-}
-
-#gameover-overlay .gameover-actions {
-    margin-top: 4dp;
+    background-color: rgb(5, 30, 65);
 }

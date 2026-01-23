@@ -1,0 +1,32 @@
+#gameover-overlay .gameover-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8dp;
+
+    margin: 6dp 0dp 10dp 0dp;
+    padding: 10dp 12dp;
+
+    background-color: rgba(0, 0, 0, 20);
+    border-radius: 10dp;
+    border: 1dp rgba(0, 0, 0, 40);
+}
+
+#gameover-overlay .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 16dp;
+}
+
+#gameover-overlay .stat-label {
+    opacity: 0.9;
+}
+
+#gameover-overlay .stat-value {
+    font-weight: bold;
+}
+
+#gameover-overlay .gameover-actions {
+    margin-top: 4dp;
+}

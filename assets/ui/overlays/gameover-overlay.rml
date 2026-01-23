@@ -1,0 +1,47 @@
+<template name="gameover-overlay" content="slot">
+    <!--
+    It is necessary to connect:
+
+    "overlays/menu-buttons.rcss"
+    "overlays/overlay.rcss"
+
+    This is done so that styles are not duplicated when connecting two overlays.
+    -->
+
+    <head>
+        <link type="text/rcss" href="gameover-overlay.rcss" />
+    </head>
+
+    <body>
+        <div id="gameover-overlay" class="overlay">
+            <div class="panel">
+                <h2 class="overlay-title">Game Over</h2>
+                <p class="overlay-subtitle">Игра окончена</p>
+
+                <div class="overlay-divider"></div>
+
+                <!-- Статистика -->
+                <div class="gameover-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Время</span>
+                        <span class="stat-value">{{time}}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Очки</span>
+                        <span class="stat-value">{{points}}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Рекорд</span>
+                        <span class="stat-value">{{record}}</span>
+                    </div>
+                </div>
+
+                <div class="gameover-actions">
+                    <button id="btn-go-restart" class="menu-btn primary"><span>Начать заново</span></button>
+                    <button id="btn-go-menu" class="menu-btn danger"><span>В главное меню</span></button>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</template>

@@ -113,6 +113,7 @@ public:
         SDL_AppResult res = processSceneAction(act);
         if (res != SDL_APP_CONTINUE)
             return res;
+        context_.update();
         safeDrawScene();
         fpsDelay();
         return res;
@@ -162,9 +163,8 @@ private:
     void safeDrawScene()
     {
         window_.clear(sdl3::Colors::White);
-        context_.update();
-        context_.render();
         scenes_.back()->draw(window_);
+        context_.render();
         window_.display();
     }
 

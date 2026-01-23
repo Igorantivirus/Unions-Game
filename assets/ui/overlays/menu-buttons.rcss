@@ -1,0 +1,33 @@
+.menu-btn {
+    width: 100%;
+    height: 46dp;
+
+    margin: 8dp 0dp;
+    border-radius: 12dp;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18dp;
+    font-weight: bold;
+
+    background-color: rgb(230, 235, 245);
+    border: 2dp rgba(0, 0, 0, 0.25);
+    color: black;
+}
+
+.menu-btn.primary {
+    background-color: rgb(0, 120, 60);
+    color: white;
+}
+
+.menu-btn.danger {
+    background-color: rgb(190, 40, 40);
+    color: white;
+}
+
+.menu-btn:active {
+    transform: scale(0.98);
+    opacity: 0.92;
+}

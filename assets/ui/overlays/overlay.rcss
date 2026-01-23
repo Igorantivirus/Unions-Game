@@ -1,0 +1,64 @@
+.overlay {
+    /*Расположение по центур на весь экран*/
+    position: absolute;
+    top: 0dp;
+    left: 0dp;
+    right: 0dp;
+    bottom: 0dp;
+
+    /* скрыто */
+    display: none;
+
+    /*Наследники по центру во весь экран*/
+    align-items: center;
+    justify-content: center;
+
+    /*Впереди всего*/
+    z-index: 100;
+
+    background-color: rgba(0, 0, 0, 127);
+}
+
+/*При включении*/
+.overlay.open {
+    display: flex;
+}
+
+/*Сама панель*/
+.panel {
+    width: 420dp;
+    max-width: 90%;
+
+    padding: 16dp;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    background-color: rgba(255, 255, 255, 200);
+
+    border-color: black;
+    border-radius: 25dp;
+    border-width: 2dp;
+
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+/*Заголовок оверлея*/
+.overlay-title {
+    margin: 0dp 0dp 12dp 0dp;
+    font-size: 22dp;
+    color: black;
+}
+.overlay-subtitle {
+    margin: 6dp 0dp 0dp 0dp;
+    font-size: 16dp;
+    opacity: 0.9;
+}
+
+.overlay-divider{
+    margin: 12dp 0dp 10dp 0dp;
+    height: 2dp;
+    background-color: rgba(190, 40, 40, 217);
+    border-radius: 2dp;
+}

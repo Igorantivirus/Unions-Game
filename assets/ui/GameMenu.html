@@ -4,11 +4,16 @@
     <title>Game HUD</title>
     <link type="text/rcss" href="rml.rcss" />
     <link type="text/rcss" href="GameMenu.css" />
+
+    <link type="text/template" href="overlays/gameover-overlay.rml" />
+    <link type="text/template" href="overlays/pause-overlay.rml" />
+
+    <link type="text/rcss" href="overlays/overlay.rcss" />
+    <link type="text/rcss" href="overlays/menu-buttons.rcss" />
   </head>
 
   <body data-model="game-status">
 
-    <!-- HUD поверх игры -->
     <div id="status-bar">
       <div class="status-item">
         <p class="label">Время</p>
@@ -26,38 +31,8 @@
       <button id="pause-button" class="icon-button"><span>❚❚</span></button>
     </div>
 
-    <!-- Меню паузы -->
-    <div id="pause-overlay" class="overlay">
-      <div class="panel">
-        <h2>Пауза</h2>
-
-        <button id="btn-resume" class="menu-btn primary"><span>Вернуться в игру</span></button>
-        <button id="btn-restart" class="menu-btn"><span>Начать заново</span></button>
-        <button id="btn-exit" class="menu-btn danger"><span>Выйти в меню</span></button>
-      </div>
-    </div>
-    <!-- Окно завершения игры (по умолчанию скрыто) -->
-    <div id="gameover-overlay" class="overlay">
-      <div class="panel gameover-panel">
-        <h2 class="gameover-title">Game Over</h2>
-        <p class="gameover-subtitle">Игра окончена</p>
-
-        <div class="gameover-divider"></div>
-
-        <!-- Статистика -->
-        <div class="gameover-stats">
-          <div class="stat-row"><span class="stat-label">Время</span><span class="stat-value">{{ time }}</span></div>
-          <div class="stat-row"><span class="stat-label">Очки</span><span class="stat-value">{{ points }}</span></div>
-          <div class="stat-row"><span class="stat-label">Рекорд</span><span class="stat-value">{{ record }}</span></div>
-        </div>
-
-        <div class="gameover-actions">
-          <button id="btn-go-restart" class="menu-btn primary"><span>Начать заново</span></button>
-          <button id="btn-go-menu" class="menu-btn danger"><span>В главное меню</span></button>
-        </div>
-      </div>
-    </div>
-
+    <template src="pause-overlay"></template>
+    <template src="gameover-overlay"></template>
 
   </body>
 </rml>
