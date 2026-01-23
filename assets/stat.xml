@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <root lastPackage="planets">
 	<game id="coins" name="Монеточки">
 		<statistic bestTime="00:00" record="0" countGames="0" />
