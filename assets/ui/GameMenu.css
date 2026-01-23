@@ -42,7 +42,13 @@ body {
     flex-direction: column;
     gap: 4dp;
 
-    padding: 10dp 12dp;
+    padding-top: 10dp;
+    padding-bottom: 10dp;
+    padding-left: 5dp;
+    padding-right: 5dp;
+
+    align-items: center;
+    text-align: center;
 
     background-color: rgba(255, 255, 255, 255);
 
@@ -71,6 +77,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
 
     background-color: rgb(0, 90, 220);
     border-color: black;
