@@ -15,12 +15,57 @@ body {
 }
 
 /* Шапка / футер фиксированы, скролл только в #games */
+
 #header {
-    flex: 0 0 80dp;
+    flex: 0 0 120dp;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 8dp 10dp;
 }
+
+/* --- Бейдж выбранной игры --- */
+#header .current-game-badge {
+    margin-top: 6dp;
+    padding: 8dp 14dp;
+
+    background-color: rgb(240, 248, 255);
+    border: 2dp black;
+    border-radius: 12dp;
+
+    text-align: center;
+    min-width: 260dp;
+
+    display: block;
+}
+
+/* --- Тексты внутри бейджа (делаем более “читабельно”) --- */
+#header .current-game-prefix {
+    margin: 0px;
+    font-size: 14dp;
+    color: rgb(40, 40, 40);
+}
+
+#header #current-game-label {
+    margin: 2dp 0px 0px 0px;
+    font-size: 22dp;
+    font-weight: bold;
+    color: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #header h1 {
     margin: 0px;

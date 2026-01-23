@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Time.hpp"
 #include "Engine/SceneAction.hpp"
 #include <App/AppState.hpp>
 #include <Core/Types.hpp>
@@ -11,6 +12,8 @@
 #include <RmlUi/Core/ID.h>
 
 #include <App/HardStrings.hpp>
+#include <string>
+#include <unordered_map>
 
 namespace scenes
 {
@@ -34,14 +37,18 @@ private:
                 return;
 
             const Rml::String &id = el->GetId();
+            const std::unordered_map<std::string, std::string> &buttons = scene_.getChooseButtons();
 
             if (id == ui::setsMenu::saveExitB || id == ui::setsMenu::saveThrowB)
                 scene_.actionRes_ = engine::SceneAction::popAction();
-            else if (id.rfind("choose-", 0) == 0)
+
+            else if (auto found = buttons.find(id); found != buttons.end())
             {
-                const std::string pack = id.substr(std::string("choose-").size());
-                scene_.appState_.setCurrentPackageName(pack);
-                scene_.refreshUI();
+                scene_.appState_.setCurrentPackageName(found->second);
+                scene_.addStatisticToUi();
+                // const std::string pack = id.substr(std::string("choose-").size());
+                // scene_.appState_.setCurrentPackageName(pack);
+                // scene_.refreshUI();
             }
         }
 
@@ -53,6 +60,7 @@ public:
     SettingsMenu(engine::Context &context, app::AppState &appState)
         : engine::OneRmlDocScene(context, ui::setsMenu::file), listener_(*this), appState_(appState)
     {
+        initButtons();
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
     }
@@ -69,10 +77,66 @@ private:
     SettingsMenuListener listener_;
     app::AppState &appState_;
 
+    std::unordered_map<std::string, std::string> chooseButtons_;
+
 private:
+    const std::unordered_map<std::string, std::string> &getChooseButtons() const
+    {
+        return chooseButtons_;
+    }
+
     void onDocumentLoaded(Rml::ElementDocument &doc) override
     {
-        refreshUI();
+        // refreshUI();
+        addStatisticToUi();
+    }
+
+    void initButtons()
+    {
+        chooseButtons_.clear();
+        for (const auto &gs : appState_.stat().getAll())
+        {
+            std::string buttonId = gs.stringID + "-choose-b";
+            chooseButtons_[std::move(buttonId)] = gs.stringID;
+        }
+    }
+
+    void addStatisticToUi()
+    {
+        Rml::ElementDocument *doc = document();
+
+        auto label = doc->GetElementById("current-game-label");
+        const std::string &currentID = appState_.getCurrentPackageName();
+        if (auto id = appState_.stat().findById(currentID); id)
+            label->SetInnerRML(id->name);
+
+        Rml::ElementList gameNames;
+        Rml::ElementList timeLabels;
+        Rml::ElementList recordLabels;
+        Rml::ElementList countLabels;
+        Rml::ElementList chooseButtons;
+
+        doc->QuerySelectorAll(gameNames, ".game-name");
+        doc->QuerySelectorAll(timeLabels, ".time-stat-label");
+        doc->QuerySelectorAll(recordLabels, ".record-atat-label");
+        doc->QuerySelectorAll(countLabels, ".count-stat-label");
+        doc->QuerySelectorAll(chooseButtons, ".choose-b");
+
+        IDType index = 0;
+        auto iter = chooseButtons_.begin();
+        for (const auto &gs : appState_.stat().getAll())
+        {
+            if (iter == chooseButtons_.end())
+                return;
+            gameNames[index]->SetInnerRML(gs.name);
+            timeLabels[index]->SetInnerRML(core::Time::toString(gs.time));
+            recordLabels[index]->SetInnerRML(std::to_string(gs.record));
+            countLabels[index]->SetInnerRML(std::to_string(gs.gameCount));
+            chooseButtons[index]->SetAttribute("id", iter->first);
+
+            ++iter;
+            ++index;
+        }
     }
 
     void refreshUI()

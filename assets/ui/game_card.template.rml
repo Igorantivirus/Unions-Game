@@ -15,15 +15,15 @@
             <div class="game-statistic">
                 <div class="stat-label">
                     <p>Время рекорда:</p>
-                    <p></p>
+                    <p class="time-stat-label"></p>
                 </div>
                 <div class="stat-label">
                     <p>Рекорд очков:</p>
-                    <p></p>
+                    <p class="record-atat-label"></p>
                 </div>
                 <div class="stat-label">
                     <p>Игр сыграно:</p>
-                    <p></p>
+                    <p class="count-stat-label"></p>
                 </div>
             </div>
 

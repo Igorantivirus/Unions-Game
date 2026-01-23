@@ -2,26 +2,26 @@
 
   <head>
     <title>Scroll demo</title>
-
-    <!-- База: дефолтное поведение div/h1/p/... как в HTML -->
     <link type="text/rcss" href="rml.rcss" />
-
-    <!-- Ваши стили поверх базы -->
-    <link type="text/rcss" href="scrol.rcss" />
-
-    <link rel="template" type="text/template" href="game_card.template.rml" />
+    <link type="text/rcss" href="SetsMenu.css" />
+    <link type="text/template" href="game_card.template.rml" />
   </head>
 
   <body>
     <div id="header">
       <h1>Выбор игры</h1>
+
+      <div class="current-game-badge">
+        <p class="current-game-prefix">Игра выбрана:</p>
+        <p id="current-game-label" class="current-game-name">—</p>
+      </div>
     </div>
 
     <div id="games">
-      
-        <template src="game-card"></template>
-        <template src="game-card"></template>
-        <template src="game-card"></template>
+
+      <template src="game-card"></template>
+      <template src="game-card"></template>
+      <template src="game-card"></template>
 
     </div>
 
