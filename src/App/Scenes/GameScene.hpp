@@ -50,23 +50,38 @@ private:
                 return;
 
             const Rml::String &id = el->GetId();
+            const std::string classes = el->GetClassNames();
 
-            if (id == "pause-button")
+            if (id == "pause-b")
             {
                 scene_.setPause(true);
+                
             }
-            else if (id == "btn-resume")
-            {
-                scene_.setPause(false);
-            }
-            else if (id == "btn-restart" || id == "btn-go-restart")
+            else if (el->IsClassSet("restart"))
             {
                 scene_.retart();
             }
-            else if (id == "btn-exit" || id == "btn-go-menu")
+            else if (el->IsClassSet("exit"))
             {
                 scene_.actionRes_ = engine::SceneAction::popAction();
             }
+            else if (el->IsClassSet("resume"))
+            {
+                scene_.setPause(false);
+            }
+
+            // else if (id == "btn-resume")
+            // {
+            //     scene_.setPause(false);
+            // }
+            // else if (id == "btn-restart" || id == "btn-go-restart")
+            // {
+            //     scene_.retart();
+            // }
+            // else if (id == "btn-exit" || id == "btn-go-menu")
+            // {
+            //     scene_.actionRes_ = engine::SceneAction::popAction();
+            // }
         }
 
     private:
@@ -95,6 +110,7 @@ public:
         stat_.stringID = objectFactory_.getActivePack();
 
         timer_.start();
+        startTimer_.start();
     }
     ~GameScene()
     {
@@ -186,9 +202,12 @@ private: // Временный объект
 private: // Сцена
     void setPause(const bool pause, const bool openPauseMenu = true)
     {
+        if(paused_ == pause)
+            return;
         paused_ = pause;
         timer_.pause(pause);
         startTimer_.pause(pause);
+        startTimer_.start();
         if (openPauseMenu)
             pauseOverlay->SetClass("open", pause);
     }
@@ -203,6 +222,7 @@ private: // Сцена
         countDeath_ = 0;
 
         timer_.start();
+        startTimer_.start();
         stat_.gameCount = 0;
         objects_.clear();
 
@@ -339,7 +359,7 @@ private: // Временный объект
     }
     void startEntityObject(const float xPos)
     {
-        if (!prEntity_)
+        if (!prEntity_ || startTimer_.elapsedTimeS() < settings_.summonTimeStepS)
             return;
         prEntity_->setPosition({xPos, startPoss_.y});
         prEntity_->setEnabled(true);

@@ -17,9 +17,9 @@
 
                 <div class="overlay-divider"></div>
 
-                <button id="btn-resume" class="menu-btn primary"><span>Вернуться в игру</span></button>
-                <button id="btn-restart" class="menu-btn"><span>Начать заново</span></button>
-                <button id="btn-exit" class="menu-btn danger"><span>Выйти в меню</span></button>
+                <button id="resume-pause-b" class="menu-btn resume primary"><span>Вернуться в игру</span></button>
+                <button id="restart-pause-b" class="menu-btn restart"><span>Начать заново</span></button>
+                <button id="exit-pause-b" class="menu-btn exit danger"><span>Выйти в меню</span></button>
             </div>
         </div>
     </body>

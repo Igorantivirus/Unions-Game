@@ -36,9 +36,9 @@
                     </div>
                 </div>
 
-                <div class="gameover-actions">
-                    <button id="btn-go-restart" class="menu-btn primary"><span>Начать заново</span></button>
-                    <button id="btn-go-menu" class="menu-btn danger"><span>В главное меню</span></button>
+                <div class="gameover-gameover-actions">
+                    <button id="restart-gameover-b" class="menu-btn restart primary"><span>Начать заново</span></button>
+                    <button id="menu-gameover-b" class="menu-btn exit danger"><span>В главное меню</span></button>
                 </div>
             </div>
         </div>
