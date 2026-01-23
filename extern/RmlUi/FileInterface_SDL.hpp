@@ -17,23 +17,13 @@ public:
 
     Rml::FileHandle Open(const Rml::String &path) override
     {
-        SDL_Log("%s\n", path.c_str());
-
-        // RmlUi typically uses forward slashes in resolved paths, while some Windows file APIs expect
-        // backslashes. Normalize to the platform-preferred form before opening.
-        const std::filesystem::path fs_path = std::filesystem::path(path.c_str()).lexically_normal().make_preferred();
-        const std::string native_path = fs_path.string();
-
-        SDL_IOStream *io_stream = SDL_IOFromFile(native_path.c_str(), "rb");
-        if (!io_stream && native_path != path.c_str())
-        {
-            // Fallback: try the original path verbatim.
-            io_stream = SDL_IOFromFile(path.c_str(), "rb");
-        }
+        SDL_IOStream *io_stream = SDL_IOFromFile(path.c_str(), "rb");
         if (!io_stream)
         {
+#ifdef DEBUG_BUILD_TYPE
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to open file '%s': %s", path.c_str(), SDL_GetError());
-            return 0; // Return 0 as invalid FileHandle
+#endif
+            return 0;
         }
         FileHandle id = next_file_handle_id_++;
         file_map_[id] = io_stream; // Store in map
@@ -50,7 +40,9 @@ public:
             {
                 if (!SDL_CloseIO(io_stream))
                 {
+                    #ifdef DEBUG_BUILD_TYPE
                     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to close file: %s", SDL_GetError());
+                    #endif
                 }
             }
             file_map_.erase(it); // Remove from map
