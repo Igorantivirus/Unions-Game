@@ -1,96 +1,135 @@
 :root {
-    font-size: 16px;
+    font-size: 16dp;
 }
 
 body {
     background-color: rgb(173, 216, 230);
+    /* оставляем */
     font-family: Arial;
-    margin: 0;
+    margin: 0dp;
     width: 100%;
-    height: 100vh;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* немного воздуха */
+    padding-left: 24dp;
+    padding-right: 24dp;
+    padding-bottom: 24dp;
+    padding-top: 24dp;
+
+    box-sizing: border-box;
 }
 
-
 #head {
-    margin-top: 5vh;
+    width: 100%;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 15vh;
+
+    /* аккуратная “шапка” */
+    /* padding: 18dp 16dp;
+     */
+    padding-top: 24dp;
+    padding-bottom: 24dp;
+    margin-bottom: 24dp;
+
+    background-color: rgba(255, 255, 255, 89);
+
+    border-width: 2dp;
+    border-color: rgba(0, 0, 0, 89);
+    border-radius: 16dp;
+    box-sizing: border-box;
 }
 
 h1 {
-    margin: 0;
+    margin: 0dp;
     color: black;
-    font-size: 700%;
-    /* ~60px */
+
+    /* вместо 700% — предсказуемый размер */
+    font-size: 50dp;
+    font-weight: bold;
+    text-align: center;
 }
 
 #main {
-    height: 70vh;
+    width: 100%;
+    max-width: 720dp;
+
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    gap: 14dp;
+    margin-bottom: 24dp;
 
-    text-align: center;
-    justify-content: center;
-    align-items: center;
+    padding-left: 20dp;
+    padding-right: 20dp;
+    padding-top: 30dp;
+    padding-bottom: 30dp;
+
+    background-color: rgba(0, 0, 0, 26);
+    border: 2dp rgba(0, 0, 0, 64);
+    border-radius: 18dp;
+    box-sizing: border-box;
 }
 
-/* .menu-button {
-    padding: 2.2rem 1rem;
-    line-height: 1.2;
-    color: black;
-
-    width: 75%;
-    font-size: 1.6rem;
-    border-radius: 10px;
-
-    background-color: #007bff;
-    border-color: black;
-
-    margin-top: 3vh;
-} */
-
 .menu-button {
-    line-height: 20vh;
-    color: black;
-    margin-top: 5vh;
+    width: 100%;
+    height: 100dp;
+    line-height: 76dp;
 
-    width: 75%;
-    height: 20vh;
-    font-size: 400%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    border-radius: 10px;
-    background-color: #007bff;
-    border-color: black;
+    color: white;
+    font-size: 30dp;
+    font-weight: bold;
+    text-align: center;
+
+    border-width: 2dp;
+    border-color: rgba(0, 0, 0, 230);
+    border-radius: 12dp;
+
+    background-color: rgb(0, 90, 220);
+}
+
+.menu-button:hover {
+    background-color: rgb(0, 75, 195);
 }
 
 .menu-button:active {
-    background-color: #35a000;
-    /* background-color: #007ba0; */
+    background-color: rgb(53, 160, 0);
 }
 
 #foot {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin-bottom: 15px;
+    width: 100%;
 
-    height: auto;
-    padding-bottom: 10px;
-    align-items: flex-end;
+    margin-top: auto;
+
+    padding-left: 10dp;
+    padding-right: 10dp;
+    padding-top: 10dp;
+    padding-bottom: 10dp;
 
     display: flex;
     align-items: center;
-    padding: 0 20px;
+
+    background-color: rgba(255, 255, 255, 77);
+    border: 2dp rgba(0, 0, 0, 64);
+    border-radius: 16dp;
+
     box-sizing: border-box;
 }
 
 .footMenu {
     width: 50%;
     color: black;
-    font-size: 20px;
+    font-size: 16dp;
 }
 
 .footMenu:first-child {
