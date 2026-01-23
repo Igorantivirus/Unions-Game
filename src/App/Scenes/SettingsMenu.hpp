@@ -46,9 +46,6 @@ private:
             {
                 scene_.appState_.setCurrentPackageName(found->second);
                 scene_.addStatisticToUi();
-                // const std::string pack = id.substr(std::string("choose-").size());
-                // scene_.appState_.setCurrentPackageName(pack);
-                // scene_.refreshUI();
             }
         }
 
@@ -87,7 +84,6 @@ private:
 
     void onDocumentLoaded(Rml::ElementDocument &doc) override
     {
-        // refreshUI();
         addStatisticToUi();
     }
 
@@ -137,68 +133,6 @@ private:
             ++iter;
             ++index;
         }
-    }
-
-    void refreshUI()
-    {
-        Rml::ElementDocument *doc = document();
-        if (!doc)
-            return;
-
-        const auto *selected = appState_.stat().findById(appState_.getCurrentPackageName());
-        if (!selected && !appState_.stat().empty())
-        {
-            appState_.setCurrentPackageName(appState_.stat().getAll().front().stringID);
-            selected = appState_.stat().findById(appState_.getCurrentPackageName());
-        }
-
-        if (Rml::Element *selName = doc->GetElementById("selected-game-name"))
-            selName->SetInnerRML(selected ? selected->name : std::string("—"));
-
-        Rml::Element *games = doc->GetElementById("games");
-        if (!games)
-            return;
-
-        std::string rml;
-        for (const auto &gs : appState_.stat().getAll())
-        {
-            const bool isSelected = (gs.stringID == appState_.getCurrentPackageName());
-
-            rml += "<div class=\"game";
-            if (isSelected)
-                rml += " selected";
-            rml += "\" id=\"game-";
-            rml += gs.stringID;
-            rml += "\">";
-
-            rml += "<div class=\"game-header\">";
-            rml += "<div class=\"name\">";
-            rml += gs.name;
-            rml += "</div>";
-            rml += "<button class=\"choos-b\" id=\"choose-";
-            rml += gs.stringID;
-            rml += "\"><span>Выбрать</span></button>";
-            rml += "</div>";
-
-            rml += "<div class=\"statistic\">";
-            rml += "<div class=\"stats-grid\">";
-
-            rml += "<div class=\"stat-cell\"><div class=\"stat-label\">Время рекорда</div><div class=\"stat-value\">";
-            rml += core::Time::toString(gs.time);
-            rml += "</div></div>";
-
-            rml += "<div class=\"stat-cell\"><div class=\"stat-label\">Рекорд очков</div><div class=\"stat-value\">";
-            rml += std::to_string(gs.record);
-            rml += "</div></div>";
-
-            rml += "<div class=\"stat-cell\"><div class=\"stat-label\">Сыграно игр</div><div class=\"stat-value\">";
-            rml += std::to_string(gs.gameCount);
-            rml += "</div></div>";
-
-            rml += "</div></div></div>";
-        }
-
-        games->SetInnerRML(rml);
     }
 };
 
