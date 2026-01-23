@@ -136,7 +136,7 @@ public:
         }
         if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
         {
-            if(event.button.y <= 100)
+            if(event.button.y < startY_)
                 return;
             if (event.button.button == SDL_BUTTON_LEFT)
             {
@@ -222,7 +222,13 @@ public:
                 it = objects_.erase(it); // erase возвращает итератор на следующий элемент
             }
             else
+            {
+                // if(it->getPosition().y < startY_)
+                // {
+                //     SDL_Log("Game over\n");
+                // }
                 ++it;
+            }
         }
 
         return actionRes_;
