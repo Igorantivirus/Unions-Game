@@ -47,8 +47,7 @@ At the moment, the game includes levels with Bank of Russia coins and with fruit
 * [Box2D 2.4.2](https://github.com/erincatto/box2d) - Physics engine library
 
 ## Used fonts:
-* Arial
-* DejaVuSans
+* DejaVu Sans
 
 ## License
 MIT License

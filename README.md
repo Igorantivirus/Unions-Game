@@ -47,8 +47,7 @@
 * [Box2D 2.4.2](https://github.com/erincatto/box2d) - Библиотека физического движка
 
 ## Используемые шрифты:
-* Arial
-* DejaVuSans
+* DejaVu Sans
 
 ## Лицензия 
 MIT Лицензия

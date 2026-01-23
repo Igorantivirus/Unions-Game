@@ -8,7 +8,7 @@ body {
     display: flex;
     flex-direction: column;
 
-    font-family: Arial;
+    font-family: "DejaVu Sans";
     font-size: 18dp;
 
     background-color: rgb(173, 216, 230);
