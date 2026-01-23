@@ -80,6 +80,23 @@ inline bool parseForm(const pugi::xml_node &form, resources::ObjectFormDef &out)
     }
     return false;
 }
+inline bool perseSettings(const pugi::xml_node &settings, resources::PackageSettings& setts)
+{
+    if(!settings)
+        return false;
+    const pugi::xml_node objectRange = settings.child("objectRange");
+    const pugi::xml_node timeStep = settings.child("timeStep");
+    const pugi::xml_node death = settings.child("death");
+
+    setts.levelRange = 
+    {
+        objectRange.attribute("startLevel").as_uint(1),
+        objectRange.attribute("endLevel").as_uint(1)
+    };
+    setts.summonTimeStepS = timeStep.attribute("seconds").as_float();
+    setts.deathCount = death.attribute("count").as_uint(1);
+    return true;
+}
 
 bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &textures, const std::string &packName, const std::filesystem::path &folderPath)
 {
@@ -94,13 +111,17 @@ bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &text
         return false;
 
     const pugi::xml_node root = doc.child("root");
+    const pugi::xml_node settings = root.child("settings");
+    const pugi::xml_node objects = root.child("objects");
 
-    if (!root)
+    resources::PackageSettings setts;
+    if(!perseSettings(settings, setts))
         return false;
+    pack.setSettings(std::move(setts));
 
     std::unordered_set<std::string> loadedTextureKeys;
 
-    for (const pugi::xml_node objectNode : root.children("object"))
+    for (const pugi::xml_node objectNode : objects.children("object"))
     {
         resources::ObjectDef def;
 

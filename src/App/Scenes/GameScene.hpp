@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Resources/Types.hpp"
 #include <SDL3/SDL_log.h>
 #include <memory>
 
@@ -30,6 +31,7 @@
 #include <Physics/Entity.hpp>
 #include <Resources/ObjectFactory.hpp>
 #include <Statistic/GameStatistic.hpp>
+#include <Core/Random.hpp>
 
 namespace scenes
 {
@@ -106,6 +108,12 @@ public:
 
         stat_.stringID = objectFactory_.getActivePack();
 
+        
+        if(auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
+            settings_ =  pack->getSetings();
+
+        SDL_Log("%d, %d\n", (int)settings_.levelRange.x, (int)settings_.levelRange.y);
+
         timer_.start();
     }
     ~GameScene()
@@ -159,7 +167,7 @@ public:
         if (paused_)
             return actionRes_;
 
-        if (!prEntity_ && startTimer_.elapsedTimeS() >= secondsForStart)
+        if (!prEntity_ && startTimer_.elapsedTimeS() >= settings_.summonTimeStepS)
             createPrEntity();
 
         world_.Step(dt, 8, 3);
@@ -200,12 +208,14 @@ private:
     resources::ObjectFactory objectFactory_;
 
     std::unique_ptr<objects::GameObject> prEntity_ = nullptr;
-    bool pressed_ = false;
+    
     float startY_;
     float startX_;
 
     sdl3::Clock startTimer_;
-    float secondsForStart = 0.5f;
+
+    resources::PackageSettings settings_;
+    core::Random<IDType> random_;
 
 private:
     Rml::DataModelHandle dataHandle_;
@@ -236,7 +246,8 @@ private:
 
     void createPrEntity()
     {
-        auto idpt = objectFactory_.getIdByLevel(1);
+        IDType level = random_(settings_.levelRange.x, settings_.levelRange.y);
+        auto idpt = objectFactory_.getIdByLevel(level);
         if (!idpt.has_value())
         {
             SDL_Log("Error! Not found object by level 1");
@@ -258,7 +269,6 @@ private:
         addPoints(prEntity_->getPoints());
         objects_.push_back(std::move(*prEntity_.get()));
         prEntity_.reset();
-        pressed_ = false;
         startTimer_.start();
     }
 

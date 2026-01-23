@@ -56,6 +56,10 @@ public:
     {
         return packName_;
     }
+    const PackageSettings &getSetings() const
+    {
+        return settings_;
+    }
 
     // SET METHODS
 
@@ -73,11 +77,16 @@ public:
     {
         objects_[def.id] = std::move(def);
     }
+    void setSettings(PackageSettings settings)
+    {
+        settings_ = std::move(settings);
+    } 
 
 private:
     std::string packName_;
     std::filesystem::path folderAbs_;
     std::unordered_map<IDType, ObjectDef> objects_;
+    PackageSettings settings_;
     std::unordered_set<std::string> textureKeys_;
 };
 } // namespace resources

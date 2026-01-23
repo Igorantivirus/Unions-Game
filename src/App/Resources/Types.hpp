@@ -95,4 +95,11 @@ struct ObjectDef
     ObjectFillerDef filler;
 };
 
+struct PackageSettings
+{
+    sdl3::Vector2u levelRange = {};
+    float summonTimeStepS = {};
+    unsigned deathCount = 1;
+};
+
 } // namespace resources
