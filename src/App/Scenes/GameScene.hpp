@@ -23,6 +23,7 @@
 #include <App/HardStrings.hpp>
 #include <App/Physics/EntityFactory.hpp>
 #include <Core/PathMeneger.hpp>
+#include <Core/Random.hpp>
 #include <Core/Types.hpp>
 #include <Engine/AdvancedContext.hpp>
 #include <Engine/OneRmlDocScene.hpp>
@@ -31,7 +32,7 @@
 #include <Physics/Entity.hpp>
 #include <Resources/ObjectFactory.hpp>
 #include <Statistic/GameStatistic.hpp>
-#include <Core/Random.hpp>
+
 
 namespace scenes
 {
@@ -60,6 +61,7 @@ private:
                 el = el->GetParentNode();
             if (!el)
                 return;
+            
             const Rml::String &id = el->GetId();
 
             if (id == "pause-button")
@@ -72,13 +74,13 @@ private:
                 overlay->SetClass("open", false);
                 scene_.setPause(false);
             }
-            else if (id == "btn-restart")
+            else if (id == "btn-restart" || id == "btn-go-restart")
             {
                 overlay->SetClass("open", false);
                 scene_.setPause(false);
                 scene_.retart();
             }
-            else if (id == "btn-exit")
+            else if (id == "btn-exit" || id == "btn-go-menu")
             {
                 scene_.actionRes_ = engine::SceneAction::popAction();
             }
@@ -101,6 +103,7 @@ public:
         bindData();
         loadDocumentOrThrow();
         listener_.init(document());
+        gameOverOverlay = document()->GetElementById("gameover-overlay");
         addEventListener(Rml::EventId::Click, &listener_, true);
 
         world_.SetContactListener(&contactCheker_);
@@ -108,9 +111,8 @@ public:
 
         stat_.stringID = objectFactory_.getActivePack();
 
-        
-        if(auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
-            settings_ =  pack->getSetings();
+        if (auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
+            settings_ = pack->getSetings();
 
         SDL_Log("%d, %d\n", (int)settings_.levelRange.x, (int)settings_.levelRange.y);
 
@@ -179,6 +181,12 @@ public:
             {
                 addPoints(-it->getPoints());
                 it = objects_.erase(it); // erase возвращает итератор на следующий элемент
+                ++countDeath_;
+                if(countDeath_ >= settings_.deathCount)
+                {
+                    gameOverOverlay->SetClass("open", true);
+                    setPause(true);
+                }
             }
             else
             {
@@ -208,9 +216,11 @@ private:
     resources::ObjectFactory objectFactory_;
 
     std::unique_ptr<objects::GameObject> prEntity_ = nullptr;
-    
+
     float startY_;
     float startX_;
+
+    unsigned countDeath_ = 0;
 
     sdl3::Clock startTimer_;
 
@@ -226,6 +236,10 @@ private:
 
     app::AppState &appState_;
 
+
+
+    Rml::Element *gameOverOverlay = nullptr;
+
 private:
     void setPause(const bool pause)
     {
@@ -236,12 +250,16 @@ private:
 
     void retart()
     {
+        countDeath_ = 0;
+
         timer_.start();
         stat_.gameCount = 0;
         objects_.clear();
 
         updateTime();
         addPoints(0);
+
+        gameOverOverlay->SetClass("open", false);
     }
 
     void createPrEntity()
@@ -262,7 +280,7 @@ private:
     }
     void startEntityObject(const float xPos)
     {
-        if(!prEntity_)
+        if (!prEntity_)
             return;
         prEntity_->setPosition({xPos, startY_});
         prEntity_->setEnabled(true);
