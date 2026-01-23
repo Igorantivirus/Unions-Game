@@ -67,7 +67,7 @@ find_package(SDLWrapper CONFIG REQUIRED)
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_TESTBED    OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_EXAMPLES   OFF CACHE BOOL "" FORCE) # если есть в твоей версии
-add_subdirectory("D:/dev/libraries/box2d-2.4.2" "${THIRD_PARTY_BUILD_DIR}/box2d")
+add_subdirectory("D:/dev/libraries/box2d-2.4.2" "${THIRD_PARTY_BUILD_DIR}/${CMAKE_BUILD_TYPE}/box2d")
 
 if (ANDROID)
   find_package(ZLIB REQUIRED)
