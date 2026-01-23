@@ -2,7 +2,7 @@
 
     <head>
         <link type="text/rcss" href="rml.rcss" />
-        <link type="text/rcss" href="game_card.template.rcss" />
+        <link type="text/rcss" href="game-card.rcss" />
     </head>
 
     <body>
