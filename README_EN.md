@@ -48,6 +48,7 @@ At the moment, the game includes levels with Bank of Russia coins and with fruit
 
 ## Used fonts:
 * Arial
+* DejaVuSans
 
 ## License
 MIT License
