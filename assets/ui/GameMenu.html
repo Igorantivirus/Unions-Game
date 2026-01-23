@@ -4,23 +4,29 @@
         <title>Document</title>
         <link type="text/rcss" href="rml.rcss" />
         <link type="text/rcss" href="GameMenu.css" />
-        <!-- <link rel="stylesheet" href="GameMenu.css"> -->
     </head>
 
-    <body data-model="game-status">
+    <body data-model_="game-status">
 
-        <header>
-            <p>Время в игре: {{ time }}</p>
-            <p>Очков: {{ points }}</p>
-            <p>Рекорд: {{ record }}</p>
-        </header>
-
-        <footer>
-            <div class="footMenu">
-                <button id="back-b">Назад</button>
+        <div id="status-bar">
+            <div class="status-item">
+                <p>Время в игре:</p>
+                <p>{{ time }}</p>
             </div>
-        </footer>
+            <div class="status-item">
+                <p>Очков:</p>
+                <p>{{ points }}</p>
+            </div>
+            <div class="status-item">
+                <p>Рекорд:</p>
+                <p>{{ record }}</p>
+            </div>
 
+            <div id="button-container">
+                <button id="pause-button"><span>❚❚</span></button>
+            </div>
+
+        </div>
 
     </body>
 

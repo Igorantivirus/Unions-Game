@@ -1,68 +1,60 @@
-:root {
-    font-size: 16px;
-}
-
 body {
     background-color: rgb(173, 216, 230);
-    font-family: Arial;
+
+    font-family: 'DejaVu Sans';
+    font-size: 18dp;
+
     margin: 0;
     width: 100%;
     height: 100vh;
 }
 
-header {
+#status-bar {
+    width: 100%;
     display: flex;
     flex-direction: row;
+
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+
     padding: 10px;
     box-sizing: border-box;
 }
 
-header p {
-    font-size: 250%;
+.status-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    background-color: #dbe2ea;
     color: black;
-}
 
-.footMenu:first-child {
-    text-align: left;
-}
+    border-color: black;
+    border-width: 1px;
+    border-radius: 10px;
 
-.footMenu {
-    width: 50%;
-    color: black;
-    font-size: 20px;
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin-bottom: 15px;
-
-    height: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
     padding-bottom: 10px;
-    align-items: flex-end;
+}
+
+.status-item p:last-child {
+    margin-top: auto;
+}
+
+
+#pause-button {
+
+    width: 50px;
+    height: 50px;
+
+    background-color: blue;
+    border-radius: 25px;
+    border-width: 1px;
+    border-color: black;
 
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-
-#back-b {
-    border-radius: 10px;
-    background-color: #007bff;
-    border-color: black;
-
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-#back-b:active {
-    background-color: green;
+    justify-content: center;
 }
