@@ -117,82 +117,30 @@ public:
             // Освобождаем модель данных
             dataHandle_ = Rml::DataModelHandle();
             // Удаляем модель из контекста
-
             context_.getContext()->RemoveDataModel(ui::gameMenu::gameStats);
         }
     }
 
     void updateEvent(const SDL_Event &event) override
     {
-        if(paused_)
+        if (paused_)
             return;
         if (event.type == app::AppEventsType::COLLISION)
-        {
             updateCollision(event);
-        }
-        if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_AC_BACK)
-        {
+        else if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_AC_BACK)
             actionRes_ = engine::SceneAction::popAction();
-        }
-        if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+        else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
         {
-            if(event.button.y < startY_)
+            if (event.button.y < startY_)
                 return;
-            if (event.button.button == SDL_BUTTON_LEFT)
-            {
-                pressed_ = true;
-                // auto idpt = objectFactory_.getIdByLevel(1);
-                // if (!idpt.has_value())
-                //     throw std::logic_error("Error");
-                // auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.button.x, startY_});
-                // // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
-                // if (!created)
-                //     return;
-
-                // prEntity_ = std::make_unique<GameObject>(std::move(*created));
-                // prEntity_->setEnabled(false);
-            }
-        }
-        if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
-        {
-            if (event.button.button == SDL_BUTTON_LEFT)
-            {
-                if (!pressed_ || !prEntity_)
-                    return;
-                prEntity_->setEnabled(true);
-                addPoints(prEntity_->getPoints());
-                objects_.push_back(std::move(*prEntity_.get()));
-                prEntity_.reset();
-                pressed_ = false;
-                startTimer_.start();
-            }
+            startEntityObject(event.button.x);
         }
         else if (event.type == SDL_EVENT_MOUSE_MOTION)
         {
-            if (!pressed_)
+            if (event.button.y < startY_)
                 return;
-            if (startTimer_.elapsedTimeS() < secondsForStart)
-                return;
-
-            if (!prEntity_)
-            {
-
-                auto idpt = objectFactory_.getIdByLevel(1);
-                if (!idpt.has_value())
-                {
-                    SDL_Log("Error! Not found object by level 1");
-                    actionRes_ = engine::SceneAction::popAction();
-                }
-                auto created = objectFactory_.tryCreateById(world_, idpt.value(), {event.motion.x, startY_});
-                // auto created = objectFactory_.tryCreateById(world_, rand() % 3 + 1, {event.button.x, startY_});
-                if (!created)
-                    return;
-
-                prEntity_ = std::make_unique<objects::GameObject>(std::move(*created));
-                prEntity_->setEnabled(false);
-            }
-
-            prEntity_->setPosition({event.motion.x, startY_});
+            if (prEntity_)
+                prEntity_->setPosition({event.motion.x, startY_});
         }
     }
 
@@ -208,8 +156,11 @@ public:
 
     engine::SceneAction &update(const float dt) override
     {
-        if(paused_)
+        if (paused_)
             return actionRes_;
+
+        if (!prEntity_ && startTimer_.elapsedTimeS() >= secondsForStart)
+            createPrEntity();
 
         world_.Step(dt, 8, 3);
         updateTime();
@@ -251,9 +202,10 @@ private:
     std::unique_ptr<objects::GameObject> prEntity_ = nullptr;
     bool pressed_ = false;
     float startY_;
+    float startX_;
 
     sdl3::Clock startTimer_;
-    float secondsForStart = 0.333f;
+    float secondsForStart = 0.5f;
 
 private:
     Rml::DataModelHandle dataHandle_;
@@ -282,6 +234,34 @@ private:
         addPoints(0);
     }
 
+    void createPrEntity()
+    {
+        auto idpt = objectFactory_.getIdByLevel(1);
+        if (!idpt.has_value())
+        {
+            SDL_Log("Error! Not found object by level 1");
+            actionRes_ = engine::SceneAction::popAction();
+        }
+        auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startX_, startY_});
+        if (!created)
+            return;
+
+        prEntity_ = std::make_unique<objects::GameObject>(std::move(*created));
+        prEntity_->setEnabled(false);
+    }
+    void startEntityObject(const float xPos)
+    {
+        if(!prEntity_)
+            return;
+        prEntity_->setPosition({xPos, startY_});
+        prEntity_->setEnabled(true);
+        addPoints(prEntity_->getPoints());
+        objects_.push_back(std::move(*prEntity_.get()));
+        prEntity_.reset();
+        pressed_ = false;
+        startTimer_.start();
+    }
+
     void bindData()
     {
         Rml::DataModelConstructor constructor = context_.getContext()->CreateDataModel(ui::gameMenu::gameStats);
@@ -305,6 +285,7 @@ private:
         glass_.push_back(physics::EntityFactory::createRectangle(world_, {logicSize.x / 2.f + glassSize.x / 2.f, yPos - glassSize.y / 2.f}, {thikness, glassSize.y}, sdl3::Colors::Black, nullptr, b2BodyType::b2_staticBody));
 
         startY_ = (yPos - (glassSize.y)) / 2.f;
+        startX_ = logicSize.x / 2.f;
     }
 
     std::size_t getByID(const IDType id)
