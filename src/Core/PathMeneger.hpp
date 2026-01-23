@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include <SDL3/SDL_filesystem.h>
+
 namespace core
 {
 
@@ -12,8 +14,8 @@ public:
     static void init()
     {
         #ifdef ANDROID
-            assets = "";
-            workFolder = SDL_GetPrefPath("igorantivirus", "unions");
+            assets_ = "";
+            workFolder_ = SDL_GetPrefPath("igorantivirus", "unions");
         #else
             #ifdef DEBUG_BUILD_TYPE
                 assets_ = "../assets";
