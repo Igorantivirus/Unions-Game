@@ -17,10 +17,10 @@ public:
             assets_ = "";
             workFolder_ = SDL_GetPrefPath("igorantivirus", "unions");
         #else
-            #ifdef DEBUG_BUILD_TYPE
+            #ifndef DEBUG_BUILD_TYPE
                 assets_ = "../assets";
             #else
-                assets_ = "";
+                assets_ = "assets";
             #endif
             workFolder_ = "";
         #endif
