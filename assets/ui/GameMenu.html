@@ -1,33 +1,40 @@
-<rml lang="en">
+<rml lang="ru">
+  <head>
+    <title>Game HUD</title>
+    <link type="text/rcss" href="rml.rcss" />
+    <link type="text/rcss" href="GameMenu.css" />
+  </head>
 
-    <head>
-        <title>Document</title>
-        <link type="text/rcss" href="rml.rcss" />
-        <link type="text/rcss" href="GameMenu.css" />
-    </head>
+  <body data-model="game-status">
 
-    <body data-model_="game-status">
+    <!-- HUD поверх игры -->
+    <div id="status-bar">
+      <div class="status-item">
+        <p class="label">Время</p>
+        <p class="value">{{ time }}</p>
+      </div>
+      <div class="status-item">
+        <p class="label">Очки</p>
+        <p class="value">{{ points }}</p>
+      </div>
+      <div class="status-item">
+        <p class="label">Рекорд</p>
+        <p class="value">{{ record }}</p>
+      </div>
 
-        <div id="status-bar">
-            <div class="status-item">
-                <p>Время в игре:</p>
-                <p>{{ time }}</p>
-            </div>
-            <div class="status-item">
-                <p>Очков:</p>
-                <p>{{ points }}</p>
-            </div>
-            <div class="status-item">
-                <p>Рекорд:</p>
-                <p>{{ record }}</p>
-            </div>
+      <button id="pause-button" class="icon-button"><span>❚❚</span></button>
+    </div>
 
-            <div id="button-container">
-                <button id="pause-button"><span>❚❚</span></button>
-            </div>
+    <!-- Меню паузы -->
+    <div id="pause-overlay" class="overlay">
+      <div class="panel">
+        <h2>Пауза</h2>
 
-        </div>
+        <button id="btn-resume" class="menu-btn primary"><span>Вернуться в игру</span></button>
+        <button id="btn-restart" class="menu-btn"><span>Начать заново</span></button>
+        <button id="btn-exit" class="menu-btn danger"><span>Выйти в меню</span></button>
+      </div>
+    </div>
 
-    </body>
-
+  </body>
 </rml>
