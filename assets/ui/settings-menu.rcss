@@ -81,7 +81,7 @@ body {
     padding: 8dp;
 }
 
-.exit-b {
+.foot-b {
     flex: 1 1 0;
     height: 100%;
     margin: 0px 6dp;
@@ -101,7 +101,7 @@ body {
     text-align: center;
 }
 
-.exit-b:active {
+.foot-b:active {
     background-color: red;
 }
 

@@ -24,7 +24,10 @@ namespace ui::mainMenu
 constexpr const std::string_view file = "ui/main-menu.rml";
 constexpr const std::string_view exitB = "exit-b";
 constexpr const std::string_view startB = "start-b";
+constexpr const std::string_view todevB = "todev-b";
 constexpr const std::string_view settsB = "setts-b";
+
+constexpr const std::string_view githubUrl = "https://github.com/Igorantivirus/Unoins-Game";
 } // namespace ui::mainMenu
 
 namespace ui::gameMenu
@@ -55,5 +58,5 @@ namespace ui::setsMenu
 {
 constexpr const std::string_view file = "ui/settings-menu.rml";
 constexpr const std::string_view saveExitB = "save-exit-b";
-constexpr const std::string_view saveThrowB = "throw-exit-b";
+constexpr const std::string_view saveThrowB = "drop-b";
 } // namespace ui::setsMenu

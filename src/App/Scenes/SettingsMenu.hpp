@@ -39,9 +39,13 @@ private:
             const Rml::String &id = el->GetId();
             const std::unordered_map<std::string, std::string> &buttons = scene_.getChooseButtons();
 
-            if (id == ui::setsMenu::saveExitB || id == ui::setsMenu::saveThrowB)
+            if (id == ui::setsMenu::saveExitB)
                 scene_.actionRes_ = engine::SceneAction::popAction();
-
+            else if(id == ui::setsMenu::saveThrowB)
+            {
+                scene_.appState_.stat().resetAllStatistic();
+                scene_.addStatisticToUi();
+            }
             else if (auto found = buttons.find(id); found != buttons.end())
             {
                 scene_.appState_.setCurrentPackageName(found->second);

@@ -26,8 +26,8 @@
     </div>
 
     <div id="footer">
-      <button id="save-exit-b" class="exit-b"><span>Сохранить и выйти</span></button>
-      <button id="drop-exit-b" class="exit-b"><span>Сбросить и выйти</span></button>
+      <button id="save-exit-b" class="foot-b"><span>Сохранить и выйти</span></button>
+      <button id="drop-b" class="foot-b"><span>Сбросить статистику</span></button>
     </div>
   </body>
 </rml>

@@ -13,6 +13,13 @@ struct GameStatistic
     core::Time time{};
     unsigned int record{};
     unsigned int gameCount{};
+
+    void reset()
+    {
+        time = core::Time{};
+        record = 0;
+        gameCount = 0;
+    }
 };
 
 } // namespace statistic

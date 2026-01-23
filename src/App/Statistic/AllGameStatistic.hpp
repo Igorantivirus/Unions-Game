@@ -11,6 +11,13 @@ namespace statistic
 struct AllGameStatistic
 {
 public:
+
+    void resetAllStatistic()
+    {
+        for(auto& stat : gameStatistic_)
+            stat.reset();
+    }
+
     GameStatistic *findById(const std::string_view id)
     {
         for (auto &gs : gameStatistic_)
