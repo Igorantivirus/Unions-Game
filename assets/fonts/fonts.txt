@@ -1,1 +1,6 @@
 fonts/arial.ttf
+fonts/DejaVuSans-Bold.ttf
+fonts/DejaVuSans-BoldOblique.ttf
+fonts/DejaVuSans-ExtraLight.ttf
+fonts/DejaVuSans-Oblique.ttf
+fonts/DejaVuSans.ttf
