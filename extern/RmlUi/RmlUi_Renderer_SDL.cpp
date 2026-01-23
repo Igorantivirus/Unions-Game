@@ -41,8 +41,8 @@ RenderInterface_SDL::RenderInterface_SDL(SDL_Renderer* renderer) : renderer(rend
 void RenderInterface_SDL::BeginFrame()
 {
 	SetRenderViewport(renderer, nullptr);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+	// SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	// SDL_RenderClear(renderer);
 	SDL_SetRenderDrawBlendMode(renderer, blend_mode);
 }
 
