@@ -242,7 +242,7 @@ private:
             SDL_Log("Error! Not found object by level 1");
             actionRes_ = engine::SceneAction::popAction();
         }
-        auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startX_, startY_});
+        auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startX_, -startY_});
         if (!created)
             return;
 
