@@ -51,6 +51,16 @@
         "USE_CONSOLE": "FALSE",
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "win-relwithdebinfo",
+      "inherits": "win-base",
+      "displayName": "Windows ReleaseWithDebugInfo",
+      "binaryDir": "build",
+      "cacheVariables": {
+        "USE_CONSOLE": "FALSE",
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
     }
   ]
 }
