@@ -149,17 +149,16 @@ public:
             window.draw(prEntity_.get());
     }
 
-    engine::SceneAction &update(const float dt) override
+    engine::SceneAction update(const float dt) override
     {
         if (paused_)
-            return actionRes_;
-
+            return engine::OneRmlDocScene::update(dt);
         if (!prEntity_ && startTimer_.elapsedTimeS() >= settings_.summonTimeStepS)
             createPrEntity();
         world_.Step(dt, 8, 3);
         updateTime();
         updatecorrectnessElements();
-        return actionRes_;
+        return engine::OneRmlDocScene::update(dt);
     }
 
 private: // Сцена
