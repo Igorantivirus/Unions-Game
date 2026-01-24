@@ -15,10 +15,8 @@ static app::AppState appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    // Make touch behave like mouse for the whole app (RmlUi + gameplay input).
-    // This is important on Android where many devices primarily emit finger events.
-    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
     SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
+    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
 
     core::PathManager::init();
 
