@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Statistic/AllGameStatistic.hpp"
 #include <filesystem>
 #include <string>
 #include <string_view>
@@ -56,6 +57,13 @@ inline bool writeAllFile(const std::string_view &path, const std::string &str)
 inline bool createAndMove(const std::filesystem::path &existing, const std::filesystem::path &newFile)
 {
     return writeAllFile(newFile, readAllFile(existing));
+}
+
+inline bool isValidXmlFile(const std::filesystem::path& path)
+{
+    std::string file = readAllFile(path);
+    pugi::xml_document doc;
+    return doc.load_string(file.c_str());
 }
 
 } // namespace IO

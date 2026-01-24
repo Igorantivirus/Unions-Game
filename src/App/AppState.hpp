@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IO/FullFileWorker.hpp"
 #include <App/IO/GameStatisticIO.hpp>
 #include <App/Resources/TextureManager.hpp>
 #include <App/Statistic/GameStatistic.hpp>
@@ -27,16 +28,9 @@ public:
 
     bool load()
     {
-        if (!std::filesystem::exists(workStatFile_))
+        if(!IO::isValidXmlFile(workStatFile_))
             IO::createAndMove(assetsStatFile_, workStatFile_);
-
-        bool res = IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
-        if(!res)
-        {
-            IO::createAndMove(assetsStatFile_, workStatFile_);
-            return IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
-        }
-        return res;
+        return IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
     }
 
     bool save() const
