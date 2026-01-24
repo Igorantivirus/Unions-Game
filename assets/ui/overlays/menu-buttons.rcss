@@ -2,18 +2,22 @@
     width: 100%;
     height: 46px;
 
-    margin: 8px 0px;
+    margin: 10px 0px;
     border-radius: 12px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 18px;
+    font-size: 30px;
     font-weight: bold;
 
+    padding-top: 10px;
+    padding-bottom: 10px;
+
     background-color: rgb(230, 235, 245);
-    border: 2px rgba(0, 0, 0, 0.25);
+    border-color: black;
+    border-width: 1px;
     color: black;
 }
 

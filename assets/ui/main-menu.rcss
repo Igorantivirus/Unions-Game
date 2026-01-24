@@ -1,5 +1,5 @@
 :root {
-    font-size: 16px;
+    font-size: 20px;
 }
 
 body {
@@ -15,10 +15,10 @@ body {
     align-items: center;
 
     /* немного воздуха */
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-bottom: 24px;
-    padding-top: 24px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+    padding-top: 30px;
 
     box-sizing: border-box;
 }
@@ -33,9 +33,9 @@ body {
     /* аккуратная “шапка” */
     /* padding: 18px 16px;
      */
-    padding-top: 24px;
-    padding-bottom: 24px;
-    margin-bottom: 24px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
 
     background-color: rgba(255, 255, 255, 89);
 
@@ -50,7 +50,7 @@ h1 {
     color: black;
 
     /* вместо 700% — предсказуемый размер */
-    font-size: 50px;
+    font-size: 63px;
     font-weight: bold;
     text-align: center;
 }
@@ -64,12 +64,12 @@ h1 {
     flex-direction: column;
     justify-content: space-between;
     gap: 14px;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 38px;
+    padding-bottom: 38px;
 
     background-color: rgba(0, 0, 0, 26);
     border: 2px rgba(0, 0, 0, 64);
@@ -86,8 +86,11 @@ h1 {
     justify-content: center;
     align-items: center;
 
+    padding-top: 10px;
+    padding-bottom: 10px;
+
     color: white;
-    font-size: 30px;
+    font-size: 38px;
     font-weight: bold;
     text-align: center;
 
@@ -111,10 +114,10 @@ h1 {
 
     margin-top: auto;
 
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 13px;
+    padding-bottom: 13px;
 
     display: flex;
     align-items: center;
@@ -129,7 +132,7 @@ h1 {
 .footMenu {
     width: 50%;
     color: black;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .footMenu:first-child {

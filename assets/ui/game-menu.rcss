@@ -9,7 +9,7 @@ body {
     color: black;
 
     font-family: "DejaVu Sans";
-    font-size: 18px;
+    font-size: 23px;
 }
 
 /* Верхняя панель */
@@ -25,7 +25,7 @@ body {
 
     z-index: 10;
 
-    padding: 10px;
+    padding: 13px;
     box-sizing: border-box;
     /* поддерживается */
     border-radius: 12px;
@@ -42,10 +42,10 @@ body {
     flex-direction: column;
     gap: 4px;
 
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-left: 6px;
+    padding-right: 6px;
 
     align-items: center;
     text-align: center;
@@ -59,13 +59,13 @@ body {
 
 .status-item .label {
     margin: 0px;
-    font-size: 14px;
+    font-size: 18px;
     opacity: 0.85;
 }
 
 .status-item .value {
     margin: 0px;
-    font-size: 20px;
+    font-size: 25px;
     font-weight: bold;
 }
 
@@ -84,7 +84,7 @@ body {
     border-radius: 26px;
     border-width: 2px;
 
-    font-size: 18px;
+    font-size: 23px;
     font-weight: bold;
     color: white;
 }

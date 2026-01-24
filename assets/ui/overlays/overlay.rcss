@@ -29,7 +29,7 @@
     width: 420px;
     max-width: 90%;
 
-    padding: 16px;
+    padding: 20px;
     margin-left: 10%;
     margin-right: 10%;
 
@@ -46,18 +46,18 @@
 
 /*Заголовок оверлея*/
 .overlay-title {
-    margin: 0px 0px 12px 0px;
-    font-size: 22px;
+    margin: 0px 0px 15px 0px;
+    font-size: 45px;
     color: black;
 }
 .overlay-subtitle {
-    margin: 6px 0px 0px 0px;
-    font-size: 16px;
+    margin: 8px 0px 0px 0px;
+    font-size: 30px;
     opacity: 0.9;
 }
 
 .overlay-divider{
-    margin: 12px 0px 10px 0px;
+    margin: 15px 0px 13px 0px;
     height: 2px;
     background-color: rgba(190, 40, 40, 217);
     border-radius: 2px;

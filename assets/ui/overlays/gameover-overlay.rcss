@@ -3,8 +3,8 @@
     flex-direction: column;
     gap: 8px;
 
-    margin: 6px 0px 10px 0px;
-    padding: 10px 12px;
+    margin: 8px 0px 13px 0px;
+    padding: 13px 15px;
 
     background-color: rgba(0, 0, 0, 20);
     border-radius: 10px;
@@ -16,7 +16,7 @@
     justify-content: space-between;
     align-items: center;
 
-    font-size: 16px;
+    font-size: 20px;
 }
 
 #gameover-overlay .stat-label {
@@ -28,5 +28,5 @@
 }
 
 #gameover-overlay .gameover-actions {
-    margin-top: 4px;
+    margin-top: 5px;
 }

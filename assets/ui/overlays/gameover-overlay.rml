@@ -15,8 +15,8 @@
     <body>
         <div id="gameover-overlay" class="overlay">
             <div class="panel">
-                <h2 class="overlay-title">Game Over</h2>
-                <p class="overlay-subtitle">Игра окончена</p>
+                <h2 class="overlay-title">Игра окончена</h2>
+                <p class="overlay-subtitle">Статистика:</p>
 
                 <div class="overlay-divider"></div>
 
