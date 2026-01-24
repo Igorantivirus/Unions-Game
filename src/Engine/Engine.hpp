@@ -109,7 +109,7 @@ public:
             return SDL_APP_FAILURE;
         const float dt = cl_.elapsedTimeS();
         cl_.start();
-        SceneAction &act = scenes_.back()->update(dt);
+        SceneAction act = scenes_.back()->update(dt);
         SDL_AppResult res = processSceneAction(act);
         if (res != SDL_APP_CONTINUE)
             return res;
@@ -181,7 +181,7 @@ private:
     }
 
 private: // SceneActionType process
-    SDL_AppResult processSceneAction(SceneAction &act)
+    SDL_AppResult processSceneAction(const SceneAction &act)
     {
         SDL_AppResult res = SDL_APP_CONTINUE;
         if (act.type == SceneActionType::None)
@@ -194,7 +194,6 @@ private: // SceneActionType process
             switchScene(std::get<IDType>(act.value));
         else if (act.type == SceneActionType::Exit)
             res = SDL_APP_SUCCESS;
-        act = SceneAction::noneAction();
         return res;
     }
 
