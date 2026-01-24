@@ -21,7 +21,10 @@ Merge identical objects to obtain a new, higher-level object.
 
 ## Available levels
 
-At the moment, the game includes levels with Bank of Russia coins and with fruits.
+There are currently levels available in the game:
+1) With coins of the Central Bank of the Russian Federation
+2) With Fruits
+3) With planets
 
 ## Install and Run
 
