@@ -5,7 +5,6 @@
 #include <App/Statistic/GameStatistic.hpp>
 #include <SDLWrapper/FileWorker.hpp>
 
-
 #include <SDL3/SDL_log.h>
 
 #include <filesystem>
@@ -30,7 +29,14 @@ public:
     {
         if (!std::filesystem::exists(workStatFile_))
             IO::createAndMove(assetsStatFile_, workStatFile_);
-        return IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
+
+        bool res = IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
+        if(!res)
+        {
+            IO::createAndMove(assetsStatFile_, workStatFile_);
+            return IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
+        }
+        return res;
     }
 
     bool save() const
