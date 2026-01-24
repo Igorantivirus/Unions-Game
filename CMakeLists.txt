@@ -15,14 +15,16 @@ set(THIRD_PARTY_BUILD_DIR "${PROJECT_SOURCE_DIR}/_3rdparty")
 
 if(ANDROID)
   set(CMAKE_ABI ${CMAKE_ANDROID_ARCH_ABI})
-  if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    set(CMAKE_BUILD_TYPE "Release")
-  endif()
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  set(LIBS_BUILD_TYPE Release)
   set(BUILD_TYPE_MACRO "RELEASE_BUILD_TYPE")
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+  set(LIBS_BUILD_TYPE Release)
+  set(BUILD_TYPE_MACRO "RELWITHDEBINFO_BUILD_TYPE")
 else()
+  set(LIBS_BUILD_TYPE Debug)
   set(BUILD_TYPE_MACRO "DEBUG_BUILD_TYPE")
 endif()
 
@@ -30,9 +32,9 @@ if(MSVC)
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-set(RmlUi_DIR      "${EXTERNAL_DIR}/RmlUi-6.2/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/RmlUi")
-set(Freetype_DIR   "${EXTERNAL_DIR}/FreeType/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/freetype")
-set(SDLWrapper_DIR "${EXTERNAL_DIR}/SDLWrapper/${CMAKE_ABI}/${CMAKE_BUILD_TYPE}/lib/cmake/SDLWrapper")
+set(RmlUi_DIR      "${EXTERNAL_DIR}/RmlUi-6.2/${CMAKE_ABI}/${LIBS_BUILD_TYPE}/lib/cmake/RmlUi")
+set(Freetype_DIR   "${EXTERNAL_DIR}/FreeType/${CMAKE_ABI}/${LIBS_BUILD_TYPE}/lib/cmake/freetype")
+set(SDLWrapper_DIR "${EXTERNAL_DIR}/SDLWrapper/${CMAKE_ABI}/${LIBS_BUILD_TYPE}/lib/cmake/SDLWrapper")
 
 if(NOT DEFINED EXTERNAL_DIR)
     message(ERROR EXTERNAL_DIR is not defined)
@@ -67,7 +69,7 @@ find_package(SDLWrapper CONFIG REQUIRED)
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_TESTBED    OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_EXAMPLES   OFF CACHE BOOL "" FORCE) # если есть в твоей версии
-add_subdirectory("D:/dev/libraries/box2d-2.4.2" "${THIRD_PARTY_BUILD_DIR}/${CMAKE_BUILD_TYPE}/box2d")
+add_subdirectory("D:/dev/libraries/box2d-2.4.2" "${THIRD_PARTY_BUILD_DIR}/${LIBS_BUILD_TYPE}/box2d")
 
 if (ANDROID)
   find_package(ZLIB REQUIRED)
@@ -115,17 +117,17 @@ endif()
 
 #--------------------------OPTIMIATION--------------------------#
 
-if(ANDROID AND (CMAKE_BUILD_TYPE MATCHES "Release|MinSizeRel"))
-  target_compile_options(${PROJECT_NAME} PRIVATE
-          -O3
-          -ffunction-sections -fdata-sections
-          -fomit-frame-pointer
-  )
-  target_link_options(${PROJECT_NAME} PRIVATE
-          -Wl,--gc-sections
-          -Wl,--as-needed
-  )
-endif()
+#if(ANDROID AND (CMAKE_BUILD_TYPE MATCHES "Release|MinSizeRel"))
+#  target_compile_options(${PROJECT_NAME} PRIVATE
+#          -O3
+#          -ffunction-sections -fdata-sections
+#          -fomit-frame-pointer
+#  )
+#  target_link_options(${PROJECT_NAME} PRIVATE
+#          -Wl,--gc-sections
+#          -Wl,--as-needed
+#  )
+#endif()
 
 if(NOT USE_CONSOLE)
   if(MSVC)
