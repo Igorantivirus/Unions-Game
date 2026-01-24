@@ -61,7 +61,6 @@ public:
     SettingsMenu(engine::Context &context, app::AppState &appState)
         : engine::OneRmlDocScene(context, ui::setsMenu::file), listener_(*this), appState_(appState)
     {
-        initButtons();
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
     }
@@ -91,16 +90,6 @@ private:
         addStatisticToUi();
     }
 
-    void initButtons()
-    {
-        chooseButtons_.clear();
-        for (const auto &gs : appState_.stat().getAll())
-        {
-            std::string buttonId = gs.stringID + "-choose-b";
-            chooseButtons_[std::move(buttonId)] = gs.stringID;
-        }
-    }
-
     void addStatisticToUi()
     {
         Rml::ElementDocument *doc = document();
@@ -123,18 +112,15 @@ private:
         doc->QuerySelectorAll(chooseButtons, ".choose-b");
 
         IDType index = 0;
-        auto iter = chooseButtons_.begin();
         for (const auto &gs : appState_.stat().getAll())
         {
-            if (iter == chooseButtons_.end())
-                return;
             gameNames[index]->SetInnerRML(gs.name);
             timeLabels[index]->SetInnerRML(core::Time::toString(gs.time));
             recordLabels[index]->SetInnerRML(std::to_string(gs.record));
             countLabels[index]->SetInnerRML(std::to_string(gs.gameCount));
-            chooseButtons[index]->SetAttribute("id", iter->first);
-
-            ++iter;
+            std::string buttonId = gs.stringID + "-choose-b";
+            chooseButtons[index]->SetAttribute("id", buttonId);
+            chooseButtons_[std::move(buttonId)] = gs.stringID;
             ++index;
         }
     }
