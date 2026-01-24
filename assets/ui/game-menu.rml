@@ -28,7 +28,7 @@
         <p class="value">{{ record }}</p>
       </div>
       <div class="status-item">
-        <p class="label">Попыток</p>
+        <p class="label">Ошибок</p>
         <p class="value">{{death}}/{{maxdeath}}</p>
       </div>
 
