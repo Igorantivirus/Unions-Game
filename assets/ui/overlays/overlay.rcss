@@ -1,10 +1,10 @@
 .overlay {
     /*Расположение по центур на весь экран*/
     position: absolute;
-    top: 0dp;
-    left: 0dp;
-    right: 0dp;
-    bottom: 0dp;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
 
     /* скрыто */
     display: none;
@@ -26,18 +26,18 @@
 
 /*Сама панель*/
 .panel {
-    width: 420dp;
+    width: 420px;
     max-width: 90%;
 
-    padding: 16dp;
+    padding: 16px;
     margin-left: 10%;
     margin-right: 10%;
 
     background-color: rgba(255, 255, 255, 200);
 
     border-color: black;
-    border-radius: 25dp;
-    border-width: 2dp;
+    border-radius: 25px;
+    border-width: 2px;
 
     display: flex;
     flex-direction: column;
@@ -46,19 +46,19 @@
 
 /*Заголовок оверлея*/
 .overlay-title {
-    margin: 0dp 0dp 12dp 0dp;
-    font-size: 22dp;
+    margin: 0px 0px 12px 0px;
+    font-size: 22px;
     color: black;
 }
 .overlay-subtitle {
-    margin: 6dp 0dp 0dp 0dp;
-    font-size: 16dp;
+    margin: 6px 0px 0px 0px;
+    font-size: 16px;
     opacity: 0.9;
 }
 
 .overlay-divider{
-    margin: 12dp 0dp 10dp 0dp;
-    height: 2dp;
+    margin: 12px 0px 10px 0px;
+    height: 2px;
     background-color: rgba(190, 40, 40, 217);
-    border-radius: 2dp;
+    border-radius: 2px;
 }

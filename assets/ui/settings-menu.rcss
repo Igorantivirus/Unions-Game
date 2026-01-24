@@ -9,7 +9,7 @@ body {
     flex-direction: column;
 
     font-family: "DejaVu Sans";
-    font-size: 18dp;
+    font-size: 18px;
 
     background-color: rgb(173, 216, 230);
 }
@@ -17,25 +17,25 @@ body {
 /* Шапка / футер фиксированы, скролл только в #games */
 
 #header {
-    flex: 0 0 120dp;
+    flex: 0 0 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 8dp 10dp;
+    padding: 8px 10px;
 }
 
 /* --- Бейдж выбранной игры --- */
 #header .current-game-badge {
-    margin-top: 6dp;
-    padding: 8dp 14dp;
+    margin-top: 6px;
+    padding: 8px 14px;
 
     background-color: rgb(240, 248, 255);
-    border: 2dp black;
-    border-radius: 12dp;
+    border: 2px black;
+    border-radius: 12px;
 
     text-align: center;
-    min-width: 260dp;
+    min-width: 260px;
 
     display: block;
 }
@@ -43,13 +43,13 @@ body {
 /* --- Тексты внутри бейджа (делаем более “читабельно”) --- */
 #header .current-game-prefix {
     margin: 0px;
-    font-size: 14dp;
+    font-size: 14px;
     color: rgb(40, 40, 40);
 }
 
 #header #current-game-label {
-    margin: 2dp 0px 0px 0px;
-    font-size: 22dp;
+    margin: 2px 0px 0px 0px;
+    font-size: 22px;
     font-weight: bold;
     color: black;
 }
@@ -69,31 +69,31 @@ body {
 
 #header h1 {
     margin: 0px;
-    font-size: 32dp;
+    font-size: 32px;
     color: black;
 }
 
 #footer {
-    flex: 0 0 90dp;
+    flex: 0 0 90px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8dp;
+    padding: 8px;
 }
 
 .foot-b {
     flex: 1 1 0;
     height: 100%;
-    margin: 0px 6dp;
+    margin: 0px 6px;
 
-    font-size: 20dp;
+    font-size: 20px;
     font-weight: bold;
 
     color: white;
     background-color: rgb(0, 80, 200);
 
-    border: 2dp black;
-    border-radius: 10dp;
+    border: 2px black;
+    border-radius: 10px;
 
     display: flex;
     justify-content: center;
@@ -112,7 +112,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
 
-    padding: 10dp;
+    padding: 10px;
 }
 
 /*statistic*/
@@ -127,7 +127,7 @@ body {
 
 /* Вертикальный скроллбар только внутри #games */
 #games scrollbarvertical {
-    width: 14dp;
+    width: 14px;
 }
 
 /* Уберём кнопки-стрелки (по желанию) */
@@ -139,18 +139,18 @@ body {
 
 /* Дорожка */
 #games scrollbarvertical slidertrack {
-    margin-left: 2dp;
-    width: 10dp;
+    margin-left: 2px;
+    width: 10px;
     background-color: rgb(200, 200, 200);
-    border-radius: 10dp;
+    border-radius: 10px;
 }
 
 /* Ползунок */
 #games scrollbarvertical sliderbar {
-    margin-left: 2dp;
-    width: 10dp;
-    min-height: 24dp;
+    margin-left: 2px;
+    width: 10px;
+    min-height: 24px;
     /* чтобы не становился слишком маленьким */
     background-color: rgb(120, 120, 120);
-    border-radius: 10dp;
+    border-radius: 10px;
 }

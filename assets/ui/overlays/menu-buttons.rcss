@@ -1,19 +1,19 @@
 .menu-btn {
     width: 100%;
-    height: 46dp;
+    height: 46px;
 
-    margin: 8dp 0dp;
-    border-radius: 12dp;
+    margin: 8px 0px;
+    border-radius: 12px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 18dp;
+    font-size: 18px;
     font-weight: bold;
 
     background-color: rgb(230, 235, 245);
-    border: 2dp rgba(0, 0, 0, 0.25);
+    border: 2px rgba(0, 0, 0, 0.25);
     color: black;
 }
 
