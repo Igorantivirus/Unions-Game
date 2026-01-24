@@ -26,6 +26,7 @@ private:
         }
         void ProcessEvent(Rml::Event &ev) override
         {
+            SDL_Log("Heve\n");
             Rml::Element *el = ev.GetTargetElement();
             while (el && el->GetId().empty())
                 el = el->GetParentNode();
@@ -33,6 +34,7 @@ private:
                 return;
 
             const Rml::String &id = el->GetId();
+            SDL_Log("ID: %s\n", id.c_str());
 
             if (id == ui::mainMenu::exitB)
                 scene_.actionRes_ = engine::SceneAction::exitAction();
@@ -52,6 +54,8 @@ public:
     MainMenuScene(engine::Context &context)
         : engine::OneRmlDocScene(context, ui::mainMenu::file), listener_(*this)
     {
+        SDL_Log("Listener: %p\n", &listener_);
+
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
     }

@@ -3,12 +3,20 @@
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/StringUtilities.h>
 #include <RmlUi/Core/SystemInterface.h>
+#include <SDL3/SDL_hints.h>
 #include <SDL3/SDL_log.h>
 
 static Rml::TouchList TouchEventToTouchList(SDL_Event &ev, Rml::Context *context, SDL_FingerID finger_id)
 {
     const Rml::Vector2f position = Rml::Vector2f{ev.tfinger.x, ev.tfinger.y} * Rml::Vector2f{context->GetDimensions()};
     return {Rml::Touch{static_cast<Rml::TouchId>(finger_id), position}};
+}
+
+static void TouchEventToMouse(Rml::Context* context, SDL_Event& ev, int& out_x, int& out_y)
+{
+    const Rml::Vector2f position = Rml::Vector2f{ev.tfinger.x, ev.tfinger.y} * Rml::Vector2f{context->GetDimensions()};
+    out_x = int(position.x);
+    out_y = int(position.y);
 }
 
 SystemInterface_SDL::SystemInterface_SDL()
@@ -361,18 +369,44 @@ bool RmlSDL::InputEventHandler(Rml::Context *context, SDL_Window *window, SDL_Re
     {
         const Rml::TouchList touches = TouchEventToTouchList(ev, context, GetFingerId(ev));
         result = context->ProcessTouchStart(touches, GetKeyModifierState());
+
+        // On some platforms (notably Android), touch events do not automatically generate mouse events.
+        // Many RmlUi interactions (e.g. 'click' on buttons) rely on mouse down/up. If SDL isn't already
+        // simulating touch->mouse events, emulate a left mouse press here.
+        if (!SDL_GetHintBoolean(SDL_HINT_TOUCH_MOUSE_EVENTS, false))
+        {
+            int x = 0, y = 0;
+            TouchEventToMouse(context, ev, x, y);
+            context->ProcessMouseMove(x, y, GetKeyModifierState());
+            result &= context->ProcessMouseButtonDown(0, GetKeyModifierState());
+        }
     }
     break;
     case event_finger_motion:
     {
         const Rml::TouchList touches = TouchEventToTouchList(ev, context, GetFingerId(ev));
         result = context->ProcessTouchMove(touches, GetKeyModifierState());
+
+        if (!SDL_GetHintBoolean(SDL_HINT_TOUCH_MOUSE_EVENTS, false))
+        {
+            int x = 0, y = 0;
+            TouchEventToMouse(context, ev, x, y);
+            result &= context->ProcessMouseMove(x, y, GetKeyModifierState());
+        }
     }
     break;
     case event_finger_up:
     {
         const Rml::TouchList touches = TouchEventToTouchList(ev, context, GetFingerId(ev));
         result = context->ProcessTouchEnd(touches, GetKeyModifierState());
+
+        if (!SDL_GetHintBoolean(SDL_HINT_TOUCH_MOUSE_EVENTS, false))
+        {
+            int x = 0, y = 0;
+            TouchEventToMouse(context, ev, x, y);
+            context->ProcessMouseMove(x, y, GetKeyModifierState());
+            result &= context->ProcessMouseButtonUp(0, GetKeyModifierState());
+        }
     }
     break;
 

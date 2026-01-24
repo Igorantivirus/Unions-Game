@@ -1,4 +1,5 @@
 #include <SDL3/SDL_main.h>
+#include <SDL3/SDL_hints.h>
 
 #include <App/HardStrings.hpp>
 #include <App/Scenes/IDs.hpp>
@@ -14,6 +15,11 @@ static app::AppState appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    // Make touch behave like mouse for the whole app (RmlUi + gameplay input).
+    // This is important on Android where many devices primarily emit finger events.
+    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
+    SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
+
     core::PathManager::init();
 
     appState.setWorkStatisticFile(core::PathManager::workFolder() / names::statisticFile);
