@@ -14,6 +14,21 @@ Lightweight cross-platform time-killer game.
 
 Merge identical objects to obtain a new, higher-level object.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/mainmenu.jpg" width="240" /><br/><sub>Main menu</sub></td>
+    <td align="center"><img src="screenshots/settings.jpg" width="240" /><br/><sub>Settings</sub></td>
+    <td align="center"><img src="screenshots/pause.jpg" width="240" /><br/><sub>Pause</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/moneys.jpg" width="240" /><br/><sub>Coins level</sub></td>
+    <td align="center"><img src="screenshots/gameover.jpg" width="240" /><br/><sub>Game over</sub></td>
+    <td></td>
+  </tr>
+</table>
+
 # Available platforms:
 
 1. Windows (`UnoinsWin64.zip` asset in Releases)

@@ -14,6 +14,21 @@
 
 Объединяйте одинаковые объекты для получения объектов нового уровня.
 
+## Скриншоты
+
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/mainmenu.jpg" width="240" /><br/><sub>Главное меню</sub></td>
+    <td align="center"><img src="screenshots/settings.jpg" width="240" /><br/><sub>Настройки</sub></td>
+    <td align="center"><img src="screenshots/pause.jpg" width="240" /><br/><sub>Пауза</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/moneys.jpg" width="240" /><br/><sub>Уровень с монетами</sub></td>
+    <td align="center"><img src="screenshots/gameover.jpg" width="240" /><br/><sub>Конец игры</sub></td>
+    <td></td>
+  </tr>
+</table>
+
 # Доступные платформы:
 
 1. Windows (`UnoinsWin64.zip` файл в релизах)
