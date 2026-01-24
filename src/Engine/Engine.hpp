@@ -52,7 +52,13 @@ public:
         if (!window_.loadIconFromFile(setts.icoFile.string()))
             SDL_Log("Error of open icon");
         if (setts.setLogicalPresentation)
+        {
             window_.setLogicalPresentation(setts.windowSize, setts.mode);
+             auto view = window_.getView();
+             auto logicalSize = window_.getLogicSize();
+             view.setCenterPosition({logicalSize.x / 2.f, logicalSize.y / 2.f});
+             window_.setView(view);
+        }
         mode_ = setts.mode;
         autoOrientationEnabled_ = setts.autoOrientationEnabled;
 
