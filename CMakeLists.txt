@@ -117,17 +117,17 @@ endif()
 
 #--------------------------OPTIMIATION--------------------------#
 
-#if(ANDROID AND (CMAKE_BUILD_TYPE MATCHES "Release|MinSizeRel"))
-#  target_compile_options(${PROJECT_NAME} PRIVATE
-#          -O3
-#          -ffunction-sections -fdata-sections
-#          -fomit-frame-pointer
-#  )
-#  target_link_options(${PROJECT_NAME} PRIVATE
-#          -Wl,--gc-sections
-#          -Wl,--as-needed
-#  )
-#endif()
+if(ANDROID AND (CMAKE_BUILD_TYPE MATCHES "Release|MinSizeRel"))
+  target_compile_options(${PROJECT_NAME} PRIVATE
+          -O3
+          -ffunction-sections -fdata-sections
+          -fomit-frame-pointer
+  )
+  target_link_options(${PROJECT_NAME} PRIVATE
+          -Wl,--gc-sections
+          -Wl,--as-needed
+  )
+endif()
 
 if(NOT USE_CONSOLE)
   if(MSVC)
