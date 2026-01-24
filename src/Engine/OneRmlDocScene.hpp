@@ -43,6 +43,15 @@ public:
             doc_->Show();
     }
 
+    SceneAction update(const float dt) override
+    {
+        if (actionRes_.type == SceneActionType::None)
+            return actionRes_;
+        SceneAction res = actionRes_;
+        actionRes_ = SceneAction::noneAction();
+        return res;
+    }
+
 protected:
     Rml::ElementDocument *loadDocumentOrThrow()
     {
@@ -104,66 +113,4 @@ private:
     Rml::ElementDocument *doc_ = nullptr;
     std::vector<ListenerBinding> listeners_;
 };
-
 } // namespace engine
-
-// #include <Engine/AdvancedContext.hpp>
-// #include <Engine/Scene.hpp>
-// #include <stdexcept>
-
-// namespace engine
-// {
-
-// template <typename HeirScene>
-// class OneRmlDocScene : public Scene
-// {
-// public:
-//     // inline static const std::string menuID = "main_menu";
-
-// public:
-//     OneRmlDocScene(Context &context, const char *htmlRmlPath, Rml::EventListener *listenerPtr) : context_(context), listenerPtr_(listenerPtr)
-//     {
-//         static_cast<HeirScene*>(this)->bindData();
-//         // bindData();
-//         doc_ = context_.loadIfNoDocument(htmlRmlPath, HeirScene::menuID);
-//         if (!doc_)
-//             throw std::logic_error("The document cannot be empty.");
-
-//     }
-//     virtual ~OneRmlDocScene()
-//     {
-//         doc_->RemoveEventListener(Rml::EventId::Click, listenerPtr_, true);
-//         doc_->Hide();
-//         listenerPtr_ = nullptr;
-
-//         context_.closeDocument(HeirScene::menuID);
-//     }
-
-//     void hide() override
-//     {
-//         doc_->Hide();
-//     }
-//     void show() override
-//     {
-//         doc_->Show();
-//     }
-
-// protected:
-//     Context &context_;
-//     Rml::ElementDocument *doc_ = nullptr;
-
-// protected:
-
-//     void bindListener()
-//     {
-//         doc_->AddEventListener(Rml::EventId::Click, listenerPtr_, true);
-//     }
-
-//     void bindData() {}
-
-// private:
-//     Rml::EventListener *listenerPtr_;
-
-// };
-
-// } // namespace engineЧ

@@ -22,7 +22,7 @@ public:
     virtual ~Scene() = default;
 
     virtual void updateEvent(const SDL_Event &event) = 0;
-    virtual SceneAction &update(const float dt)
+    virtual SceneAction update(const float dt)
     {
         return actionRes_;
     }
