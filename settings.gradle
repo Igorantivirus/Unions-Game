@@ -16,12 +16,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
-    versionCatalogs {
-        create("libs") {
-            version("agp", "8.9.1")
-            plugin("android-application", "com.android.application").versionRef("agp")
-        }
-    }
 }
 
 rootProject.name = "Android-SDL3-Example"
