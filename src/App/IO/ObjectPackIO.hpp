@@ -148,10 +148,13 @@ inline bool readObjectPack(resources::ObjectPack &pack, core::managers::TextureM
         const pugi::xml_node meta = objectNode.child("meta");
         const pugi::xml_node filler = objectNode.child("filler");
         const pugi::xml_node form = objectNode.child("form");
+        const pugi::xml_node sound = objectNode.child("sound");
 
         def.id = objectNode.attribute("id").as_uint();
         def.level = meta.attribute("level").as_uint();
         def.points = meta.attribute("points").as_int(static_cast<int>(def.level));
+        if(sound)
+            def.soundFile = sound.attribute("file").as_string();
 
         if (!parseFiller(filler, def.filler) || !parseForm(form, def.form))
         {

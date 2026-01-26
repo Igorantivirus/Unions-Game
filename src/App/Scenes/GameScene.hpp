@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core/Audio/AudioDevice.hpp"
+#include "Core/Types.hpp"
+#include "Resources/Types.hpp"
 #include <memory>
 
 #include <SDL3/SDL_events.h>
@@ -296,6 +298,16 @@ private: // Физический мир
         return objects_.size();
     }
 
+    void playSoundByI(const IDType id)
+    {
+        const resources::ObjectDef* defPtr = objectFactory_.getDefById(id);
+        if(!defPtr)
+            return;
+        const sdl3::audio::Audio* audio = appState_.audios().get(defPtr->soundFile);
+        if(audio)
+            audio_.playSound(*audio, false);
+    }
+
     void updateCollision(const SDL_Event &event)
     {
         std::size_t obj1Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data1)));
@@ -312,6 +324,7 @@ private: // Физический мир
         const auto mergedIdOpt = objectFactory_.getMergeResultId(level1, level2);
         if (!mergedIdOpt)
             return;
+        playSoundByI(mergedIdOpt.value());
 
         sdl3::Vector2f pos = (obj1.getShape().getPosition() + obj2.getShape().getPosition()) / 2.f;
 

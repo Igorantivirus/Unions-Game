@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Types.hpp"
 #include <optional>
 #include <stdexcept>
 #include <string>
