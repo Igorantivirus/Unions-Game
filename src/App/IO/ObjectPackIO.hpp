@@ -130,7 +130,7 @@ std::string readSound(SounReadSettings &&setts, core::managers::AudioManager &au
     if (setts.fileName.empty())
         return std::string();
     const std::string audioPathKey = setts.packName + '/' + setts.fileName;
-    const std::filesystem::path audioFile = setts.folderPath / setts.fileName;
+    const std::filesystem::path audioFile = (setts.folderPath / setts.fileName).lexically_normal();
 
     if (!audios.has(audioPathKey) && loadedAudioKeys.insert(audioPathKey).second && !audios.load(audioPathKey, audioFile))
         return std::string();
