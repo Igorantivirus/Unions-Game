@@ -83,7 +83,7 @@ public:
         audio_(audio),
         listener_(*this),
         appState_(appState),
-        packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures()),
+        packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures(), appState.audios()),
         objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))

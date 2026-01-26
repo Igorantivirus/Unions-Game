@@ -6,6 +6,7 @@
 
 #include <App/IO/ObjectPackIO.hpp>
 
+#include "Core/Managers/AudioManager.hpp"
 #include "ObjectPack.hpp"
 #include <Core/Managers/TextureManager.hpp>
 
@@ -15,8 +16,8 @@ namespace resources
 class PackageContainer
 {
 public:
-    PackageContainer(std::filesystem::path objectsRoot, core::managers::TextureManager &textures)
-        : objectsRoot_(std::move(objectsRoot)), textures_(textures)
+    PackageContainer(std::filesystem::path objectsRoot, core::managers::TextureManager &textures, core::managers::AudioManager& audios)
+        : objectsRoot_(std::move(objectsRoot)), textures_(textures), audios_(audios)
     {
     }
 
@@ -37,7 +38,7 @@ public:
     bool loadByOtherPath(const std::filesystem::path &folderAbs, const std::string packName)
     {
         auto &pack = packs_[packName];
-        if (!IO::readObjectPack(pack, textures_, packName, folderAbs))
+        if (!IO::readObjectPack(pack, textures_, audios_, packName, folderAbs))
         {
             packs_.erase(packName);
             return false;
@@ -74,6 +75,7 @@ private:
     std::filesystem::path objectsRoot_;
 
     core::managers::TextureManager &textures_;
+    core::managers::AudioManager &audios_;
     std::unordered_map<std::string, ObjectPack> packs_;
 };
 

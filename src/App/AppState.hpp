@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Managers/AudioManager.hpp"
 #include "IO/FullFileWorker.hpp"
 #include <App/IO/GameStatisticIO.hpp>
 #include <Core/Managers/TextureManager.hpp>
@@ -68,12 +69,23 @@ public:
         return textures_;
     }
 
+    core::managers::AudioManager &audios()
+    {
+        return audios_;
+    }
+    const core::managers::AudioManager &audios() const
+    {
+        return audios_;
+    }
+
 private:
     std::filesystem::path workStatFile_;
     std::filesystem::path assetsStatFile_;
     statistic::AllGameStatistic stat_{};
     std::string currentPackageName_;
+
     core::managers::TextureManager textures_;
+    core::managers::AudioManager audios_;
 };
 
 using AppStatePtr = std::shared_ptr<AppState>;

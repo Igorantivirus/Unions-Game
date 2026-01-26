@@ -114,9 +114,9 @@ inline bool parseMusic(const pugi::xml_node &music, resources::PackageMusic &mus
     return true;
 }
 
-inline bool readObjectPack(resources::ObjectPack &pack, core::managers::TextureManager &textures, const std::string &packName, const std::filesystem::path &folderPath)
+inline bool readObjectPack(resources::ObjectPack &pack, core::managers::TextureManager &textures, core::managers::AudioManager &audios, const std::string &packName, const std::filesystem::path &folderPath)
 {
-    pack.unload(textures);
+    pack.unload(textures, audios);
 
     pack.setPackageName(packName);
 
@@ -139,6 +139,7 @@ inline bool readObjectPack(resources::ObjectPack &pack, core::managers::TextureM
     pack.setMusic(std::move(mus));
 
     std::unordered_set<std::string> loadedTextureKeys;
+    std::unordered_set<std::string> loadedAudioKeys;
 
     for (const pugi::xml_node objectNode : objects.children("object"))
     {
@@ -169,6 +170,19 @@ inline bool readObjectPack(resources::ObjectPack &pack, core::managers::TextureM
                 return false;
 
             pack.addTextureKey(texturePathKey);
+        }
+        if (!def.soundFile.empty())
+        {
+            const std::string fileName = def.soundFile;
+            const std::string audioPathKey = packName + '/' + fileName;
+            const std::filesystem::path audioFile = folderPath / fileName;
+
+            def.soundFile = audioPathKey;
+
+            if (!audios.has(audioPathKey) && loadedAudioKeys.insert(audioPathKey).second && !audios.load(audioPathKey, audioFile))
+                return false;
+
+            pack.addAudioKey(audioPathKey);
         }
         pack.addObject(std::move(def));
     }

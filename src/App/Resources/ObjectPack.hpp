@@ -10,6 +10,7 @@
 #include <pugixml/pugixml.hpp>
 
 #include <Core/Managers/TextureManager.hpp>
+#include "Core/Managers/AudioManager.hpp"
 #include "Types.hpp"
 
 namespace resources
@@ -19,10 +20,12 @@ namespace resources
 class ObjectPack
 {
 public:
-    void unload(core::managers::TextureManager &textures)
+    void unload(core::managers::TextureManager &textures, core::managers::AudioManager& audios)
     {
         for (const auto &key : textureKeys_)
             textures.unload(key);
+        for (const auto &key : audioKeys_)
+            audios.unload(key);
         textureKeys_.clear();
         objects_.clear();
         packName_.clear();
@@ -76,6 +79,10 @@ public:
     {
         textureKeys_.insert(key);
     }
+    void addAudioKey(const std::string &key)
+    {
+        audioKeys_.insert(key);
+    }
 
     void addObject(ObjectDef def)
     {
@@ -97,5 +104,6 @@ private:
     PackageSettings settings_;
     PackageMusic music_;
     std::unordered_set<std::string> textureKeys_;
+    std::unordered_set<std::string> audioKeys_;
 };
 } // namespace resources
