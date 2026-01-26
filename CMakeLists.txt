@@ -96,11 +96,12 @@ if(ANDROID)
   target_link_libraries(${PROJECT_NAME} PRIVATE
     android
     log
-    freetype
-    RmlUi::RmlUi
     SDL3::SDL3
     SDL3_image::SDL3_image
+    SDL3_mixer::SDL3_mixer
     SDLWrapper::SDLWrapper
+    freetype
+    RmlUi::RmlUi
     box2d
   )
 
@@ -110,9 +111,9 @@ else()
     SDL3::SDL3
     SDL3_image::SDL3_image
     SDL3_mixer::SDL3_mixer
+    SDLWrapper::SDLWrapper
     Freetype::Freetype
     RmlUi::RmlUi
-    SDLWrapper::SDLWrapper
     box2d
   )
 
