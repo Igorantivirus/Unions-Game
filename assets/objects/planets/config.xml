@@ -3,13 +3,13 @@
     <music>
         <background file="" />
         <win file="" />
-        <lose file="" />
+        <lose file="sounds/game-over.mp3" />
     </music>
 
     <settings>
-        <objectRange startLevel="5" endLevel="5" />
+        <objectRange startLevel="1" endLevel="2" />
         <timeStep seconds="0.5" />
-        <death count="10" />
+        <death count="1" />
     </settings>
 
     <objects>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Types.hpp"
+#include "Resources/ObjectPack.hpp"
 #include "Resources/Types.hpp"
 #include <memory>
 
@@ -260,6 +261,12 @@ private: // Сцена
         {
             gameOverOverlay->SetClass(ui::gameMenu::openClass, true);
             setPause(true, false);
+
+            const resources::ObjectPack *pack = packages_.getPack(appState_.getCurrentPackageName());
+            const resources::PackageMusic music = pack->getMusic();
+            const sdl3::audio::Audio *audio = appState_.audios().get(music.loseFile);
+            if (audio)
+                audio_.playSound(*audio, false);
         }
     }
 

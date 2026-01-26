@@ -81,7 +81,8 @@ public:
     }
     void addAudioKey(const std::string &key)
     {
-        audioKeys_.insert(key);
+        if(!key.empty())
+            audioKeys_.insert(key);
     }
 
     void addObject(ObjectDef def)
