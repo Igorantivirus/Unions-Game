@@ -1,5 +1,11 @@
 <root>
 
+    <music>
+        <background file="" />
+        <win file="" />
+        <lose file="" />
+    </music>
+
     <settings>
         <objectRange startLevel="1" endLevel="2" />
         <timeStep seconds="0.5" />
@@ -11,6 +17,7 @@
             <meta level="1" points="1" />
             <form type="circle" radius="20" />
             <filler type="texture" texture="mercury.png" />
+            <sound file="" />
         </object>
         <object id="2">
             <meta level="2" points="5" />
