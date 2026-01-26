@@ -78,7 +78,7 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, audio::AudioDevice& audio, const sdl3::Vector2i logicSize, app::AppState &appState) :
+    GameScene(engine::Context &context, sdl3::audio::AudioDevice& audio, const sdl3::Vector2i logicSize, app::AppState &appState) :
         engine::OneRmlDocScene(context, ui::gameMenu::file),
         audio_(audio),
         listener_(*this),
@@ -165,7 +165,7 @@ public:
 
 private: // Сцена
     app::AppState &appState_;
-    audio::AudioDevice& audio_;
+    sdl3::audio::AudioDevice& audio_;
     bool paused_ = false;
     GameSceneListener listener_;
     Rml::Element *gameOverOverlay = nullptr;

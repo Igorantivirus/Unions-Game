@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <Core/Audio/AudioDevice.hpp>
+#include <SDLWrapper/Audio/AudioDevice.hpp>
 
 namespace core::managers
 {
@@ -16,22 +16,11 @@ class AudioManager
 {
 public:
     AudioManager() = default;
-    AudioManager(audio::AudioDevice &device) : devicePtr_(&device)
-    {
-    }
-
-    void setDevice(audio::AudioDevice &device)
-    {
-        devicePtr_ = &device;
-    }
 
     bool load(const std::string &key, const std::filesystem::path &filePath)
     {
         bool res = false;
-        if (devicePtr_)
-            res = audios_[key].loadFromFile(filePath, devicePtr_->getSDMixer().lock());
-        else
-            res = audios_[key].loadFromFile(filePath);
+        res = audios_[key].loadFromFile(filePath.string().c_str());
 
         if (!res)
         {
@@ -41,7 +30,7 @@ public:
         return true;
     }
 
-    const audio::Audio *get(const std::string &key) const
+    const sdl3::audio::Audio *get(const std::string &key) const
     {
         auto it = audios_.find(key);
         return it == audios_.end() ? nullptr : &it->second;
@@ -63,8 +52,7 @@ public:
     }
 
 private:
-    std::unordered_map<std::string, audio::Audio> audios_;
-    audio::AudioDevice *devicePtr_ = nullptr;
+    std::unordered_map<std::string, sdl3::audio::Audio> audios_;
 };
 
 } // namespace core::managers

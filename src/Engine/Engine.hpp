@@ -2,12 +2,14 @@
 
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_timer.h>
+#include <SDLWrapper/Audio/AudioDevice.hpp>
 #include <SDLWrapper/Math/Colors.hpp>
 #include <SDLWrapper/Names.hpp>
 #include <SDLWrapper/Renders/VideoMode.hpp>
 #include <SDLWrapper/Renders/View.hpp>
 #include <string_view>
 #include <vector>
+
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
@@ -16,7 +18,6 @@
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include "AdvancedContext.hpp"
-#include "Core/Audio/AudioDevice.hpp"
 #include "Core/Types.hpp"
 #include "Engine/EngineSettings.hpp"
 #include "EngineSettings.hpp"
@@ -150,8 +151,8 @@ private:
 
 private:
     sdl3::RenderWindow window_;
+    sdl3::audio::AudioDevice audio_;
     Context context_;
-    audio::AudioDevice audio_;
     sdl3::ClockNS cl_;
 
     WindowSizeInfo winSizeInfo_;
