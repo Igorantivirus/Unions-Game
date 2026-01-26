@@ -49,6 +49,8 @@ public:
 
         if (!window_.create(std::move(setts.appName), mode))
             return SDL_APP_FAILURE;
+        if(!audio_.initTracks(4))
+            return SDL_APP_FAILURE;
         if (!context_.init(window_.getNativeSDLWindow(), window_.getNativeSDLRenderer(), setts.fontFile))
             return SDL_APP_FAILURE;
         if (!window_.loadIconFromFile(setts.icoFile.string()))

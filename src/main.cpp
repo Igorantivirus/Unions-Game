@@ -1,20 +1,27 @@
-#include <SDL3/SDL_main.h>
 #include <SDL3/SDL_hints.h>
+#include <SDL3/SDL_main.h>
 
-#include <App/HardStrings.hpp>
-#include <App/Scenes/IDs.hpp>
-#include <Core/Managers/PathMeneger.hpp>
+
 #include <App/AppScenesFactory.hpp>
 #include <App/AppState.hpp>
 #include <App/HardStrings.hpp>
+#include <App/Scenes/IDs.hpp>
 #include <App/Scenes/MainMenuScene.hpp>
+#include <Core/Managers/PathMeneger.hpp>
 #include <Engine/Engine.hpp>
+
 
 static engine::Engine game;
 static app::AppState appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    if (!MIX_Init())
+    {
+        SDL_Log("Couldn't initialize SDL_mixer: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
     SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
     SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
 
