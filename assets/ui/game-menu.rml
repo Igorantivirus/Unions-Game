@@ -7,6 +7,7 @@
 
     <link type="text/template" href="overlays/gameover-overlay.rml" />
     <link type="text/template" href="overlays/pause-overlay.rml" />
+    <link type="text/template" href="overlays/win-overlay.rml" />
 
     <link type="text/rcss" href="overlays/overlay.rcss" />
     <link type="text/rcss" href="overlays/menu-buttons.rcss" />
@@ -37,6 +38,7 @@
 
     <template src="pause-overlay"></template>
     <template src="gameover-overlay"></template>
+    <template src="win-overlay"></template>
 
   </body>
 </rml>

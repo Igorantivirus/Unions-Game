@@ -1,0 +1,27 @@
+<template name="win-overlay" content="slot">
+    <!--
+    It is necessary to connect:
+
+    "overlays/menu-buttons.rcss"
+    "overlays/overlay.rcss"
+
+    This is done so that styles are not duplicated when connecting two overlays.
+    -->
+    <head></head>
+
+    <body>
+        <div id="win-overlay" class="overlay">
+            <div class="panel">
+                <h2 class="overlay-title">Вы победили!</h2>
+                <p class="overlay-subtitle">Продолжить?</p>
+
+                <div class="overlay-divider"></div>
+
+                <button id="resume-win-b" class="menu-btn resume primary"><span>Продолжить играть</span></button>
+                <button id="restart-win-b" class="menu-btn restart"><span>Начать заново</span></button>
+                <button id="exit-win-b" class="menu-btn exit danger"><span>Выйти в меню</span></button>
+            </div>
+        </div>
+    </body>
+
+</template>
