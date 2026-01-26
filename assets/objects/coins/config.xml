@@ -2,8 +2,8 @@
 
     <music>
         <background file="" />
-        <win file="" />
-        <lose file="" />
+        <win file="../sounds/final-win.mp3" />
+        <lose file="../sounds/game-over.mp3" />
     </music>
 
     <settings>
@@ -17,52 +17,58 @@
         <object id="1">
             <meta level="1" points="1" />
             <form type="circle" radius="20" />
-            <filler type="texture" texture="kop1.png" />
+            <filler type="texture" texture="images/kop1.png" />
         </object>
         <object id="2">
             <meta level="2" points="5" />
             <form type="circle" radius="40" />
-            <filler type="texture" texture="kop5.png" />
+            <filler type="texture" texture="images/kop5.png" />
         </object>
         <object id="3">
             <meta level="3" points="10" />
             <form type="circle" radius="60" />
-            <filler type="texture" texture="kop10.png" />
+            <filler type="texture" texture="images/kop10.png" />
         </object>
         <object id="4">
             <meta level="4" points="50" />
             <form type="circle" radius="80" />
-            <filler type="texture" texture="kop50.png" />
+            <filler type="texture" texture="images/kop50.png" />
         </object>
         <object id="5">
             <meta level="5" points="10" />
             <form type="circle" radius="100" />
-            <filler type="texture" texture="rub1.png" />
+            <filler type="texture" texture="images/rub1.png" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="6">
             <meta level="6" points="200" />
             <form type="circle" radius="120" />
-            <filler type="texture" texture="rub2.png" />
+            <filler type="texture" texture="images/rub2.png" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="7">
             <meta level="7" points="500" />
             <form type="circle" radius="140" />
-            <filler type="texture" texture="rub5.png" />
+            <filler type="texture" texture="images/rub5.png" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="8">
             <meta level="8" points="1000" />
             <form type="circle" radius="160" />
-            <filler type="texture" texture="rub10.png" />
+            <filler type="texture" texture="images/rub10.png" />
+            <sound file="../sounds/biger-win.mp3" />
         </object>
         <object id="9">
             <meta level="9" points="2500" />
             <form type="circle" radius="180" />
-            <filler type="texture" texture="rub25.png" />
+            <filler type="texture" texture="images/rub25.png" />
+            <sound file="../sounds/biger-win.mp3" />
         </object>
         <object id="10">
             <meta level="10" points="5000" />
             <form type="circle" radius="200" />
-            <filler type="texture" texture="rub50.png" />
+            <filler type="texture" texture="images/rub50.png" />
+            <sound file="../sounds/great-win.mp3" />
         </object>
 
     </objects>

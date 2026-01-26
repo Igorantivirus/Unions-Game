@@ -2,8 +2,8 @@
 
     <music>
         <background file="" />
-        <win file="sounds/final-win.mp3" />
-        <lose file="sounds/game-over.mp3" />
+        <win file="../sounds/final-win.mp3" />
+        <lose file="../sounds/game-over.mp3" />
     </music>
 
     <settings>
@@ -37,13 +37,13 @@
             <meta level="5" points="10" />
             <form type="circle" radius="100" />
             <filler type="texture" texture="images/uranus.png" />
-            <sound file="sounds/smal-win.mp3" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="6">
             <meta level="6" points="200" />
             <form type="circle" radius="120" />
             <filler type="texture" texture="images/neptune.png" />
-            <sound file="sounds/smal-win.mp3" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="7">
             <meta level="7" points="500" />
@@ -102,19 +102,19 @@
                 <vertex x="-223" y="-22" />
             </form>
             <filler type="texture" texture="images/saturn.png" />
-            <sound file="sounds/biger-win.mp3" />
+            <sound file="../sounds/biger-win.mp3" />
         </object>
         <object id="8">
             <meta level="8" points="1000" />
             <form type="circle" radius="160" />
             <filler type="texture" texture="images/upiter.png" />
-            <sound file="sounds/biger-win.mp3" />
+            <sound file="../sounds/biger-win.mp3" />
         </object>
         <object id="9">
             <meta level="9" points="2500" />
             <form type="circle" radius="180" />
             <filler type="texture" texture="images/sun.png" />
-            <sound file="sounds/great-win.mp3" />
+            <sound file="../sounds/great-win.mp3" />
         </object>
     </objects>
 </root>

@@ -1,5 +1,11 @@
 <root>
 
+    <music>
+        <background file="" />
+        <win file="../sounds/final-win.mp3" />
+        <lose file="../sounds/game-over.mp3" />
+    </music>
+
     <settings>
         <objectRange startLevel="1" endLevel="2" />
         <timeStep seconds="0.5" />
@@ -44,12 +50,12 @@
                 <vertex x="-27" y="-10" />
                 <vertex x="-26" y="-4" />
             </form>
-            <filler type="texture" texture="berry.png" />
+            <filler type="texture" texture="images/berry.png" />
         </object>
         <object id="2">
             <meta level="2" points="5" />
             <form type="ellipse" rx="42.6" ry="52.5" />
-            <filler type="texture" texture="plam.png" />
+            <filler type="texture" texture="images/plam.png" />
         </object>
         <object id="3">
             <meta level="3" points="10" />
@@ -79,7 +85,7 @@
                 <vertex x="-40" y="-35" />
                 <vertex x="-43" y="-21" />
             </form>
-            <filler type="texture" texture="avakado.png" />
+            <filler type="texture" texture="images/avakado.png" />
         </object>
         <object id="4">
             <meta level="4" points="25" />
@@ -111,7 +117,8 @@
                 <vertex x="-52" y="-6" />
                 <vertex x="-54" y="10" />
             </form>
-            <filler type="texture" texture="mango.png" />
+            <filler type="texture" texture="images/mango.png" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="5">
             <meta level="5" points="50" />
@@ -143,12 +150,14 @@
                 <vertex x="-148" y="-81" />
                 <vertex x="-140" y="-92" />
             </form>
-            <filler type="texture" texture="banana.png" />
+            <filler type="texture" texture="images/banana.png" />
+            <sound file="../sounds/smal-win.mp3" />
         </object>
         <object id="6">
             <meta level="6" points="100" />
             <form type="circle" radius="200" />
-            <filler type="texture" texture="orange.png" />
+            <filler type="texture" texture="images/orange.png" />
+            <sound file="../sounds/biger-win.mp3" />
         </object>
         <object id="7">
             <meta level="7" points="250" />
@@ -186,7 +195,8 @@
                 <vertex x="-46" y="-42" />
                 <vertex x="-53" y="-26" />
             </form>
-            <filler type="texture" texture="dragon.png" />
+            <filler type="texture" texture="images/dragon.png" />
+            <sound file="../sounds/biger-win.mp3" />
         </object>
         <object id="8">
             <meta level="8" points="500" />
@@ -232,7 +242,8 @@
                 <vertex x="-31" y="-24" />
                 <vertex x="-36" y="-17" />
             </form>
-            <filler type="texture" texture="pinaple.png" />
+            <filler type="texture" texture="images/pinaple.png" />
+            <sound file="../sounds/great-win.mp3" />
         </object>
     </objects>
 
