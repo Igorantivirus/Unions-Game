@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Audio/AudioDevice.hpp"
 #include <memory>
 
 #include <SDL3/SDL_events.h>
@@ -77,12 +78,13 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, const sdl3::Vector2i logicSize, app::AppState &appState)
-        : engine::OneRmlDocScene(context, ui::gameMenu::file),
-          listener_(*this),
-          appState_(appState),
-          packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures()),
-          objectFactory_(packages_)
+    GameScene(engine::Context &context, audio::AudioDevice& audio, const sdl3::Vector2i logicSize, app::AppState &appState) :
+        engine::OneRmlDocScene(context, ui::gameMenu::file),
+        audio_(audio),
+        listener_(*this),
+        appState_(appState),
+        packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures()),
+        objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: %s", appState.getCurrentPackageName().c_str());
@@ -163,6 +165,7 @@ public:
 
 private: // Сцена
     app::AppState &appState_;
+    audio::AudioDevice& audio_;
     bool paused_ = false;
     GameSceneListener listener_;
     Rml::Element *gameOverOverlay = nullptr;

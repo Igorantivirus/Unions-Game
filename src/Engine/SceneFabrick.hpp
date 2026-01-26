@@ -3,6 +3,7 @@
 #include <SDLWrapper/Renders/RenderWindow.hpp>
 #include <memory>
 
+#include "Core/Audio/AudioDevice.hpp"
 #include "Engine/AdvancedContext.hpp"
 #include "Scene.hpp"
 #include "AdvancedContext.hpp"
@@ -37,10 +38,21 @@ public:
         return *window_;
     }
 
+    void setAudioDevice(audio::AudioDevice& audio)
+    {
+        audio_ = &audio;
+    }
+
+    audio::AudioDevice& getAudioDevice() const
+    {
+        return *audio_;
+    }
+
 protected:
 
     Context* context_;
     sdl3::RenderWindow* window_;
+    audio::AudioDevice* audio_;
 
 };
 

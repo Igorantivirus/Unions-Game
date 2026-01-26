@@ -26,7 +26,7 @@ public:
         if (scenes::ids::mainMenu == id)
             return std::move(std::make_unique<scenes::MainMenuScene>(*context_));
         if (scenes::ids::gameMenu == id)
-            return std::move(std::make_unique<scenes::GameScene>(*context_, window_->getLogicSize(), *appState_));
+            return std::move(std::make_unique<scenes::GameScene>(*context_, *audio_, window_->getLogicSize(), *appState_));
         if (scenes::ids::setsMenu == id)
             return std::move(std::make_unique<scenes::SettingsMenu>(*context_, *appState_));
         return nullptr;

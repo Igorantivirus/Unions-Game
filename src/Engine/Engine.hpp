@@ -77,6 +77,7 @@ public:
         sceneFabrick_ = std::move(ptr);
         sceneFabrick_->setContext(context_);
         sceneFabrick_->setRenderWindow(window_);
+        sceneFabrick_->setAudioDevice(audio_);
     }
     void setFps(const unsigned int fps)
     {
