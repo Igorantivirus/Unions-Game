@@ -7,7 +7,7 @@
     </music>
 
     <settings>
-        <objectRange startLevel="1" endLevel="2" />
+        <objectRange startLevel="5" endLevel="5" />
         <timeStep seconds="0.5" />
         <death count="10" />
     </settings>
@@ -16,34 +16,34 @@
         <object id="1">
             <meta level="1" points="1" />
             <form type="circle" radius="20" />
-            <filler type="texture" texture="mercury.png" />
-            <sound file="small-victory.mp3" />
+            <filler type="texture" texture="images/mercury.png" />
         </object>
         <object id="2">
             <meta level="2" points="5" />
             <form type="circle" radius="40" />
-            <filler type="texture" texture="mars.png" />
-            <sound file="small-victory.mp3" />
+            <filler type="texture" texture="images/mars.png" />
         </object>
         <object id="3">
             <meta level="3" points="10" />
             <form type="circle" radius="60" />
-            <filler type="texture" texture="venus.png" />
+            <filler type="texture" texture="images/venus.png" />
         </object>
         <object id="4">
             <meta level="4" points="50" />
             <form type="circle" radius="80" />
-            <filler type="texture" texture="earth.png" />
+            <filler type="texture" texture="images/earth.png" />
         </object>
         <object id="5">
             <meta level="5" points="10" />
             <form type="circle" radius="100" />
-            <filler type="texture" texture="uranus.png" />
+            <filler type="texture" texture="images/uranus.png" />
+            <sound file="sounds/smal-win.mp3" />
         </object>
         <object id="6">
             <meta level="6" points="200" />
             <form type="circle" radius="120" />
-            <filler type="texture" texture="neptune.png" />
+            <filler type="texture" texture="images/neptune.png" />
+            <sound file="sounds/smal-win.mp3" />
         </object>
         <object id="7">
             <meta level="7" points="500" />
@@ -101,22 +101,26 @@
                 <vertex x="-213" y="-63" />
                 <vertex x="-223" y="-22" />
             </form>
-            <filler type="texture" texture="saturn.png" />
+            <filler type="texture" texture="images/saturn.png" />
+            <sound file="sounds/biger-win.mp3" />
         </object>
         <object id="8">
             <meta level="8" points="1000" />
             <form type="circle" radius="160" />
-            <filler type="texture" texture="upiter.png" />
+            <filler type="texture" texture="images/upiter.png" />
+            <sound file="sounds/biger-win.mp3" />
         </object>
         <object id="9">
             <meta level="9" points="2500" />
             <form type="circle" radius="180" />
-            <filler type="texture" texture="sun.png" />
+            <filler type="texture" texture="images/sun.png" />
+            <sound file="sounds/great-win.mp3" />
         </object>
         <object id="10">
             <meta level="10" points="5000" />
             <form type="circle" radius="220" />
-            <filler type="texture" texture="black.png" />
+            <filler type="texture" texture="images/black.png" />
+            <sound file="sounds/great-win.mp3" />
         </object>
     </objects>
 </root>
