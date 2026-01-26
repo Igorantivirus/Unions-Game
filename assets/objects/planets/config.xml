@@ -2,14 +2,14 @@
 
     <music>
         <background file="" />
-        <win file="" />
+        <win file="sounds/final-win.mp3" />
         <lose file="sounds/game-over.mp3" />
     </music>
 
     <settings>
         <objectRange startLevel="1" endLevel="2" />
         <timeStep seconds="0.5" />
-        <death count="1" />
+        <death count="10" />
     </settings>
 
     <objects>
@@ -114,12 +114,6 @@
             <meta level="9" points="2500" />
             <form type="circle" radius="180" />
             <filler type="texture" texture="images/sun.png" />
-            <sound file="sounds/great-win.mp3" />
-        </object>
-        <object id="10">
-            <meta level="10" points="5000" />
-            <form type="circle" radius="220" />
-            <filler type="texture" texture="images/black.png" />
             <sound file="sounds/great-win.mp3" />
         </object>
     </objects>
