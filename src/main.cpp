@@ -3,7 +3,7 @@
 
 #include <App/HardStrings.hpp>
 #include <App/Scenes/IDs.hpp>
-#include <Core/PathMeneger.hpp>
+#include <Core/Managers/PathMeneger.hpp>
 #include <App/AppScenesFactory.hpp>
 #include <App/AppState.hpp>
 #include <App/HardStrings.hpp>
@@ -18,10 +18,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
     SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "1");
 
-    core::PathManager::init();
+    core::managers::PathManager::init();
 
-    appState.setWorkStatisticFile(core::PathManager::workFolder() / names::statisticFile);
-    appState.setAssetsStatisticFile(core::PathManager::assets() / names::statisticFile);
+    appState.setWorkStatisticFile(core::managers::PathManager::workFolder() / names::statisticFile);
+    appState.setAssetsStatisticFile(core::managers::PathManager::assets() / names::statisticFile);
 
     if (!appState.load())
     {
@@ -34,8 +34,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     engine::EngineSettings settings;
 
     settings.appName = names::windowName;
-    settings.icoFile = core::PathManager::assets() / names::mainIco;
-    settings.fontFile = core::PathManager::assets() / assets::fontPath;
+    settings.icoFile = core::managers::PathManager::assets() / names::mainIco;
+    settings.fontFile = core::managers::PathManager::assets() / assets::fontPath;
     settings.windowSize = {576, 1024};
     settings.autoOrientationEnabled = false;
     settings.fps = 60;

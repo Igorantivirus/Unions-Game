@@ -9,7 +9,7 @@
 
 #include <pugixml/pugixml.hpp>
 
-#include "TextureManager.hpp"
+#include <Core/Managers/TextureManager.hpp>
 #include "Types.hpp"
 
 namespace resources
@@ -19,7 +19,7 @@ namespace resources
 class ObjectPack
 {
 public:
-    void unload(TextureManager &textures)
+    void unload(core::managers::TextureManager &textures)
     {
         for (const auto &key : textureKeys_)
             textures.unload(key);

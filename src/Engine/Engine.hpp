@@ -16,6 +16,7 @@
 #include <SDLWrapper/SDLWrapper.hpp>
 
 #include "AdvancedContext.hpp"
+#include "Core/Audio/AudioDevice.hpp"
 #include "Core/Types.hpp"
 #include "Engine/EngineSettings.hpp"
 #include "EngineSettings.hpp"
@@ -54,10 +55,10 @@ public:
         if (setts.setLogicalPresentation)
         {
             window_.setLogicalPresentation(setts.windowSize, setts.mode);
-             auto view = window_.getView();
-             auto logicalSize = window_.getLogicSize();
-             view.setCenterPosition({logicalSize.x / 2.f, logicalSize.y / 2.f});
-             window_.setView(view);
+            auto view = window_.getView();
+            auto logicalSize = window_.getLogicSize();
+            view.setCenterPosition({logicalSize.x / 2.f, logicalSize.y / 2.f});
+            window_.setView(view);
         }
         mode_ = setts.mode;
         autoOrientationEnabled_ = setts.autoOrientationEnabled;
@@ -120,6 +121,7 @@ public:
         if (res != SDL_APP_CONTINUE)
             return res;
         context_.update();
+        audio_.update();
         safeDrawScene();
         fpsDelay();
         return res;
@@ -148,6 +150,7 @@ private:
 private:
     sdl3::RenderWindow window_;
     Context context_;
+    audio::AudioDevice audio_;
     sdl3::ClockNS cl_;
 
     WindowSizeInfo winSizeInfo_;
@@ -157,9 +160,9 @@ private:
 private:
     void handleWindowResize(const int windowW, const int windowH)
     {
-        if(!winSizeInfo_.handleWindowResize(windowH, windowW))
+        if (!winSizeInfo_.handleWindowResize(windowH, windowW))
             return;
-        
+
         auto view = window_.getView();
         view.setCenterPosition(winSizeInfo_.centerPos);
         window_.setLogicalPresentation(winSizeInfo_.windowLogicslSize, SDL_LOGICAL_PRESENTATION_LETTERBOX);

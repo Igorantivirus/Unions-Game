@@ -23,7 +23,7 @@
 #include <App/Physics/EntityFactory.hpp>
 #include <App/Resources/ObjectFactory.hpp>
 #include <App/Statistic/GameStatistic.hpp>
-#include <Core/PathMeneger.hpp>
+#include <Core/Managers/PathMeneger.hpp>
 #include <Core/Random.hpp>
 #include <Engine/AdvancedContext.hpp>
 #include <Engine/OneRmlDocScene.hpp>
@@ -81,7 +81,7 @@ public:
         : engine::OneRmlDocScene(context, ui::gameMenu::file),
           listener_(*this),
           appState_(appState),
-          packages_(core::PathManager::assets() / assets::packages, appState_.textures()),
+          packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures()),
           objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))

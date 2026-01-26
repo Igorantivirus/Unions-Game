@@ -114,7 +114,7 @@ inline bool parseMusic(const pugi::xml_node &music, resources::PackageMusic &mus
     return true;
 }
 
-inline bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &textures, const std::string &packName, const std::filesystem::path &folderPath)
+inline bool readObjectPack(resources::ObjectPack &pack, core::managers::TextureManager &textures, const std::string &packName, const std::filesystem::path &folderPath)
 {
     pack.unload(textures);
 

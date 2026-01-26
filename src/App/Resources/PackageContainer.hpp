@@ -7,31 +7,29 @@
 #include <App/IO/ObjectPackIO.hpp>
 
 #include "ObjectPack.hpp"
-#include "TextureManager.hpp"
+#include <Core/Managers/TextureManager.hpp>
 
 namespace resources
 {
-//Контейнер пакетов
+// Контейнер пакетов
 class PackageContainer
 {
 public:
-    PackageContainer(std::filesystem::path objectsRoot, TextureManager& textures)
+    PackageContainer(std::filesystem::path objectsRoot, core::managers::TextureManager &textures)
         : objectsRoot_(std::move(objectsRoot)), textures_(textures)
     {
     }
 
-    
-
-    TextureManager &textures()
+    core::managers::TextureManager &textures()
     {
         return textures_;
     }
-    const TextureManager &textures() const
+    const core::managers::TextureManager &textures() const
     {
         return textures_;
     }
 
-    bool loadFolder(const std::string& packName)
+    bool loadFolder(const std::string &packName)
     {
         return loadByOtherPath(objectsRoot_ / packName, packName);
     }
@@ -47,7 +45,7 @@ public:
         return true;
     }
 
-    void unloadFolder(const std::string& packName)
+    void unloadFolder(const std::string &packName)
     {
         auto it = packs_.find(packName);
         if (it == packs_.end())
@@ -75,7 +73,7 @@ public:
 private:
     std::filesystem::path objectsRoot_;
 
-    TextureManager& textures_;
+    core::managers::TextureManager &textures_;
     std::unordered_map<std::string, ObjectPack> packs_;
 };
 

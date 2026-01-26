@@ -2,7 +2,7 @@
 
 #include "IO/FullFileWorker.hpp"
 #include <App/IO/GameStatisticIO.hpp>
-#include <App/Resources/TextureManager.hpp>
+#include <Core/Managers/TextureManager.hpp>
 #include <App/Statistic/GameStatistic.hpp>
 #include <SDLWrapper/FileWorker.hpp>
 
@@ -59,11 +59,11 @@ public:
             currentPackageName_ = std::move(name);
     }
 
-    resources::TextureManager &textures()
+    core::managers::TextureManager &textures()
     {
         return textures_;
     }
-    const resources::TextureManager &textures() const
+    const core::managers::TextureManager &textures() const
     {
         return textures_;
     }
@@ -73,7 +73,7 @@ private:
     std::filesystem::path assetsStatFile_;
     statistic::AllGameStatistic stat_{};
     std::string currentPackageName_;
-    resources::TextureManager textures_;
+    core::managers::TextureManager textures_;
 };
 
 using AppStatePtr = std::shared_ptr<AppState>;

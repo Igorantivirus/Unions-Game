@@ -20,7 +20,7 @@
 #include <RmlUi/Debugger.h>
 #endif
 
-#include <Core/PathMeneger.hpp>
+#include <Core/Managers/PathMeneger.hpp>
 #include <Core/StringUtils.hpp>
 #include <Core/Time.hpp>
 #include <Core/Types.hpp>
@@ -236,7 +236,7 @@ private:
         for (std::size_t cur = strFile.find('\n', last); cur != std::string::npos; cur = strFile.find('\n', last))
         {
             
-            std::string pr = core::PathManager::inAssets(core::viewSubstr(strFile, last, cur - last));
+            std::string pr = core::managers::PathManager::inAssets(core::viewSubstr(strFile, last, cur - last));
             if (!pr.empty() && pr.back() == '\r')
                 pr.pop_back();
             last = cur + 1;
