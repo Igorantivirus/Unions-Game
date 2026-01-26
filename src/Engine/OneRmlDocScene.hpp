@@ -6,7 +6,7 @@
 #include <RmlUi/Core/ElementDocument.h>
 #include <RmlUi/Core/EventListener.h>
 
-#include <Core/PathMeneger.hpp>
+#include <Core/Managers/PathMeneger.hpp>
 
 #include "AdvancedContext.hpp"
 #include "Scene.hpp"
@@ -19,7 +19,7 @@ class OneRmlDocScene : public Scene
 {
 public:
     OneRmlDocScene(Context &context, std::string_view assetRmlFile)
-        : context_(context), docPath_(core::PathManager::inAssets(assetRmlFile)), docId_(assetRmlFile)
+        : context_(context), docPath_(core::managers::PathManager::inAssets(assetRmlFile)), docId_(assetRmlFile)
     {
     }
 

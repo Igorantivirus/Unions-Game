@@ -1,55 +1,60 @@
 #pragma once
 
-#include <filesystem>
 #include <list>
-#include <string_view>
+#include <memory>
 #include <vector>
 
-#include "MixerMemmory.hpp"
+#include "Audio.hpp"
 
-namespace core
+namespace audio
 {
 
-class AudioMeneger
+class AudioDevice
 {
 private:
-    struct AudioGuarantor
+    // Гарантия, что аудио будет жить, пока воспроизводится
+    struct AudioPair
     {
-        TrackPtr track;
-        AudioPtr audio;
+        std::shared_ptr<MIX_Track> track;
+        const Audio *audio;
     };
 
 public:
-    AudioMeneger()
+    AudioDevice() = default;
+
+    void initTracks(const std::size_t tracksCount)
     {
         MIX_Mixer *rawMixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
         if (!rawMixer)
             throw std::runtime_error(std::string("Failed to create audio mixer: ") + SDL_GetError());
-        mixer_.reset(rawMixer);
-    }
+        mixer_.reset(rawMixer, MIX_DestroyMixer);
 
-    void initTracks(const std::size_t tracksCount)
-    {
         freeTracks_.clear();
         usedTracks_.clear();
         freeTracks_.reserve(tracksCount);
         while (freeTracks_.size() < tracksCount)
         {
-            TrackPtr track(MIX_CreateTrack(mixer_.get()), MIX_DestroyTrack);
+            std::shared_ptr<MIX_Track> track(MIX_CreateTrack(mixer_.get()), MIX_DestroyTrack);
             freeTracks_.push_back(std::move(track));
         }
     }
 
-    bool playSouns(AudioPtr audio, bool replay = false)
+    bool playSouns(const Audio &audio, bool replay = false)
     {
         if (freeTracks_.empty() || !audio)
             return false;
 
-        TrackPtr track = freeTracks_.back();
-        freeTracks_.pop_back();
-        usedTracks_.push_back({track, audio}); // Гарантия, что аудио будет жить, пока воспроизводится
+        std::shared_ptr<MIX_Track> track = freeTracks_.back();
+        std::shared_ptr<const MIX_Audio> audioS = audio.getSDLAudio().lock();
 
-        MIX_SetTrackAudio(track.get(), audio.get());
+        AudioPair pair;
+        pair.track = track;
+        pair.audio = &audio;
+
+        freeTracks_.pop_back();
+        usedTracks_.push_back(std::move(pair));
+
+        MIX_SetTrackAudio(track.get(), const_cast<MIX_Audio *>(audioS.get()));
         MIX_SetTrackGain(track.get(), 1.0f);
         MIX_PlayTrack(track.get(), replay ? -1 : 0);
 
@@ -60,7 +65,8 @@ public:
     {
         for (auto it = usedTracks_.begin(); it != usedTracks_.end();)
         {
-            if (!MIX_TrackPlaying(it->track.get()))
+            // Если не проигрывается или был отключен
+            if (!MIX_TrackPlaying(it->track.get()) || !it->audio->isRunnig())
             {
                 MIX_SetTrackAudio(it->track.get(), nullptr); // Отсоединяем звук
 
@@ -82,21 +88,20 @@ public:
         return usedTracks_.size();
     }
 
-    AudioPtr loadAudio(const std::filesystem::path &path, bool predecode = true)
+    std::weak_ptr<const MIX_Mixer> getSDMixer() const
     {
-        return loadAudio(std::string_view(path.string()), predecode);
+        return mixer_;
     }
-    AudioPtr loadAudio(const std::string_view &path, bool predecode = true)
+    std::weak_ptr<MIX_Mixer> getSDMixer()
     {
-        AudioPtr res;
-        MIX_Audio *audio = MIX_LoadAudio(mixer_.get(), path.data(), true);
-        res.reset(audio, MIX_DestroyAudio);
-        return res;
+        return mixer_;
     }
 
 private:
-    MixerUPtr mixer_;
-    std::vector<TrackPtr> freeTracks_;
-    std::list<AudioGuarantor> usedTracks_;
+    std::shared_ptr<MIX_Mixer> mixer_;
+    std::vector<std::shared_ptr<MIX_Track>> freeTracks_;
+    std::list<AudioPair> usedTracks_;
+
+private:
 };
-} // namespace core
+} // namespace audio
