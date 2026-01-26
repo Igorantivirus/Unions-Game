@@ -10,7 +10,6 @@
 #include <string_view>
 #include <vector>
 
-
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 
