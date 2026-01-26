@@ -17,12 +17,13 @@
             <meta level="1" points="1" />
             <form type="circle" radius="20" />
             <filler type="texture" texture="mercury.png" />
-            <sound file="" />
+            <sound file="small-victory.mp3" />
         </object>
         <object id="2">
             <meta level="2" points="5" />
             <form type="circle" radius="40" />
             <filler type="texture" texture="mars.png" />
+            <sound file="small-victory.mp3" />
         </object>
         <object id="3">
             <meta level="3" points="10" />
