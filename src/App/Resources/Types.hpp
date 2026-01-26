@@ -93,6 +93,14 @@ struct ObjectDef
 
     ObjectFormDef form;
     ObjectFillerDef filler;
+    std::string soundFile;
+};
+
+struct PackageMusic
+{
+    std::string backgroundFile;
+    std::string winFile;
+    std::string loseFile;
 };
 
 struct PackageSettings

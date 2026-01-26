@@ -60,6 +60,10 @@ public:
     {
         return settings_;
     }
+    const PackageMusic &getMusic() const
+    {
+        return music_;
+    }
 
     // SET METHODS
 
@@ -81,12 +85,17 @@ public:
     {
         settings_ = std::move(settings);
     } 
+    void setMusic(PackageMusic music)
+    {
+        music_ = std::move(music);
+    } 
 
 private:
     std::string packName_;
     std::filesystem::path folderAbs_;
     std::unordered_map<IDType, ObjectDef> objects_;
     PackageSettings settings_;
+    PackageMusic music_;
     std::unordered_set<std::string> textureKeys_;
 };
 } // namespace resources
