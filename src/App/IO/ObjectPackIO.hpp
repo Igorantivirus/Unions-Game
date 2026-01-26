@@ -6,6 +6,7 @@
 #include <App/Resources/ObjectPack.hpp>
 
 #include "FullFileWorker.hpp"
+#include "Resources/Types.hpp"
 
 namespace IO
 {
@@ -80,25 +81,40 @@ inline bool parseForm(const pugi::xml_node &form, resources::ObjectFormDef &out)
     }
     return false;
 }
-inline bool perseSettings(const pugi::xml_node &settings, resources::PackageSettings& setts)
+inline bool parseSettings(const pugi::xml_node &settings, resources::PackageSettings &setts)
 {
-    if(!settings)
+    if (!settings)
         return false;
     const pugi::xml_node objectRange = settings.child("objectRange");
     const pugi::xml_node timeStep = settings.child("timeStep");
     const pugi::xml_node death = settings.child("death");
 
-    setts.levelRange = 
-    {
-        objectRange.attribute("startLevel").as_uint(1),
-        objectRange.attribute("endLevel").as_uint(1)
-    };
+    setts.levelRange =
+        {
+            objectRange.attribute("startLevel").as_uint(1),
+            objectRange.attribute("endLevel").as_uint(1)};
     setts.summonTimeStepS = timeStep.attribute("seconds").as_float();
     setts.deathCount = death.attribute("count").as_uint(1);
     return true;
 }
 
-bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &textures, const std::string &packName, const std::filesystem::path &folderPath)
+inline bool parseMusic(const pugi::xml_node &music, resources::PackageMusic &mus)
+{
+    if (!music)
+        return false;
+
+    const pugi::xml_node background = music.child("background");
+    const pugi::xml_node win = music.child("win");
+    const pugi::xml_node lose = music.child("lose");
+
+    mus.backgroundFile = background.attribute("file").as_string();
+    mus.winFile = win.attribute("file").as_string();
+    mus.loseFile = lose.attribute("file").as_string();
+
+    return true;
+}
+
+inline bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &textures, const std::string &packName, const std::filesystem::path &folderPath)
 {
     pack.unload(textures);
 
@@ -112,12 +128,15 @@ bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &text
 
     const pugi::xml_node root = doc.child("root");
     const pugi::xml_node settings = root.child("settings");
+    const pugi::xml_node music = root.child("music");
     const pugi::xml_node objects = root.child("objects");
 
     resources::PackageSettings setts;
-    if(!perseSettings(settings, setts))
+    resources::PackageMusic mus;
+    if (!parseSettings(settings, setts) || !parseMusic(music, mus))
         return false;
     pack.setSettings(std::move(setts));
+    pack.setMusic(std::move(mus));
 
     std::unordered_set<std::string> loadedTextureKeys;
 
@@ -157,4 +176,4 @@ bool readObjectPack(resources::ObjectPack &pack, resources::TextureManager &text
     return !pack.empty();
 }
 
-} // namespace IO::ObjectPack
+} // namespace IO
