@@ -59,8 +59,10 @@ set(INCLUDE_PATHS
 
 #--------------------------FIND_PACKAGE--------------------------#
 
+find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
-find_package(SDL3 CONFIG REQUIRED COMPONENTS SDL3-static)
+find_package(SDL3_mixer CONFIG REQUIRED)
+
 find_package(Freetype CONFIG REQUIRED)
 find_package(RmlUi CONFIG REQUIRED)
 find_package(SDLWrapper CONFIG REQUIRED)
@@ -105,8 +107,9 @@ if(ANDROID)
 else()
 
   target_link_libraries(${PROJECT_NAME} PRIVATE
-    SDL3::SDL3-static
-    SDL3_image::SDL3_image-static
+    SDL3::SDL3
+    SDL3_image::SDL3_image
+    SDL3_mixer::SDL3_mixer
     Freetype::Freetype
     RmlUi::RmlUi
     SDLWrapper::SDLWrapper

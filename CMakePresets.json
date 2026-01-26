@@ -29,7 +29,7 @@
         "CMAKE_CXX_STANDARD_REQUIRED": "ON",
         "CMAKE_CXX_EXTENSIONS": "OFF",
         "EXTERNAL_DIR": "D:/dev/libraries/_install",
-        "CMAKE_ABI": "msvc-x64-win"
+        "CMAKE_ABI": "msvc-x64-win-mt"
       }
     },
     {
