@@ -59,6 +59,11 @@ private:
             {
                 scene_.setPause(true);
             }
+            else if (id == ui::gameMenu::resumeWinB)
+            {
+                scene_.setPause(false);
+                scene_.winOverlay->SetClass(ui::gameMenu::openClass, false);
+            }
             else if (el->IsClassSet(ui::gameMenu::restartClass))
             {
                 scene_.retart();
@@ -97,6 +102,7 @@ public:
         addEventListener(Rml::EventId::Click, &listener_, true);
         gameOverOverlay = document()->GetElementById(ui::gameMenu::gameOverOverlayId);
         pauseOverlay = document()->GetElementById(ui::gameMenu::pauseOverlayId);
+        winOverlay = document()->GetElementById(ui::gameMenu::winOverOverlayId);
 
         world_.SetContactListener(&contactCheker_);
         generateGlass(logicSize, {(float)logicSize.x, (float)logicSize.y * 0.75f}, 30);
@@ -169,12 +175,14 @@ private: // Сцена
     GameSceneListener listener_;
     Rml::Element *gameOverOverlay = nullptr;
     Rml::Element *pauseOverlay = nullptr;
+    Rml::Element *winOverlay = nullptr;
 
 private: // Информация на экране
     Rml::DataModelHandle dataHandle_;
     statistic::GameStatistic stat_;
     sdl3::Clock timer_;
     unsigned countDeath_ = 0;
+    bool isWin_ = false;
 
 private: // Физический мир
     b2World world_{b2Vec2(0.0f, 9.81f)};
@@ -308,6 +316,22 @@ private: // Физический мир
             audio_.playSound(*audio, false);
     }
 
+    void checkWin(const IDType idSummonedObject)
+    {
+        if(isWin_)
+            return;
+        const resources::ObjectPack *pack = packages_.getPack(appState_.getCurrentPackageName());
+        if (!pack || idSummonedObject != pack->getMaxLevel())
+            return;
+        const sdl3::audio::Audio *audio = appState_.audios().get(pack->getMusic().winFile);
+        if (audio)
+            audio_.playSound(*audio, false);
+
+        winOverlay->SetClass(ui::gameMenu::openClass, true);
+        setPause(true, false);
+        isWin_ = true;
+    }
+
     void updateCollision(const SDL_Event &event)
     {
         std::size_t obj1Ind = getByID(static_cast<IDType>(reinterpret_cast<uintptr_t>(event.user.data1)));
@@ -324,6 +348,8 @@ private: // Физический мир
         const auto mergedIdOpt = objectFactory_.getMergeResultId(level1, level2);
         if (!mergedIdOpt)
             return;
+
+        checkWin(*mergedIdOpt);
 
         sdl3::Vector2f pos = (obj1.getShape().getPosition() + obj2.getShape().getPosition()) / 2.f;
 

@@ -41,8 +41,10 @@ inline const std::string pointsLabel = "points";
 inline const std::string recordLabel = "record";
 
 inline const std::string pauseB = "pause-b";
+inline const std::string resumeWinB = "resume-win-b";
 inline const std::string pauseOverlayId = "pause-overlay";
 inline const std::string gameOverOverlayId = "gameover-overlay";
+inline const std::string winOverOverlayId = "win-overlay";
 
 inline const std::string openClass = "open";
 inline const std::string restartClass = "restart";

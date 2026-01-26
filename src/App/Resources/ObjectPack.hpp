@@ -11,6 +11,7 @@
 
 #include <Core/Managers/TextureManager.hpp>
 #include "Core/Managers/AudioManager.hpp"
+#include "Core/Types.hpp"
 #include "Types.hpp"
 
 namespace resources
@@ -88,6 +89,7 @@ public:
     void addObject(ObjectDef def)
     {
         objects_[def.id] = std::move(def);
+        maxLevel_ = std::max(maxLevel_, def.level);
     }
     void setSettings(PackageSettings settings)
     {
@@ -98,6 +100,11 @@ public:
         music_ = std::move(music);
     } 
 
+    const IDType getMaxLevel() const
+    {
+        return maxLevel_;
+    }
+
 private:
     std::string packName_;
     std::filesystem::path folderAbs_;
@@ -106,5 +113,6 @@ private:
     PackageMusic music_;
     std::unordered_set<std::string> textureKeys_;
     std::unordered_set<std::string> audioKeys_;
+    IDType maxLevel_ = 0;
 };
 } // namespace resources

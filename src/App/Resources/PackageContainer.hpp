@@ -71,6 +71,12 @@ public:
         return pack ? pack->getById(id) : nullptr;
     }
 
+    IDType getMaxLevel(const std::string packName) const
+    {
+        const ObjectPack *pack = getPack(packName);
+        return pack ? pack->getMaxLevel() : 0;
+    }
+
 private:
     std::filesystem::path objectsRoot_;
 
