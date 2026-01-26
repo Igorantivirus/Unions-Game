@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Audio/AudioDevice.hpp"
 #include "Core/Types.hpp"
 #include "Resources/Types.hpp"
 #include <memory>
@@ -58,7 +57,6 @@ private:
             if (id == ui::gameMenu::pauseB)
             {
                 scene_.setPause(true);
-                
             }
             else if (el->IsClassSet(ui::gameMenu::restartClass))
             {
@@ -72,7 +70,6 @@ private:
             {
                 scene_.setPause(false);
             }
-
         }
 
     private:
@@ -80,13 +77,12 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, sdl3::audio::AudioDevice& audio, const sdl3::Vector2i logicSize, app::AppState &appState) :
-        engine::OneRmlDocScene(context, ui::gameMenu::file),
-        audio_(audio),
-        listener_(*this),
-        appState_(appState),
-        packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures(), appState.audios()),
-        objectFactory_(packages_)
+    GameScene(engine::Context &context, sdl3::audio::AudioDevice &audio, const sdl3::Vector2i logicSize, app::AppState &appState) : engine::OneRmlDocScene(context, ui::gameMenu::file),
+                                                                                                                                    audio_(audio),
+                                                                                                                                    listener_(*this),
+                                                                                                                                    appState_(appState),
+                                                                                                                                    packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures(), appState.audios()),
+                                                                                                                                    objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: %s", appState.getCurrentPackageName().c_str());
@@ -167,7 +163,7 @@ public:
 
 private: // Сцена
     app::AppState &appState_;
-    sdl3::audio::AudioDevice& audio_;
+    sdl3::audio::AudioDevice &audio_;
     bool paused_ = false;
     GameSceneListener listener_;
     Rml::Element *gameOverOverlay = nullptr;
@@ -199,7 +195,7 @@ private: // Временный объект
 private: // Сцена
     void setPause(const bool pause, const bool openPauseMenu = true)
     {
-        if(paused_ == pause)
+        if (paused_ == pause)
             return;
         paused_ = pause;
         timer_.pause(pause);
@@ -232,7 +228,7 @@ private: // Сцена
     }
 
     void applyStatistic()
-    {   
+    {
         appState_.stat().applyGameResult(stat_.stringID, stat_);
     }
 
@@ -298,13 +294,10 @@ private: // Физический мир
         return objects_.size();
     }
 
-    void playSoundByI(const IDType id)
+    void playSound(const resources::ObjectDef *def)
     {
-        const resources::ObjectDef* defPtr = objectFactory_.getDefById(id);
-        if(!defPtr)
-            return;
-        const sdl3::audio::Audio* audio = appState_.audios().get(defPtr->soundFile);
-        if(audio)
+        const sdl3::audio::Audio *audio = appState_.audios().get(def->soundFile);
+        if (audio)
             audio_.playSound(*audio, false);
     }
 
@@ -324,16 +317,17 @@ private: // Физический мир
         const auto mergedIdOpt = objectFactory_.getMergeResultId(level1, level2);
         if (!mergedIdOpt)
             return;
-        playSoundByI(mergedIdOpt.value());
 
         sdl3::Vector2f pos = (obj1.getShape().getPosition() + obj2.getShape().getPosition()) / 2.f;
 
         objects_.erase(objects_.begin() + std::max(obj1Ind, obj2Ind));
         objects_.erase(objects_.begin() + std::min(obj1Ind, obj2Ind));
 
-        auto created = objectFactory_.tryCreateById(world_, *mergedIdOpt, pos);
+        const resources::ObjectDef *def = objectFactory_.getDefById(*mergedIdOpt);
+        auto created = objectFactory_.create(world_, def, pos);
         if (!created)
             return;
+        playSound(def);
 
         objects_.push_back(std::move(*created));
         addPoints(objects_.back().getPoints());
@@ -364,7 +358,7 @@ private: // Временный объект
             SDL_Log("Error! Not found object by level %d\n", static_cast<int>(level));
             actionRes_ = engine::SceneAction::popAction();
         }
-        auto created = objectFactory_.tryCreateById(world_, idpt.value(), {startPoss_.x, -startPoss_.y});
+        auto created = objectFactory_.createById(world_, idpt.value(), {startPoss_.x, -startPoss_.y});
         if (!created)
             return;
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core/Types.hpp"
+#include <SDLWrapper/EventRegistrator.hpp>
 #include <optional>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -22,13 +22,12 @@
 
 namespace resources
 {
-//Фабрика GameObject, создаёт по PackageContainer
+// Фабрика GameObject, создаёт по PackageContainer
 class ObjectFactory
 {
 public:
-    ObjectFactory(PackageContainer& packages) : packages_(packages)
+    ObjectFactory(PackageContainer &packages) : packages_(packages)
     {
-
     }
 
     bool loadPack(const std::string &packName)
@@ -89,47 +88,35 @@ public:
         return getIdByLevel(levelA + 1);
     }
 
-    std::optional<objects::GameObject> tryCreateById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
+    std::optional<objects::GameObject> create(b2World &world, const ObjectDef *def, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
     {
-        const ObjectDef *def = getDefById(id);
         if (!def)
         {
             SDL_Log("ObjectFactory: Couldn't find object by ID\n");
             return std::nullopt;
         }
+        const sdl3::Texture *tex = packages_.textures().get(def->filler.getTextureName());
 
-        try
+        switch (def->form.type)
         {
-            const sdl3::Texture *tex = packages_.textures().get(def->filler.getTextureName());
-
-            switch (def->form.type)
-            {
-            case ObjectFormType::Circle:
-                return createCircle(world, *def, tex, pos, type);
-            case ObjectFormType::Ellipse:
-                return createEllipse(world, *def, tex, pos, type);
-            case ObjectFormType::Polygon:
-                return createPolygon(world, *def, tex, pos, type);
-            case ObjectFormType::Rectangle:
-                return createRectangle(world, *def, tex, pos, type);
-            default:
-                SDL_Log("ObjectFactory: Unsuportable ObjectFormType.\n");
-                return std::nullopt;
-            }
-        }
-        catch (...)
-        {
-            SDL_Log("ObjectFactory: Unknown error\n");
+        case ObjectFormType::Circle:
+            return createCircle(world, *def, tex, pos, type);
+        case ObjectFormType::Ellipse:
+            return createEllipse(world, *def, tex, pos, type);
+        case ObjectFormType::Polygon:
+            return createPolygon(world, *def, tex, pos, type);
+        case ObjectFormType::Rectangle:
+            return createRectangle(world, *def, tex, pos, type);
+        default:
+            SDL_Log("ObjectFactory: Unsuportable ObjectFormType.\n");
             return std::nullopt;
         }
     }
 
-    objects::GameObject createById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
+    std::optional<objects::GameObject> createById(b2World &world, const IDType id, const sdl3::Vector2f pos, const b2BodyType type = b2_dynamicBody) const
     {
-        auto opt = tryCreateById(world, id, pos, type);
-        if (!opt.has_value())
-            throw std::logic_error("ObjectFactory: Couldn't create an object by id");
-        return std::move(opt.value());
+        const ObjectDef *def = getDefById(id);
+        return create(world, def, pos, type);
     }
 
 private:
@@ -168,7 +155,7 @@ private:
     }
 
 private:
-    PackageContainer& packages_;
+    PackageContainer &packages_;
     std::string activePack_;
 };
 
