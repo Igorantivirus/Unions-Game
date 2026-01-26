@@ -83,12 +83,13 @@ private:
     };
 
 public:
-    GameScene(engine::Context &context, sdl3::audio::AudioDevice &audio, const sdl3::Vector2i logicSize, app::AppState &appState) : engine::OneRmlDocScene(context, ui::gameMenu::file),
-                                                                                                                                    audio_(audio),
-                                                                                                                                    listener_(*this),
-                                                                                                                                    appState_(appState),
-                                                                                                                                    packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures(), appState.audios()),
-                                                                                                                                    objectFactory_(packages_)
+    GameScene(engine::Context &context, sdl3::audio::AudioDevice &audio, const sdl3::Vector2i logicSize, app::AppState &appState) : 
+        engine::OneRmlDocScene(context, ui::gameMenu::file),
+        audio_(audio),
+        listener_(*this),
+        appState_(appState),
+        packages_(core::managers::PathManager::assets() / assets::packages, appState_.textures(), appState.audios()),
+        objectFactory_(packages_)
     {
         if (!objectFactory_.loadPack(appState.getCurrentPackageName()))
             SDL_Log("Failed to load object pack: %s", appState.getCurrentPackageName().c_str());
