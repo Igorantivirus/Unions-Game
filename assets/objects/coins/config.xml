@@ -1,5 +1,11 @@
 <root>
 
+    <music>
+        <background file="" />
+        <win file="" />
+        <lose file="" />
+    </music>
+
     <settings>
         <objectRange startLevel="1" endLevel="2" />
         <timeStep seconds="0.5" />
