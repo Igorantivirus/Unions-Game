@@ -33,9 +33,10 @@ class Engine
 public:
     void close()
     {
-        scenes_.clear();
         context_.quit();
         window_.close();
+        audio_.close();
+        scenes_.clear();
     }
 
     SDL_AppResult start(EngineSettings setts)
@@ -151,8 +152,8 @@ private:
     unsigned int fps_{};
 
 private:
-    sdl3::RenderWindow window_;
     sdl3::audio::AudioDevice audio_;
+    sdl3::RenderWindow window_;
     Context context_;
     sdl3::ClockNS cl_;
 

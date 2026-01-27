@@ -1,6 +1,8 @@
 #include <SDL3/SDL_hints.h>
+#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_main.h>
 
+#include <SDLWrapper/SDL3GlobalMeneger.hpp>
 
 #include <App/AppScenesFactory.hpp>
 #include <App/AppState.hpp>
@@ -16,9 +18,9 @@ static app::AppState appState;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    if (!MIX_Init())
+    if(!sdl3::SDL3GlobalMeneger::init(false, true))
     {
-        SDL_Log("Couldn't initialize SDL_mixer: %s", SDL_GetError());
+        SDL_Log("Error of sdl3::SDL3GlobalMeneger::init");
         return SDL_APP_FAILURE;
     }
 
@@ -68,4 +70,5 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
     appState.save();
     game.close();
+    sdl3::SDL3GlobalMeneger::shutdown();
 }
