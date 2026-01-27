@@ -12,6 +12,7 @@
 #include <RmlUi/Core/ID.h>
 
 #include <App/HardStrings.hpp>
+#include <SDLWrapper/Audio/AudioDevice.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -28,8 +29,17 @@ private:
         {
         }
 
+        void init(const int value)
+        {
+            volValue = scene_.document()->GetElementById("volume-level");
+            volRange = scene_.document()->GetElementById("vol");
+            if(volValue)
+                volValue->SetInnerRML(std::to_string(value));
+        }
+
         void ProcessEvent(Rml::Event &ev) override
         {
+
             Rml::Element *el = ev.GetTargetElement();
             while (el && el->GetId().empty())
                 el = el->GetParentNode();
@@ -39,9 +49,14 @@ private:
             const Rml::String &id = el->GetId();
             const std::unordered_map<std::string, std::string> &buttons = scene_.getChooseButtons();
 
-            if (id == ui::setsMenu::saveExitB)
+            if (volValue && volRange && ev.GetId() == Rml::EventId::Change && id == "vol")
+            {
+                int value = volRange->GetAttribute("value")->Get<int>(50);
+                volValue->SetInnerRML(std::to_string(value));
+            }
+            else if (id == ui::setsMenu::saveExitB)
                 scene_.actionRes_ = engine::SceneAction::popAction();
-            else if(id == ui::setsMenu::saveThrowB)
+            else if (id == ui::setsMenu::saveThrowB)
             {
                 scene_.appState_.stat().resetAllStatistic();
                 scene_.addStatisticToUi();
@@ -55,14 +70,27 @@ private:
 
     private:
         SettingsMenu &scene_;
+        Rml::Element *volValue = nullptr;
+        Rml::Element *volRange = nullptr;
     };
 
 public:
-    SettingsMenu(engine::Context &context, app::AppState &appState)
-        : engine::OneRmlDocScene(context, ui::setsMenu::file), listener_(*this), appState_(appState)
+    SettingsMenu(engine::Context &context, sdl3::audio::AudioDevice &audio, app::AppState &appState)
+        : engine::OneRmlDocScene(context, ui::setsMenu::file), audio_(audio), listener_(*this), appState_(appState)
     {
         loadDocumentOrThrow();
         addEventListener(Rml::EventId::Click, &listener_, true);
+        addEventListener(Rml::EventId::Change, &listener_, true);
+    }
+    ~SettingsMenu()
+    {
+        if (range_)
+        {
+            int value = range_->GetAttribute("value")->Get<int>(50);
+            float v = static_cast<float>(value - minvalue_) / static_cast<float>(maxvalue_ - minvalue_) * 2.f;
+            audio_.setVolumeLevel(v);
+            appState_.setVolume(v);
+        }
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -76,8 +104,13 @@ public:
 private:
     SettingsMenuListener listener_;
     app::AppState &appState_;
+    sdl3::audio::AudioDevice &audio_;
 
     std::unordered_map<std::string, std::string> chooseButtons_;
+
+    Rml::Element *range_ = nullptr;
+    int minvalue_ = 0;
+    int maxvalue_ = 100;
 
 private:
     const std::unordered_map<std::string, std::string> &getChooseButtons() const
@@ -87,6 +120,13 @@ private:
 
     void onDocumentLoaded(Rml::ElementDocument &doc) override
     {
+        range_ = document()->GetElementById("vol");
+        if (range_)
+        {
+            int minvalue_ = range_->GetAttribute("min")->Get<int>(0);
+            int maxvalue_ = range_->GetAttribute("max")->Get<int>(100);
+        }
+
         addStatisticToUi();
     }
 
@@ -98,6 +138,12 @@ private:
         const std::string &currentID = appState_.getCurrentPackageName();
         if (auto id = appState_.stat().findById(currentID); id)
             label->SetInnerRML(id->name);
+
+        float normvalue = appState_.getVolume();
+        float value = normvalue / 2 * (maxvalue_ - minvalue_) + minvalue_;
+        if (range_)
+            range_->SetAttribute("value", value);
+        listener_.init(value);
 
         Rml::ElementList gameNames;
         Rml::ElementList timeLabels;
