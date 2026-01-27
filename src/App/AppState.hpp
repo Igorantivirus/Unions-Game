@@ -31,12 +31,12 @@ public:
     {
         if(!IO::isValidXmlFile(workStatFile_))
             IO::createAndMove(assetsStatFile_, workStatFile_);
-        return IO::readAllGameStatistic(stat_, currentPackageName_, workStatFile_);
+        return IO::readAllGameStatistic(stat_, currentPackageName_, volume_, workStatFile_);
     }
 
     bool save() const
     {
-        return IO::writeAllGameStatistic(stat_, currentPackageName_, workStatFile_);
+        return IO::writeAllGameStatistic(stat_, currentPackageName_, volume_, workStatFile_);
     }
 
     statistic::AllGameStatistic &stat()
@@ -52,6 +52,16 @@ public:
     const std::string &getCurrentPackageName() const
     {
         return currentPackageName_;
+    }
+
+    float getVolume() const
+    {
+        return volume_;
+    }
+
+    void setVolume(const float volume)
+    {
+        volume_ = volume;
     }
 
     void setCurrentPackageName(std::string name)
@@ -83,6 +93,7 @@ private:
     std::filesystem::path assetsStatFile_;
     statistic::AllGameStatistic stat_{};
     std::string currentPackageName_;
+    float volume_ = 1.f;
 
     core::managers::TextureManager textures_;
     core::managers::AudioManager audios_;

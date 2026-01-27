@@ -13,7 +13,7 @@
 namespace IO
 {
 
-inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, std::string& currentPackName, const std::filesystem::path &path)
+inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, std::string& currentPackName, float& volume, const std::filesystem::path &path)
 {
     stat.clear();
 
@@ -28,6 +28,7 @@ inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, std::string&
     if (!root)
         return false;
     currentPackName = root.attribute("lastPackage").as_string();
+    volume = root.attribute("volume").as_float(1);
 
     for (const pugi::xml_node gameNode : root.children("game"))
     {
@@ -49,12 +50,13 @@ inline bool readAllGameStatistic(statistic::AllGameStatistic &stat, std::string&
     return !stat.empty();
 }
 
-inline bool writeAllGameStatistic(const statistic::AllGameStatistic &stat,const std::string& currentPackName, const std::filesystem::path path)
+inline bool writeAllGameStatistic(const statistic::AllGameStatistic &stat,const std::string& currentPackName, const float volum, const std::filesystem::path path)
 {
     pugi::xml_document doc;
     pugi::xml_node root = doc.append_child("root");
 
     root.append_attribute("lastPackage").set_value(currentPackName.c_str());
+    root.append_attribute("volume").set_value(volum);
 
     for (const auto &gs : stat.getAll())
     {
