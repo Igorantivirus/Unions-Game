@@ -10,14 +10,26 @@
   <body>
     <div id="header">
       <h1>Выбор игры</h1>
+    </div>
+
+    <div class="volume-label">
+      <p>Громкость: </p>
+
+      <div class="volume-range">
+        <p>0</p>  
+        <input id="vol" type="range" min="0" max="100" step="1" value="50" orientation="horizontal" />
+        <p>100</p>
+      </div>
+
+    </div>
+
+
+    <div id="games">
 
       <div class="current-game-badge">
         <p class="current-game-prefix">Игра выбрана:</p>
         <p id="current-game-label" class="current-game-name">—</p>
       </div>
-    </div>
-
-    <div id="games">
 
       <template src="game-card"></template>
       <template src="game-card"></template>

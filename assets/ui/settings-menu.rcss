@@ -26,8 +26,9 @@ body {
 }
 
 /* --- Бейдж выбранной игры --- */
-#header .current-game-badge {
+.current-game-badge {
     margin-top: 8px;
+    margin-bottom: 8px;
     padding: 10px 18px;
 
     background-color: rgb(240, 248, 255);
@@ -41,13 +42,13 @@ body {
 }
 
 /* --- Тексты внутри бейджа (делаем более “читабельно”) --- */
-#header .current-game-prefix {
+.current-game-prefix {
     margin: 0px;
     font-size: 18px;
     color: rgb(40, 40, 40);
 }
 
-#header #current-game-label {
+#current-game-label {
     margin: 3px 0px 0px 0px;
     font-size: 28px;
     font-weight: bold;
@@ -154,4 +155,68 @@ body {
     /* чтобы не становился слишком маленьким */
     background-color: rgb(120, 120, 120);
     border-radius: 10px;
+}
+
+
+
+
+
+
+
+
+.volume-label {
+    color: black;
+    background-color: white;
+    border-color: black;
+    border-width: 2px;
+    border-radius: 10px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.volume-range {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* Размер самого контрола */
+input.range {
+    width: 300px;
+    height: 18px;
+}
+
+/* Трек */
+input.range slidertrack {
+    height: 6px;
+    margin-top: 6px;
+    background-color: #444;
+}
+
+/* Заполненная часть трека */
+input.range slidertrack sliderprogress {
+    background-color: #7aa2ff;
+}
+
+/* Ручка */
+input.range sliderbar {
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    background-color: #ddd;
+
+
+    border-width: 1px;
+    border-color: black;
+}
+
+input.range sliderbar:hover {
+    background-color: #fff;
+}
+
+input.range sliderbar:active {
+    background-color: #aaa;
 }
