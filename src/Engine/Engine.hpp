@@ -33,10 +33,10 @@ class Engine
 public:
     void close()
     {
+        scenes_.clear();
         context_.quit();
         window_.close();
         audio_.close();
-        scenes_.clear();
     }
 
     SDL_AppResult start(EngineSettings setts)
