@@ -57,7 +57,7 @@
 
 
 ## Используемые библиотеки:
-* [SDL3 3.4.0, SDL3_image 3.2.6](https://github.com/libsdl-org) - Графическая библиотека
+* [SDL3 3.4.0, SDL3_image 3.4.0, SDL3_mixer 3.1.2](https://github.com/libsdl-org) - Графическая библиотека + аудио (SDL_mixer)
 * [SDLWrapper 0.2.0](https://github.com/Igorantivirus/SDL_Wrapper) - С++ ООП обёртка над SDL3
 * [RmlUi 6.2](https://github.com/mikke89/RmlUi) - Библиотека для html-style интерфейса
 * [FreeType 2.14.1](https://freetype.org/) - Библиотека для поддержки шрифтов

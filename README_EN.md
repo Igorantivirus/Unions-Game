@@ -57,7 +57,7 @@ There are currently levels available in the game:
 
 
 ## Used libraries:
-* [SDL3 3.4.0, SDL3_image 3.2.6](https://github.com/libsdl-org) - Graphics library
+* [SDL3 3.4.0, SDL3_image 3.4.0, SDL3_mixer 3.1.2](https://github.com/libsdl-org) - Graphics library + audio (SDL_mixer)
 * [SDLWrapper 0.2.0](https://github.com/Igorantivirus/SDL_Wrapper) - C++ OOP wrapper over SDL3
 * [RmlUi 6.2](https://github.com/mikke89/RmlUi) - HTML/CSS-like UI library
 * [FreeType 2.14.1](https://freetype.org/) - Font rendering library
