@@ -31,8 +31,8 @@ Merge identical objects to obtain a new, higher-level object.
 
 # Available platforms:
 
-1. Windows (`UnoinsWin64.zip` asset in Releases)
-2. Android (`Unions-Game.apk` asset in Releases)
+1. Windows (`Unions-Game-win64.zip` asset in Releases)
+2. Android (`Unions-Game-*.apk` asset in Releases)
 
 ## Available levels
 
@@ -45,13 +45,13 @@ There are currently levels available in the game:
 
 ### Windows
 
-* Download `UnoinsWin64.zip` (asset in Releases)
+* Download `Unions-Game-win64.zip` (asset in Releases)
 * Extract it to a convenient location
 * Run `Unions.exe`
 
 ### Android
 
-* Download `Unions-Game.apk` (asset in Releases)
+* Download `Unions-Game-*.apk` (asset in Releases)
 * Install the APK (you may need to allow installs from unknown sources)
 * Launch the game
 
