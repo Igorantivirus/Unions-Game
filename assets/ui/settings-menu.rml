@@ -13,7 +13,7 @@
     </div>
 
     <div class="volume-label">
-      <p>Громкость: </p>
+      <p class="volume-tittle">Громкость: <p id="volume-level">50</p></p>
 
       <div class="volume-range">
         <p>0</p>  
