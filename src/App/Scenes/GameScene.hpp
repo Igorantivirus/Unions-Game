@@ -3,6 +3,7 @@
 #include "Core/Types.hpp"
 #include "Resources/ObjectPack.hpp"
 #include "Resources/Types.hpp"
+#include <SDLWrapper/Audio/Sound.hpp>
 #include <memory>
 
 #include <SDL3/SDL_events.h>
@@ -30,6 +31,7 @@
 #include <Core/Random.hpp>
 #include <Engine/AdvancedContext.hpp>
 #include <Engine/OneRmlDocScene.hpp>
+#include <unordered_map>
 
 namespace scenes
 {
@@ -97,6 +99,20 @@ public:
             stat_.record = static_cast<int>(gs->record);
         if (auto pack = packages_.getPack(objectFactory_.getActivePack()); pack)
             settings_ = pack->getSetings();
+
+        objectFactory_.loadSounds(sounds_);//Не все могут быть загружены
+
+        auto activePack = packages_.getPack(objectFactory_.getActivePack());
+        if(activePack)
+        {
+            auto mus = activePack->getMusic();
+            auto loseAudio = packages_.audios().get(mus.loseFile);
+            auto winAudio = packages_.audios().get(mus.winFile);
+            if(loseAudio)
+                loseSound.setAudio(*loseAudio);
+            if(winAudio)
+                winSound.setAudio(*winAudio);
+        }
 
         bindData();
         loadDocumentOrThrow();
@@ -171,12 +187,19 @@ public:
 
 private: // Сцена
     app::AppState &appState_;
-    sdl3::audio::AudioDevice &audio_;
     bool paused_ = false;
     GameSceneListener listener_;
     Rml::Element *gameOverOverlay = nullptr;
     Rml::Element *pauseOverlay = nullptr;
     Rml::Element *winOverlay = nullptr;
+
+private: // Аудио
+
+    sdl3::audio::AudioDevice &audio_;
+    std::unordered_map<IDType, sdl3::audio::Sound> sounds_;
+
+    sdl3::audio::Sound winSound;
+    sdl3::audio::Sound loseSound;
 
 private: // Информация на экране
     Rml::DataModelHandle dataHandle_;
@@ -271,11 +294,7 @@ private: // Сцена
             gameOverOverlay->SetClass(ui::gameMenu::openClass, true);
             setPause(true, false);
 
-            const resources::ObjectPack *pack = packages_.getPack(appState_.getCurrentPackageName());
-            const resources::PackageMusic music = pack->getMusic();
-            const sdl3::audio::Audio *audio = appState_.audios().get(music.loseFile);
-            if (audio)
-                audio_.playSound(*audio, false);
+            audio_.playSound(loseSound);
         }
     }
 
@@ -312,9 +331,11 @@ private: // Физический мир
 
     void playSound(const resources::ObjectDef *def)
     {
-        const sdl3::audio::Audio *audio = appState_.audios().get(def->soundFile);
-        if (audio)
-            audio_.playSound(*audio, false);
+        auto found = sounds_.find(def->id);
+        if(found == sounds_.end())
+            return;
+        
+        audio_.playSound(found->second);
     }
 
     void checkWin(const IDType idSummonedObject)
@@ -324,9 +345,8 @@ private: // Физический мир
         const resources::ObjectPack *pack = packages_.getPack(appState_.getCurrentPackageName());
         if (!pack || idSummonedObject != pack->getMaxLevel())
             return;
-        const sdl3::audio::Audio *audio = appState_.audios().get(pack->getMusic().winFile);
-        if (audio)
-            audio_.playSound(*audio, false);
+        
+        audio_.playSound(winSound);
 
         winOverlay->SetClass(ui::gameMenu::openClass, true);
         setPause(true, false);

@@ -29,6 +29,14 @@ public:
     {
         return textures_;
     }
+    core::managers::AudioManager &audios()
+    {
+        return audios_;
+    }
+    const core::managers::AudioManager &audios() const
+    {
+        return audios_;
+    }
 
     bool loadFolder(const std::string &packName)
     {

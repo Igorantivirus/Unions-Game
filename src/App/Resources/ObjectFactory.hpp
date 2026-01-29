@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Core/Managers/AudioManager.hpp"
 #include "Core/Types.hpp"
+#include <SDLWrapper/Audio/Audio.hpp>
+#include <SDLWrapper/Audio/Sound.hpp>
 #include <SDLWrapper/EventRegistrator.hpp>
 #include <optional>
 #include <string>
@@ -117,6 +120,26 @@ public:
     {
         const ObjectDef *def = getDefById(id);
         return create(world, def, pos, type);
+    }
+
+    void loadSounds(std::unordered_map<IDType, sdl3::audio::Sound>& sounds)
+    {
+        sounds.clear();
+        core::managers::AudioManager& manager =  packages_.audios();
+
+        auto pack = packages_.getPack(activePack_);
+        if(!pack)
+            return;
+        for(const auto& [id, def] : pack->getAll())
+        {
+            // def.soundFile
+            sdl3::audio::Sound sound;
+            const sdl3::audio::Audio* audio = manager.get(def.soundFile);
+            if(!audio)
+                continue;
+            sound.setAudio(*audio);
+            sounds[id] = std::move(sound);
+        }
     }
 
 private:
