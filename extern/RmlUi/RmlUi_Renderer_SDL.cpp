@@ -13,6 +13,8 @@
 	#error "Only the OpenGL SDL backend is supported."
 #endif
 
+#include <cmath>
+
 static void SetRenderClipRect(SDL_Renderer* renderer, const SDL_Rect* rect)
 {
 #if SDL_MAJOR_VERSION >= 3
@@ -29,6 +31,41 @@ static void SetRenderViewport(SDL_Renderer* renderer, const SDL_Rect* rect)
 	SDL_RenderSetViewport(renderer, rect);
 #endif
 }
+
+namespace 
+{
+	inline bool ApproximatelyEqual(float a, float b, float eps = 1e-6f) 
+	{
+		return std::fabs(a - b) <= eps;
+	}
+
+	inline bool IsApproximatelyIdentity(const Rml::Matrix4f& m)
+	{
+		// Identity matrix, independent of ordering.
+		return
+			ApproximatelyEqual(m[0][0], 1.f) && ApproximatelyEqual(m[1][1], 1.f) && ApproximatelyEqual(m[2][2], 1.f) && ApproximatelyEqual(m[3][3], 1.f) &&
+			ApproximatelyEqual(m[0][1], 0.f) && ApproximatelyEqual(m[0][2], 0.f) && ApproximatelyEqual(m[0][3], 0.f) &&
+			ApproximatelyEqual(m[1][0], 0.f) && ApproximatelyEqual(m[1][2], 0.f) && ApproximatelyEqual(m[1][3], 0.f) &&
+			ApproximatelyEqual(m[2][0], 0.f) && ApproximatelyEqual(m[2][1], 0.f) && ApproximatelyEqual(m[2][3], 0.f) &&
+			ApproximatelyEqual(m[3][0], 0.f) && ApproximatelyEqual(m[3][1], 0.f) && ApproximatelyEqual(m[3][2], 0.f);
+	}
+
+	inline SDL_FPoint ApplyTransform2D(const Rml::Matrix4f& m, float x, float y)
+	{
+		// RmlUi Matrix4f is column-major. Interpret as m[col][row] and multiply m * vec4(x,y,0,1).
+		float out_x = m[0][0] * x + m[1][0] * y + m[2][0] * 0.f + m[3][0] * 1.f;
+		float out_y = m[0][1] * x + m[1][1] * y + m[2][1] * 0.f + m[3][1] * 1.f;
+		float out_w = m[0][3] * x + m[1][3] * y + m[2][3] * 0.f + m[3][3] * 1.f;
+
+		if (!ApproximatelyEqual(out_w, 0.f) && !ApproximatelyEqual(out_w, 1.f))
+		{
+			out_x /= out_w;
+			out_y /= out_w;
+		}
+		return SDL_FPoint{out_x, out_y};
+	}
+} // namespace
+
 
 RenderInterface_SDL::RenderInterface_SDL(SDL_Renderer* renderer) : renderer(renderer)
 {
@@ -47,6 +84,19 @@ void RenderInterface_SDL::BeginFrame()
 }
 
 void RenderInterface_SDL::EndFrame() {}
+
+void RenderInterface_SDL::SetTransform(const Rml::Matrix4f* transform)
+{
+	// Called by RmlUi when the active transform changes. nullptr means identity.
+	if (!transforms_enabled || !transform)
+	{
+		transform_active = false;
+		return;
+	}
+	current_transform = *transform;
+	transform_active = !IsApproximatelyIdentity(current_transform);
+}
+
 
 Rml::CompiledGeometryHandle RenderInterface_SDL::CompileGeometry(Rml::Span<const Rml::Vertex> vertices, Rml::Span<const int> indices)
 {
@@ -71,7 +121,17 @@ void RenderInterface_SDL::RenderGeometry(Rml::CompiledGeometryHandle handle, Rml
 
 	for (size_t i = 0; i < num_vertices; i++)
 	{
-		sdl_vertices[i].position = {vertices[i].position.x + translation.x, vertices[i].position.y + translation.y};
+		float x = vertices[i].position.x + translation.x;
+		float y = vertices[i].position.y + translation.y;
+		if (transform_active)
+		{
+			SDL_FPoint p = ApplyTransform2D(current_transform, x, y);
+			x = p.x;
+			y = p.y;
+		}
+		sdl_vertices[i].position = {x, y};
+
+		// sdl_vertices[i].position = {vertices[i].position.x + translation.x, vertices[i].position.y + translation.y};
 		sdl_vertices[i].tex_coord = {vertices[i].tex_coord.x, vertices[i].tex_coord.y};
 
 		const auto& color = vertices[i].colour;

@@ -49,6 +49,8 @@ public:
         systemInterface_ = std::make_unique<SystemInterface_SDL>();
         fileInterface_ = std::make_unique<FileInterface_SDL>();
 
+        rendrInterface_->SetTransformsEnabled(true);
+
         systemInterface_->SetWindow(window_.get());
 
         Rml::SetRenderInterface(rendrInterface_.get());
