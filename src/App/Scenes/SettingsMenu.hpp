@@ -33,7 +33,7 @@ private:
         {
             volValue = scene_.document()->GetElementById("volume-level");
             volRange = scene_.document()->GetElementById("vol");
-            if(volValue)
+            if (volValue)
                 volValue->SetInnerRML(std::to_string(value));
         }
 
@@ -63,6 +63,7 @@ private:
             }
             else if (auto found = buttons.find(id); found != buttons.end())
             {
+                scene_.saveVolume();
                 scene_.appState_.setCurrentPackageName(found->second);
                 scene_.addStatisticToUi();
             }
@@ -84,13 +85,7 @@ public:
     }
     ~SettingsMenu()
     {
-        if (range_)
-        {
-            int value = range_->GetAttribute("value")->Get<int>(50);
-            float v = static_cast<float>(value - minvalue_) / static_cast<float>(maxvalue_ - minvalue_) * 2.f;
-            audio_.setVolumeLevel(v);
-            appState_.setVolume(v);
-        }
+        saveVolume();
     }
 
     void updateEvent(const SDL_Event &event) override
@@ -130,6 +125,26 @@ private:
         addStatisticToUi();
     }
 
+    void saveVolume()
+    {
+        if (range_)
+        {
+            int value = range_->GetAttribute("value")->Get<int>(50);
+            float v = static_cast<float>(value - minvalue_) / static_cast<float>(maxvalue_ - minvalue_) * 2.f;
+            audio_.setVolumeLevel(v);
+            appState_.setVolume(v);
+        }
+    }
+
+    void loadVolume()
+    {
+        float normvalue = appState_.getVolume();
+        float value = normvalue / 2.f * (maxvalue_ - minvalue_) + minvalue_;
+        if (range_)
+            range_->SetAttribute("value", std::round(value));
+        listener_.init(value);
+    }
+
     void addStatisticToUi()
     {
         Rml::ElementDocument *doc = document();
@@ -139,11 +154,7 @@ private:
         if (auto id = appState_.stat().findById(currentID); id)
             label->SetInnerRML(id->name);
 
-        float normvalue = appState_.getVolume();
-        float value = normvalue / 2 * (maxvalue_ - minvalue_) + minvalue_;
-        if (range_)
-            range_->SetAttribute("value", value);
-        listener_.init(value);
+        loadVolume();
 
         Rml::ElementList gameNames;
         Rml::ElementList timeLabels;
