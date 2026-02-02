@@ -7,7 +7,7 @@
     </music>
 
     <settings>
-        <objectRange startLevel="1" endLevel="3" />
+        <objectRange startLevel="1" endLevel="2" />
         <timeStep seconds="0.5" />
         <death count="10" />
     </settings>
