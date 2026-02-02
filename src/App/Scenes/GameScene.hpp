@@ -108,10 +108,18 @@ public:
             auto mus = activePack->getMusic();
             auto loseAudio = packages_.audios().get(mus.loseFile);
             auto winAudio = packages_.audios().get(mus.winFile);
+            auto backAudio = packages_.audios().get(mus.backgroundFile);
             if(loseAudio)
-                loseSound.setAudio(*loseAudio);
+                loseSound_.setAudio(*loseAudio);
             if(winAudio)
-                winSound.setAudio(*winAudio);
+                winSound_.setAudio(*winAudio);
+            if(backAudio)
+            {
+                backMusic_.setAudio(*backAudio);
+                sdl3::audio::PlayProperties prop = sdl3::audio::PlayProperties::getDefaultProperties();
+                prop.loopCount = -1;
+                audio_.playSound(backMusic_, prop);
+            }
         }
 
         bindData();
@@ -131,6 +139,7 @@ public:
     }
     ~GameScene()
     {
+        backMusic_.stop();
         applyStatistic();
         if (dataHandle_)
         {
@@ -198,8 +207,9 @@ private: // Аудио
     sdl3::audio::AudioDevice &audio_;
     std::unordered_map<IDType, sdl3::audio::Sound> sounds_;
 
-    sdl3::audio::Sound winSound;
-    sdl3::audio::Sound loseSound;
+    sdl3::audio::Sound winSound_;
+    sdl3::audio::Sound loseSound_;
+    sdl3::audio::Sound backMusic_;
 
 private: // Информация на экране
     Rml::DataModelHandle dataHandle_;
@@ -294,7 +304,7 @@ private: // Сцена
             gameOverOverlay->SetClass(ui::gameMenu::openClass, true);
             setPause(true, false);
 
-            audio_.playSound(loseSound);
+            audio_.playSound(loseSound_);
         }
     }
 
@@ -346,7 +356,7 @@ private: // Физический мир
         if (!pack || idSummonedObject != pack->getMaxLevel())
             return;
         
-        audio_.playSound(winSound);
+        audio_.playSound(winSound_);
 
         winOverlay->SetClass(ui::gameMenu::openClass, true);
         setPause(true, false);

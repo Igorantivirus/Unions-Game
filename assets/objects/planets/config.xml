@@ -1,7 +1,7 @@
 <root>
 
     <music>
-        <background file="" />
+        <background file="sounds/back.mp3" />
         <win file="../sounds/final-win.mp3" />
         <lose file="../sounds/game-over.mp3" />
     </music>
