@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)  # Запрещает fallback на старый стандарт
-set(CMAKE_CXX_EXTENSIONS OFF)        # Отключает расширения компилятора
-
 project("Unions" LANGUAGES CXX C)
 
 #--------------------------SET--------------------------#
@@ -28,14 +24,6 @@ else()
   set(BUILD_TYPE_MACRO "DEBUG_BUILD_TYPE")
 endif()
 
-if(MSVC)
-  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-endif()
-
-set(RmlUi_DIR      "${EXTERNAL_DIR}/RmlUi-6.2/${CMAKE_ABI}/${LIBS_BUILD_TYPE}/lib/cmake/RmlUi")
-set(Freetype_DIR   "${EXTERNAL_DIR}/FreeType/${CMAKE_ABI}/${LIBS_BUILD_TYPE}/lib/cmake/freetype")
-set(SDLWrapper_DIR "${EXTERNAL_DIR}/SDLWrapper/${CMAKE_ABI}/${LIBS_BUILD_TYPE}/lib/cmake/SDLWrapper")
-
 if(NOT DEFINED EXTERNAL_DIR)
     message(ERROR EXTERNAL_DIR is not defined)
 endif()
@@ -47,14 +35,12 @@ set(SOURCE_CPP
   ${EXTERN_DIR}/pugixml/pugixml.cpp
 )
 set(SOURCE_HPP
-  # ${SRC_DIR}/Objects.hpp
-  # ${SRC_DIR}/CollisionMeneger.hpp
 )
 set(INCLUDE_PATHS
   ${SRC_DIR}
   ${SRC_DIR}/App
   ${EXTERN_DIR}
-  D:/dev/libraries/box2d-2.4.2/include
+  C:/dev/libs/src/box2d-2.4.2/include
 )
 
 #--------------------------FIND_PACKAGE--------------------------#
@@ -71,7 +57,7 @@ find_package(SDLWrapper CONFIG REQUIRED)
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_TESTBED    OFF CACHE BOOL "" FORCE)
 set(BOX2D_BUILD_EXAMPLES   OFF CACHE BOOL "" FORCE) # если есть в твоей версии
-add_subdirectory("D:/dev/libraries/box2d-2.4.2" "${THIRD_PARTY_BUILD_DIR}/${LIBS_BUILD_TYPE}/box2d")
+add_subdirectory(C:/dev/libs/src/box2d-2.4.2 "${THIRD_PARTY_BUILD_DIR}/${LIBS_BUILD_TYPE}/box2d")
 
 if (ANDROID)
   find_package(ZLIB REQUIRED)
@@ -81,6 +67,12 @@ else()
 endif()
 
 #--------------------------TARGET--------------------------#
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 23
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF
+)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_PATHS})
 
@@ -108,7 +100,7 @@ if(ANDROID)
 else()
 
   target_link_libraries(${PROJECT_NAME} PRIVATE
-    SDL3::SDL3
+    SDL3::SDL3-static
     SDL3_image::SDL3_image
     SDL3_mixer::SDL3_mixer
     SDLWrapper::SDLWrapper
